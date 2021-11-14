@@ -2,9 +2,7 @@
 
 # UDP_Boomer-Shooter
 
-## UDP - [Game Project](https://github.com/JayDkit/UDP_Boomer-Shooter.git)
-
-### About this project
+## About the Universal Design Project
 - Explanation here
 
 ### Engine Features Missing
