@@ -1,4 +1,5 @@
-﻿using GDLibrary.Utilities;
+﻿using GDApp.Scripts.Debug;
+using GDLibrary.Utilities;
 using GDLibrary;
 using GDLibrary.Components;
 using GDLibrary.Core;
@@ -10,6 +11,7 @@ using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
+using GDApp.Content.Scripts.Player;
 
 namespace GDApp
 {
@@ -20,6 +22,10 @@ namespace GDApp
 #endif
 
         #region Fields
+
+        PlayerUI playerUI = new PlayerUI();
+        private SpriteFont font;
+        FramerateCounter fps = new FramerateCounter();
 
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
@@ -40,6 +46,8 @@ namespace GDApp
         private Dictionary<string, Texture2D> textureDictionary;
 
         private Scene activeScene;
+        private GameObject camera;
+        private PlayerGun gun;
 
         #endregion Fields
 
@@ -158,15 +166,89 @@ namespace GDApp
             InitializeCameras(activeScene);
             InitializeCubes(activeScene);
             InitializeModels(activeScene);
+            gun = new PlayerGun(this);
+            gun.InitializeModel(activeScene);
+            playerUI.Initialize(this);
+
+
 
             sceneManager.Add(activeScene);
             sceneManager.LoadScene("level 1");
         }
 
-        private void InitializeSkybox(Scene level, float worldScale = 500)
+        private void InitializeSkybox(Scene level, float worldScale = 1000)
         {
-            #region Archetype
+            #region Non-copy implementation BAD
+            //front
+            var material = new BasicMaterial("simple diffuse");
+            material.Texture = textureDictionary["skybox_front"];
+            material.Shader = new BasicShader();
+            var archetypalQuad = new GameObject("quad", GameObjectType.Skybox);
+            var renderer = new MeshRenderer();
+            renderer.Material = material;
+            archetypalQuad.AddComponent(renderer);
+            renderer.Mesh = new QuadMesh();
+            archetypalQuad.Transform.Translate(0, 0, -worldScale / 2.0f);
+            archetypalQuad.Transform.Scale(worldScale, worldScale, null);
+            level.Add(archetypalQuad);
+            //right
+            var material2 = new BasicMaterial("simple diffuse");
+            material2.Texture = textureDictionary["skybox_left"];
+            material2.Shader = new BasicShader();
+            var archetypalQuad2 = new GameObject("quad", GameObjectType.Skybox);
+            var renderer2 = new MeshRenderer();
+            renderer2.Material = material2;
+            archetypalQuad2.AddComponent(renderer2);
+            renderer2.Mesh = new QuadMesh();
+            archetypalQuad2.Transform.Translate(worldScale / 2.0f, 0, 0);
+            archetypalQuad2.Transform.Scale(worldScale, worldScale, null);
+            archetypalQuad2.Transform.Rotate(0, -90, 0);
+            level.Add(archetypalQuad2);
+            //left
+            var material3 = new BasicMaterial("simple diffuse");
+            material3.Texture = textureDictionary["skybox_right"];
+            material3.Shader = new BasicShader();
+            var archetypalQuad3 = new GameObject("quad", GameObjectType.Skybox);
+            var renderer3 = new MeshRenderer();
+            renderer3.Material = material3;
+            archetypalQuad3.AddComponent(renderer3);
+            renderer3.Mesh = new QuadMesh();
+            archetypalQuad3.Transform.Translate(-worldScale / 2.0f, 0, 0);
+            archetypalQuad3.Transform.Scale(worldScale, worldScale, null);
+            archetypalQuad3.Transform.Rotate(0, 90, 0);
+            level.Add(archetypalQuad3);
+            //back
+            var material4 = new BasicMaterial("simple diffuse");
+            material4.Texture = textureDictionary["skybox_back"];
+            material4.Shader = new BasicShader();
+            var archetypalQuad4 = new GameObject("quad", GameObjectType.Skybox);
+            var renderer4 = new MeshRenderer();
+            renderer4.Material = material4;
+            archetypalQuad4.AddComponent(renderer4);
+            renderer4.Mesh = new QuadMesh();
+            archetypalQuad4.Transform.Translate(0, 0, worldScale / 2.0f);
+            archetypalQuad4.Transform.Scale(worldScale, worldScale, null);
+            archetypalQuad4.Transform.Rotate(0, -180, 0);
+            level.Add(archetypalQuad4);
+            //top
+            var material5 = new BasicMaterial("simple diffuse");
+            material5.Texture = textureDictionary["skybox_sky"];
+            material5.Shader = new BasicShader();
+            var archetypalQuad5 = new GameObject("quad", GameObjectType.Skybox);
+            var renderer5 = new MeshRenderer();
+            renderer5.Material = material5;
+            archetypalQuad5.AddComponent(renderer5);
+            renderer5.Mesh = new QuadMesh();
+            archetypalQuad5.Transform.Translate(0, worldScale / 2.0f, 0);
+            archetypalQuad5.Transform.Scale(worldScale, worldScale, null);
+            archetypalQuad5.Transform.Rotate(90, 90, 0);
+            level.Add(archetypalQuad5);
+            #endregion Non-copy implementation
 
+            #region Nial buggy version
+            /*
+            #region Archetype
+            
             var material = new BasicMaterial("simple diffuse");
             material.Texture = textureDictionary["checkerboard"];
             material.Shader = new BasicShader();
@@ -176,7 +258,7 @@ namespace GDApp
             renderer.Material = material;
             archetypalQuad.AddComponent(renderer);
             renderer.Mesh = new QuadMesh();
-
+            
             #endregion Archetype
 
             //back
@@ -205,6 +287,7 @@ namespace GDApp
             right.Transform.Rotate(0, -90, 0);
             level.Add(right);
 
+
             //front
             GameObject front = archetypalQuad.Clone() as GameObject;
             front.Name = "skybox_front";
@@ -221,7 +304,8 @@ namespace GDApp
             top.Transform.Translate(0, worldScale / 2.0f, 0);
             top.Transform.Scale(worldScale, worldScale, null);
             top.Transform.Rotate(90, 0, 0);
-            level.Add(top);
+            level.Add(top); */
+            #endregion Nial buggy version
         }
 
         private void InitializeCameras(Scene level)
@@ -229,9 +313,9 @@ namespace GDApp
             #region First Person Camera
 
             //add camera game object
-            var camera = new GameObject("main camera", GameObjectType.Camera);
+            camera = new GameObject("main camera", GameObjectType.Camera);
             camera.AddComponent(new Camera(_graphics.GraphicsDevice.Viewport));
-            camera.AddComponent(new FirstPersonController(0.05f, 0.025f, 0.00009f));
+            camera.AddComponent(new FPSController(0.05f, 0.025f, 0.00009f));
             camera.Transform.SetTranslation(0, 0, 15);
             level.Add(camera);
 
@@ -364,6 +448,7 @@ namespace GDApp
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
+            font = Content.Load<SpriteFont>("Assets/Fonts/Arial");
         }
 
         protected override void UnloadContent()
@@ -385,7 +470,9 @@ namespace GDApp
             sceneManager.Update();
 
 #if DEBUG
+            gun.Update();
             DemoFind();
+            fps.Update(gameTime);
 #endif
         }
 
@@ -411,6 +498,11 @@ namespace GDApp
 
             //render every renderable game object
             renderManager.Render(sceneManager.ActiveScene);
+
+            _spriteBatch.Begin();
+            fps.DrawFps(_spriteBatch, font, new Vector2(10f, 10f), Color.MonoGameOrange);
+            _spriteBatch.End();
+            playerUI.DrawUI(gameTime);
 
             base.Draw(gameTime);
         }

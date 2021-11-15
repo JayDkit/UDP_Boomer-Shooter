@@ -10,7 +10,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Content\" />
-    <Folder Include="$(MSBuildThisFileDirectory)Core\Components\Camera\" />
     <Folder Include="$(MSBuildThisFileDirectory)Core\Components\Base\" />
     <Folder Include="$(MSBuildThisFileDirectory)Core\Objects\" />
   </ItemGroup>

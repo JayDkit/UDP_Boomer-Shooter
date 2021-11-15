@@ -1,12 +1,11 @@
-﻿using Microsoft.Xna.Framework;
+﻿using GDLibrary;
+using GDLibrary.Components;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
-namespace GDLibrary.Components
+namespace GDApp.Content.Scripts.Player
 {
-    /// <summary>
-    /// Adds simple 1st person controller to camera using keyboard and mouse input
-    /// </summary>
-    public class FirstPersonController : Controller
+    public class FPSController : Controller
     {
         protected Vector3 translation = Vector3.Zero;
         protected Vector3 rotation = Vector3.Zero;
@@ -14,7 +13,7 @@ namespace GDLibrary.Components
         private float strafeSpeed = 0.025f;
         private float rotationSpeed = 10.0f;
 
-        public FirstPersonController(float moveSpeed, float strafeSpeed, float rotationSpeed)
+        public FPSController(float moveSpeed, float strafeSpeed, float rotationSpeed)
         {
             this.moveSpeed = moveSpeed;
             this.strafeSpeed = strafeSpeed;
