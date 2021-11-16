@@ -5,8 +5,14 @@
 ## About the Universal Design Project
 - Explanation here
 
-### Engine Features (Optionak)
-- Using IMGUI for ui implementation. (Might change)
+### Game features
+- [] Quake Movement
+- [] Quake MouseLook
+- [] Shooting bullet
+- [x] Loading models
+- [x] Camera look
+- [x] Skybox
+
 ### Engine Features Missing
 
 - [ ] Collisions
