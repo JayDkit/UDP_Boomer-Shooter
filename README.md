@@ -6,9 +6,9 @@
 - Explanation here
 
 ### Game features
-- [] Quake Movement
-- [] Quake MouseLook
-- [] Shooting bullet
+- [ ] Quake Movement
+- [ ] Quake MouseLook
+- [ ] Shooting bullet
 - [x] Loading models
 - [x] Camera look
 - [x] Skybox
