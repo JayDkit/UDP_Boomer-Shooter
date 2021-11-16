@@ -24,6 +24,7 @@ namespace GDLibrary.Components
         private readonly float MIN_FAR_CLIP = 10;
         private readonly float DEFAULT_ASPECT_RATIO = 16 / 10.0f;
         private readonly float DEFAULT_FIELD_OF_VIEW = MathHelper.PiOver4 / 2.0f;
+
         /// <summary>
         /// Main camera used to render the scene in the SceneManager
         /// </summary>
@@ -155,6 +156,12 @@ namespace GDLibrary.Components
                     isProjectionDirty = true;
                 }
             }
+        }
+
+        public Viewport Viewport
+        {
+            get => viewPort;
+            set => viewPort = value;
         }
 
         public Vector3 Forward => viewMatrix.Forward;

@@ -27,7 +27,7 @@ namespace GDApp.Content.Scripts.Player
         public void InitializeModel(Scene level)
         {
             var material = new BasicMaterial("model material");
-            material.Texture = main.Content.Load<Texture2D>("Assets/Demo/Textures/checkerboard");
+            material.Texture = main.Content.Load<Texture2D>("Assets/Demo/Textures/grey");
             material.Shader = new BasicShader();
 
             gun = new GameObject("playergun", GameObjectType.Player);
@@ -39,7 +39,6 @@ namespace GDApp.Content.Scripts.Player
             gun.Transform.SetScale(0.5f, 0.5f, 0.5f);
             gun.Transform.SetRotation(0,-90,0);
             level.Add(gun);
-
         }
 
         private void setTranslationFromParent()

@@ -12,7 +12,7 @@ namespace GDLibrary.Components
         protected Vector3 rotation = Vector3.Zero;
         private float moveSpeed = 0.05f;
         private float strafeSpeed = 0.025f;
-        private float rotationSpeed = 10.0f;
+        private float rotationSpeed = 0.00009f;
 
         public FirstPersonController(float moveSpeed, float strafeSpeed, float rotationSpeed)
         {

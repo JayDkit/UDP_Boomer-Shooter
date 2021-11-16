@@ -1,4 +1,5 @@
 ﻿using GDLibrary.Components;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 
@@ -7,7 +8,7 @@ namespace GDLibrary.Managers
     /// <summary>
     /// SceneManager stores all scenes and calls update on currently active scene
     /// </summary>
-    public class SceneManager
+    public class SceneManager : GameComponent
     {
         #region Statics
 
@@ -61,7 +62,7 @@ namespace GDLibrary.Managers
 
         #region Constructors
 
-        public SceneManager()
+        public SceneManager(Game game) : base(game)
         {
             scenes = new List<Scene>(DEFAULT_SCENE_COUNT_AT_START);
             sceneToLoad = -1;
@@ -70,7 +71,9 @@ namespace GDLibrary.Managers
 
         #endregion Constructors
 
-        public void Update()
+        #region Actions - Update
+
+        public override void Update(GameTime gameTime)
         {
             //if no active scene and no scene to load then exit
             if (activeSceneIndex == -1 && sceneToLoad == -1)
@@ -101,6 +104,8 @@ namespace GDLibrary.Managers
             //update the scene (either new, or the same scene from last update)
             scenes[activeSceneIndex].Update();
         }
+
+        #endregion Actions - Update
 
         #region Actions - Add, Remove, Load, Find
 

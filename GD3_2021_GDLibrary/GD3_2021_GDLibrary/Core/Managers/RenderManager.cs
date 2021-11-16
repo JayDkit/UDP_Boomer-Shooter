@@ -1,9 +1,64 @@
 ﻿using GDLibrary.Components;
-using GDLibrary.Graphics;
+using GDLibrary.Renderers;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 
 namespace GDLibrary.Managers
+{
+    public class RenderManager : DrawableGameComponent
+    {
+        #region Fields
+
+        protected GraphicsDevice graphicsDevice;
+        private IRenderScene sceneRenderer;
+
+        #endregion Fields
+
+        #region Properties
+
+        protected IRenderScene SceneRenderer
+        {
+            get => sceneRenderer;
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("You must set a valid renderer (e.g. ForwardRenderer) for the render manager!");
+
+                //if we're setting a different renderer then set it!
+                if (sceneRenderer != value)
+                    sceneRenderer = value;
+            }
+        }
+
+        #endregion Properties
+
+        #region Constructors
+
+        public RenderManager(Game game, IRenderScene sceneRenderer) : base(game)
+        {
+            //cache this de-reference to save us some CPU cycles since its called often in Render below
+            graphicsDevice = Application.GraphicsDevice;
+
+            //set the render used to render/draw the scene
+            SceneRenderer = sceneRenderer;
+        }
+
+        #endregion Constructors
+
+        #region Actions - Draw
+
+        public override void Draw(GameTime gameTime)
+        {
+            sceneRenderer.Render(graphicsDevice, Camera.Main);
+        }
+
+        #endregion Actions - Draw
+    }
+}
+
+/*
+ namespace GDLibrary.Managers
 {
     public class RenderManager : IDisposable
     {
@@ -84,3 +139,4 @@ namespace GDLibrary.Managers
         #endregion Actions - Housekeeping
     }
 }
+ */

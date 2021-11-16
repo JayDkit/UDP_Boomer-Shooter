@@ -11,6 +11,8 @@ namespace GDLibrary.Editor
     [DataContract]
     public sealed class CurveHelper
     {
+        private static readonly int ROUND_PRECISION = 3;
+
         private Vector3 translation;
         private Vector3 rotation;
 
@@ -21,6 +23,11 @@ namespace GDLibrary.Editor
 
         public CurveHelper(Vector3 translation, Vector3 rotation)
         {
+            //round the vectors "in-place"
+            translation.Round(ROUND_PRECISION);
+            rotation.Round(ROUND_PRECISION);
+
+            //reduce precision
             this.translation = translation;
             this.rotation = rotation;
         }
@@ -29,6 +36,7 @@ namespace GDLibrary.Editor
     public class CurveRecorderController : Controller
     {
         private static readonly int DEFAULT_MIN_SIZE = 10;
+
         private Camera camera;
         private string fileName;
         private List<CurveHelper> keyTransforms;
