@@ -87,7 +87,6 @@ namespace GDLibrary.Inputs
         {
             previousState = currentState;
             currentState = Mouse.GetState();
-
             //if (Screen.LockCursor)
             //{
             mouseDelta.X = (currentState.X - 512);

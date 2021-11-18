@@ -132,9 +132,7 @@ namespace GDApp
             gun = new PlayerGun(this);
             gun.InitializeModel(activeScene);
             playerUI.Initialize(this);
-
-
-
+  
             sceneManager.Add(activeScene);
             sceneManager.LoadScene("level 1");
         }
@@ -476,13 +474,24 @@ namespace GDApp
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-
+            base.Draw(gameTime);
             _spriteBatch.Begin();
             fps.DrawFps(_spriteBatch, font, new Vector2(10f, 10f), Color.MonoGameOrange);
             _spriteBatch.End();
+            //TODO - Change reticle to image
+            _spriteBatch.Begin();
+            string plus = "+";
+            _spriteBatch.DrawString(font, plus, new Vector2(_graphics.PreferredBackBufferWidth/2, _graphics.PreferredBackBufferHeight / 2), Color.Red, 0, new Vector2(font.MeasureString(plus).X / 2, font.MeasureString(plus).Y / 2), Vector2.One, SpriteEffects.None, 0);
+            _spriteBatch.End();
+            //TODO - Change to Player HUD class
+            _spriteBatch.Begin();
+            string score = "000000";
+            _spriteBatch.DrawString(font, score, new Vector2(_graphics.PreferredBackBufferWidth / 2, _graphics.PreferredBackBufferHeight - 120), Color.White, 0, new Vector2(font.MeasureString(score).X / 2, font.MeasureString(score).Y / 2), Vector2.One, SpriteEffects.None, 0);
+            _spriteBatch.End();
+
             playerUI.DrawUI(gameTime);
 
-            base.Draw(gameTime);
+            
         }
 
         #endregion Update & Draw
