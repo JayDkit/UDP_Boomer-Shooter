@@ -377,17 +377,17 @@ namespace GDApp
             //(represented by a bullet), both are included so they can be swapped between for demonstration purposes
             //for CA2.
             var speedMaterial = new BasicMaterial("model material");
-            //speedMaterial.Texture = Content.Load<Texture2D>("Assets/Textures/Pickups/ElectricityTexture");
-            speedMaterial.Texture = Content.Load<Texture2D>("Assets/Textures/Pickups/BrassTexture");
+            speedMaterial.Texture = Content.Load<Texture2D>("Assets/Textures/Pickups/ElectricityTexture");
+            //speedMaterial.Texture = Content.Load<Texture2D>("Assets/Textures/Pickups/BrassTexture");
             speedMaterial.Shader = new BasicShader();
 
-            //var speedPickup = new GameObject("speed_pickup", GameObjectType.Consumable);
-            var speedPickup = new GameObject("rapidFire_pickup", GameObjectType.Consumable);
+            var speedPickup = new GameObject("speed_pickup", GameObjectType.Consumable);
+            //var speedPickup = new GameObject("rapidFire_pickup", GameObjectType.Consumable);
             var speedRenderer = new ModelRenderer();
             speedRenderer.Material = speedMaterial;
             speedPickup.AddComponent(speedRenderer);
-            //speedRenderer.Model = Content.Load<Model>("Assets/Models/Pickups/SpeedPickup");
-            speedRenderer.Model = Content.Load<Model>("Assets/Models/Pickups/RapidFirePickup");
+            speedRenderer.Model = Content.Load<Model>("Assets/Models/Pickups/SpeedPickup");
+            //speedRenderer.Model = Content.Load<Model>("Assets/Models/Pickups/RapidFirePickup");
 
             //upsize the model a little because the lightning bolt is quite small
             speedPickup.Transform.SetScale(8f, 8f, 8f);
@@ -400,7 +400,20 @@ namespace GDApp
             //speedPickup.Transform.SetTranslation(-630, 130, 250);
             level.Add(speedPickup);
 
-            //Rapid Fire Pickup (represented by 2 bullets)
+            //Health Kit Pickup (represented by a health kit box)
+
+            var healthMaterial = new BasicMaterial("model material");
+            healthMaterial.Texture = Content.Load<Texture2D>("Assets/Textures/Pickups/HealthKitTexture");
+            healthMaterial.Shader = new BasicShader();
+
+            var healthPickup = new GameObject("health_pickup", GameObjectType.Consumable);
+            var healthRenderer = new ModelRenderer();
+            healthRenderer.Material = healthMaterial;
+            healthPickup.AddComponent(healthRenderer);
+            healthRenderer.Model = Content.Load<Model>("Assets/Models/Pickups/HealthKit");
+            healthPickup.Transform.SetTranslation(65, -22, -60);
+            healthPickup.Transform.SetScale(5f, 5f, 5f);
+            level.Add(healthPickup);
 
             #endregion Archetype
 
