@@ -125,6 +125,7 @@ namespace GDApp
             textureDictionary.Add("speed_pickup", Content.Load<Texture2D>("Assets/Textures/Pickups/ElectricityTexture"));
             textureDictionary.Add("health_pickup", Content.Load<Texture2D>("Assets/Textures/Pickups/HealthKitTexture"));
             textureDictionary.Add("rapidFire_pickup", Content.Load<Texture2D>("Assets/Textures/Pickups/BrassTexture"));
+            textureDictionary.Add("turret", Content.Load<Texture2D>("Assets/Demo/Textures/grey"));
         }
 
         /// <summary>
@@ -140,6 +141,7 @@ namespace GDApp
             InitializeFloors(activeScene);
             InitializeWalls(activeScene);
             InitializePickups(activeScene);
+            InitializeTurrets(activeScene);
             //InitializeModels(activeScene);
             gun = new PlayerGun(this);
             gun.InitializeModel(activeScene);
@@ -400,8 +402,8 @@ namespace GDApp
             //speedPickup.Transform.SetTranslation(-630, 130, 250);
             level.Add(speedPickup);
 
-            //Health Kit Pickup (represented by a health kit box)
 
+            //Health Kit Pickup (represented by a health kit box)
             var healthMaterial = new BasicMaterial("model material");
             healthMaterial.Texture = Content.Load<Texture2D>("Assets/Textures/Pickups/HealthKitTexture");
             healthMaterial.Shader = new BasicShader();
@@ -434,6 +436,42 @@ namespace GDApp
                 }
                 level.Add(clone);
             }
+        }
+
+        private void InitializeTurrets(Scene level)
+        {
+            var turretMaterial = new BasicMaterial("model material");
+            //Placeholder texture - not the final one!
+            turretMaterial.Texture = Content.Load<Texture2D>("Assets/Demo/Textures/grey");
+            turretMaterial.Shader = new BasicShader();
+
+            var turret = new GameObject("turret", GameObjectType.NPC);
+            var turretRenderer = new ModelRenderer();
+            turretRenderer.Material = turretMaterial;
+            turret.AddComponent(turretRenderer);
+            turretRenderer.Model = Content.Load<Model>("Assets/Models/Turret");
+            turret.Transform.SetTranslation(-80, -22, -15);
+            turret.Transform.SetRotation(0, 90, 0);
+            turret.Transform.SetScale(3f, 3f, 3f);
+            level.Add(turret);
+            
+            //var count = 0;
+            //for (var i = 0; i <= 11; i += 1)
+            //{
+            //    var clone = healthPickup.Clone() as GameObject;
+            //    clone.Name = $"{clone.Name} - {count++}";
+            //    if (i == 0)
+            //    {
+            //        clone.Transform.SetTranslation(-80, -22, -175);
+            //        clone.Transform.SetScale(5f, 5f, 5f);
+            //    }
+            //    else if (i == 1)
+            //    {
+            //        clone.Transform.SetTranslation(195, -22, -175);
+            //        clone.Transform.SetScale(5f, 5f, 5f);
+            //    }
+            //    level.Add(clone);
+            //}
         }
 
         /// <summary>
