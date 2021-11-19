@@ -417,14 +417,23 @@ namespace GDApp
 
             #endregion Archetype
 
-            //var count = 0;
-            //for (var i = -8; i <= 8; i += 2)
-            //{
-            //    var clone = archetypalSphere.Clone() as GameObject;
-            //    clone.Name = $"{clone.Name} - {count++}";
-            //    clone.Transform.SetTranslation(-5, i, 0);
-            //    level.Add(clone);
-            //}
+            var count = 0;
+            for (var i = 0; i <= 1; i += 1)
+            {
+                var clone = healthPickup.Clone() as GameObject;
+                clone.Name = $"{clone.Name} - {count++}";
+                if(i == 0)
+                {
+                    clone.Transform.SetTranslation(-80, -22, -175);
+                    clone.Transform.SetScale(5f, 5f, 5f);
+                }
+                else if (i == 1)
+                {
+                    clone.Transform.SetTranslation(195, -22, -175);
+                    clone.Transform.SetScale(5f, 5f, 5f);
+                }
+                level.Add(clone);
+            }
         }
 
         /// <summary>
