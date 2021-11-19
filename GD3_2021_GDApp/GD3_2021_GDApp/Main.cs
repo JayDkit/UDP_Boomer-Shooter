@@ -61,7 +61,7 @@ namespace GDApp
 
         #region Initialization - Scene manager, Application data, Screen, Input, Scenes, Game Objects
 
-		/// <summary>
+        /// <summary>
         /// Initialize engine, dictionaries, assets, level contents
         /// </summary>
         protected override void Initialize()
@@ -69,23 +69,23 @@ namespace GDApp
             //data, input, scene manager
             InitializeEngine("My Game Title Goes Here", 1024, 768);
 
-			//load structures that store assets (e.g. textures, sounds) or archetypes (e.g. Quad game object)
+            //load structures that store assets (e.g. textures, sounds) or archetypes (e.g. Quad game object)
             InitializeDictionaries();
 
-			//load assets into the relevant dictionary
+            //load assets into the relevant dictionary
             LoadAssets();
 
             //level with scenes and game objects
             InitializeLevel();
 
-			//TODO - remove hardcoded mouse values - update Screen class
+            //TODO - remove hardcoded mouse values - update Screen class
             //centre the mouse with hardcoded value - remove later
             Input.Mouse.Position = new Vector2(512, 384);
 
             base.Initialize();
         }
 
-		/// <summary>
+        /// <summary>
         /// Stores all re-used assets and archetypal game objects
         /// </summary>
 
@@ -94,7 +94,7 @@ namespace GDApp
             textureDictionary = new Dictionary<string, Texture2D>();
         }
 
-		/// <summary>
+        /// <summary>
         /// Load resources from file
         /// </summary>
         private void LoadAssets()
@@ -102,7 +102,7 @@ namespace GDApp
             LoadTextures();
         }
 
-		/// <summary>
+        /// <summary>
         /// Load texture data from file and add to the dictionary
         /// </summary>
         private void LoadTextures()
@@ -116,29 +116,38 @@ namespace GDApp
             textureDictionary.Add("skybox_right", Content.Load<Texture2D>("Assets/Textures/Skybox/right"));
             textureDictionary.Add("skybox_back", Content.Load<Texture2D>("Assets/Textures/Skybox/back"));
             textureDictionary.Add("skybox_sky", Content.Load<Texture2D>("Assets/Textures/Skybox/sky"));
+
+            //walls
+            textureDictionary.Add("brick", Content.Load<Texture2D>("Assets/Textures/Architecture/Walls/brick"));
+            textureDictionary.Add("floor", Content.Load<Texture2D>("Assets/Textures/Architecture/Floors/TarmacTexture"));
         }
 
-		/// <summary>
+        /// <summary>
         /// Create a scene, add content, add to the scene manager, and load default scene
         /// </summary>
         private void InitializeLevel()
         {
             activeScene = new Scene("level 1");
 
-            InitializeSkybox(activeScene, 500);
+            //InitializeSkybox(activeScene, 500);
             InitializeCameras(activeScene);
-            InitializeCubes(activeScene);
+            // InitializeCubes(activeScene);
+            InitializeFloors(activeScene);
+            InitializeWalls(activeScene);
             InitializeModels(activeScene);
             gun = new PlayerGun(this);
             gun.InitializeModel(activeScene);
-            playerUI.Initialize(this);
+
+
 
 
 
             sceneManager.Add(activeScene);
             sceneManager.LoadScene("level 1");
         }
-		/// <summary>
+
+
+        /// <summary>
         /// Set up the skybox using a QuadMesh
         /// </summary>
         /// <param name="level">Scene Stores all game objects for current...</param>
@@ -275,7 +284,7 @@ namespace GDApp
             #endregion Nial buggy version
         }
 
-		/// <summary>
+        /// <summary>
         /// Initialize the camera(s) in our scene
         /// </summary>
         /// <param name="level"></param>
@@ -289,7 +298,7 @@ namespace GDApp
             int width = 1024, height = 768;
             var viewport = new Viewport(0, 0, width, height);
             camera.AddComponent(new Camera(viewport));
-            camera.AddComponent(new FPSController(0.05f, 0.025f, 0.00009f));            camera.Transform.SetTranslation(0, 0, 15);
+            camera.AddComponent(new FPSController(0.05f, 0.025f, 0.00009f)); camera.Transform.SetTranslation(0, 0, 15);
             level.Add(camera);
 
             #endregion First Person Camera
@@ -321,7 +330,7 @@ namespace GDApp
             // Time.Instance.TimeScale = 0.1f;
         }
 
-		/// <summary>
+        /// <summary>
         /// Add demo game objects based on FBX vertex data
         /// </summary>
         /// <param name="level"></param>
@@ -354,7 +363,7 @@ namespace GDApp
             }
         }
 
-		/// <summary>
+        /// <summary>
         /// Add demo game objects based on user-defined vertices and indices
         /// </summary>
         /// <param name="level"></param>
@@ -383,6 +392,162 @@ namespace GDApp
                 clone.Transform.SetScale(1, i, 1);
                 level.Add(clone);
             }
+        }
+
+        /// <summary>
+        /// add wall objects as rescaled cubes
+        /// </summary>
+        /// <param name="level"></param>
+        private void InitializeWalls(Scene level)
+        {
+            #region Archetype
+
+            var material = new BasicMaterial("simple diffuse");
+            material.Texture = textureDictionary["brick"];
+            material.Shader = new BasicShader();
+
+            var archetypalWall = new GameObject("wall", GameObjectType.Architecture);
+            var renderer = new MeshRenderer();
+            renderer.Material = material;
+            archetypalWall.AddComponent(renderer);
+            renderer.Mesh = new CubeMesh();
+
+            #endregion Archetype
+
+            #region Middle Room Walls
+            //front left wall
+            var clone = archetypalWall.Clone() as GameObject;
+            clone.Name = $"front left -{clone.Name}";
+            clone.Transform.SetTranslation(-20, 0, 0);
+            clone.Transform.SetScale(150, 50, 3);
+            level.Add(clone);
+
+            //front right wall
+            var clone2 = archetypalWall.Clone() as GameObject;
+            clone2.Name = $"front right -{clone.Name}";
+            clone2.Transform.SetTranslation(150, 0, 0);
+            clone2.Transform.SetScale(150, 50, 3);
+            level.Add(clone2);
+
+            //right side
+            var clone3 = archetypalWall.Clone() as GameObject;
+            clone3.Name = $"right side -{clone.Name}";
+            clone3.Transform.SetTranslation(225, 0, -99);
+            clone3.Transform.Rotate(0, 270, 0);
+            clone3.Transform.SetScale(200, 50, 3);
+            level.Add(clone3);
+
+            //left side
+            var clone4 = archetypalWall.Clone() as GameObject;
+            clone4.Name = $"right side -{clone.Name}";
+            clone4.Transform.SetTranslation(-95, 0, -99);
+            clone4.Transform.Rotate(0, 90, 0);
+            clone4.Transform.SetScale(200, 50, 3);
+            level.Add(clone4);
+
+            //back left wall
+            var clone5 = archetypalWall.Clone() as GameObject;
+            clone5.Name = $"back left -{clone.Name}";
+            clone5.Transform.SetTranslation(-20, 0, -199);
+            clone5.Transform.SetScale(150, 50, 3);
+            level.Add(clone5);
+
+            //back right wall
+            var clone6 = archetypalWall.Clone() as GameObject;
+            clone6.Name = $"back right -{clone.Name}";
+            clone6.Transform.SetTranslation(150, 0, -199);
+            clone6.Transform.SetScale(150, 50, 3);
+            level.Add(clone6);
+            #endregion
+
+            #region Main Courtyard Walls
+            //front main wall
+            var clone7 = archetypalWall.Clone() as GameObject;
+            clone7.Name = $"main front -{clone.Name}";
+            clone7.Transform.SetTranslation(0, 0, 300);
+            clone7.Transform.SetScale(1000, 50, 3);
+            level.Add(clone7);
+
+            //left main wall
+            var clone8 = archetypalWall.Clone() as GameObject;
+            clone8.Name = $"main left -{clone.Name}";
+            clone8.Transform.SetTranslation(-500, 35, 0);
+            clone8.Transform.Rotate(0, 90, 0);
+            clone8.Transform.SetScale(600, 120, 3);
+            level.Add(clone8);
+
+            //right main wall
+            var clone9 = archetypalWall.Clone() as GameObject;
+            clone9.Name = $"main right -{clone.Name}";
+            clone9.Transform.SetTranslation(500, 0, 0);
+            clone9.Transform.Rotate(0, 270, 0);
+            clone9.Transform.SetScale(600, 50, 3);
+            level.Add(clone9);
+
+            //back main wall
+            var clone10 = archetypalWall.Clone() as GameObject;
+            clone10.Name = $"main back -{clone.Name}";
+            clone10.Transform.SetTranslation(0, 35, -300);
+            clone10.Transform.SetScale(1000, 120, 3);
+            level.Add(clone10);
+            #endregion
+
+            #region Balcony Walls
+            //back balcony wall
+            var clone11 = archetypalWall.Clone() as GameObject;
+            clone11.Name = $"balcony back -{clone.Name}";
+            clone11.Transform.SetTranslation(0, 150, -400);
+            clone11.Transform.SetScale(1200, 100, 3);
+            level.Add(clone11);
+
+            //left balcony wall
+            var clone12 = archetypalWall.Clone() as GameObject;
+            clone12.Name = $"balcony left -{clone.Name}";
+            clone12.Transform.SetTranslation(-600, 150, -50);
+            clone12.Transform.Rotate(0, 90, 0);
+            clone12.Transform.SetScale(700, 100, 3);
+            level.Add(clone12);
+            #endregion
+
+        }
+
+        /// <summary>
+        /// Add floors using quads
+        /// </summary>
+        /// <param name="activeScene"></param>
+        private void InitializeFloors(Scene level)
+        {
+            #region Archetype
+
+            var material = new BasicMaterial("simple diffuse");
+            material.Texture = textureDictionary["floor"];
+            material.Shader = new BasicShader();
+
+            var archetypalQuad = new GameObject("floor", GameObjectType.Skybox);
+            var renderer = new MeshRenderer();
+            renderer.Material = material;
+            archetypalQuad.AddComponent(renderer);
+            renderer.Mesh = new QuadMesh();
+
+            #endregion Archetype
+
+            //Main floor
+            GameObject clone = archetypalQuad.Clone() as GameObject;
+            clone.Name = $"main floor -{clone.Name}";
+            material.Texture = textureDictionary["floor"];
+            clone.Transform.Translate(0, -25, 0);
+            clone.Transform.Scale(1000, 600, 0);
+            clone.Transform.Rotate(270, 0, 0);
+            level.Add(clone);
+
+            //Balcony left floor
+            //GameObject clone1 = archetypalQuad.Clone() as GameObject;
+            //clone1.Name = $"main floor -{clone.Name}";
+            //material.Texture = textureDictionary["floor"];
+            //clone1.Transform.Translate(0, 120, 0);
+            //clone1.Transform.Scale(100, 25, 0);
+            //clone1.Transform.Rotate(270, 0, 0);
+            //level.Add(clone1);
         }
 
         /// <summary>
@@ -416,7 +581,7 @@ namespace GDApp
 
             //add all input components to component list so that they will be updated and/or drawn
             //Q. what would happen is we commented out these lines?
-			Components.Add(sceneManager); //add so SceneManager::Update() will be called
+            Components.Add(sceneManager); //add so SceneManager::Update() will be called
             Components.Add(renderManager); //add so RenderManager::Draw() will be called
             Components.Add(Input.Keys);
             Components.Add(Input.Mouse);
@@ -480,14 +645,15 @@ namespace GDApp
             _spriteBatch.Begin();
             fps.DrawFps(_spriteBatch, font, new Vector2(10f, 10f), Color.MonoGameOrange);
             _spriteBatch.End();
-            playerUI.DrawUI(gameTime);
+
 
             base.Draw(gameTime);
+            playerUI.DrawUI(gameTime);
         }
 
         #endregion Update & Draw
-        
-        #if DEMO
+
+#if DEMO
 
         private void InitializeEditorHelpers()
         {
