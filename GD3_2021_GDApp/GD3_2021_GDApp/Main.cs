@@ -131,13 +131,15 @@ namespace GDApp
 
             //InitializeSkybox(activeScene, 500);
             InitializeCameras(activeScene);
-           // InitializeCubes(activeScene);
+            // InitializeCubes(activeScene);
+            InitializeFloors(activeScene);
+            InitializeWalls(activeScene);
             InitializeModels(activeScene);
             gun = new PlayerGun(this);
-            gun.InitializeModel(activeScene);
-            playerUI.Initialize(this);
-            InitializeWalls(activeScene);
-            InitializeFloors(activeScene);
+            gun.InitializeModel(activeScene);        
+            
+           
+  
 
 
             sceneManager.Add(activeScene);
