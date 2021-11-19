@@ -14,6 +14,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using GDApp.Content.Scripts.Player;
+using GDApp.Content.Scripts.Turrets;
+using GDApp.Content.Scripts.Turrets.Bullets;
 
 namespace GDApp
 {
@@ -46,6 +48,8 @@ namespace GDApp
         private Scene activeScene;
         private GameObject camera;
         private PlayerGun gun;
+        private StandardTurret turret;
+        private StandardBullet bullet;
 
         #endregion Fields
 
@@ -125,13 +129,28 @@ namespace GDApp
         {
             activeScene = new Scene("level 1");
 
-            InitializeSkybox(activeScene, 500);
+            //InitializeSkybox(activeScene, 500);
             InitializeCameras(activeScene);
-            InitializeCubes(activeScene);
-            InitializeModels(activeScene);
-            gun = new PlayerGun(this);
+            //InitializeCubes(activeScene);
+            //InitializeModels(activeScene);
+            
+            StandardBullet bulletPrefab = new StandardBullet();
+            bulletPrefab.InitializeModel(activeScene);
+            //activeScene.Add(bulletPrefab);
+            turret = new StandardTurret();
+            turret.InitializeModel(activeScene);
+            turret.bulletPrefab = bulletPrefab;
+            activeScene.Add(turret);
+            //StandardBullet tempbullet = new StandardBullet();
+            //tempbullet.InitializeModel(activeScene);
+            //activeScene.Add(tempbullet);
+            gun = new PlayerGun();
             gun.InitializeModel(activeScene);
+            activeScene.Add(gun);
+            
             playerUI.Initialize(this);
+            
+
 
 
 
@@ -449,7 +468,10 @@ namespace GDApp
             base.Update(gameTime);
 
 #if DEMO
-            gun.Update();
+            activeScene.Update();
+            //bullet.Update();
+            //turret.Update();
+            //gun.Update();
             //DemoFind();
             fps.Update(gameTime);
 #endif

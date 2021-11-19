@@ -14,8 +14,10 @@ namespace GDLibrary
         Consumable,
         Architecture,
         Skybox,
-        Editor
+        Editor,
         //STU - add more for your game here...
+        Bullet,
+        Turret
     }
 
     //TODO - Add IComparable?
