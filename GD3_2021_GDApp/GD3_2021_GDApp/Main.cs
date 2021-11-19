@@ -120,6 +120,10 @@ namespace GDApp
             //walls
             textureDictionary.Add("brick", Content.Load<Texture2D>("Assets/Textures/Architecture/Walls/brick"));
             textureDictionary.Add("floor", Content.Load<Texture2D>("Assets/Textures/Architecture/Floors/TarmacTexture"));
+
+            //Turrets + Pickups (Non-Props)
+            textureDictionary.Add("speed_pickup", Content.Load<Texture2D>("Assets/Textures/Pickups/ElectricityTexture"));
+            textureDictionary.Add("health_pickup", Content.Load<Texture2D>("Assets/Textures/Pickups/HealthKitTexture"));
         }
 
         /// <summary>
@@ -134,7 +138,8 @@ namespace GDApp
             // InitializeCubes(activeScene);
             InitializeFloors(activeScene);
             InitializeWalls(activeScene);
-            InitializeModels(activeScene);
+            InitializePickups(activeScene);
+            //InitializeModels(activeScene);
             gun = new PlayerGun(this);
             gun.InitializeModel(activeScene);
 
@@ -361,6 +366,38 @@ namespace GDApp
                 clone.Transform.SetTranslation(-5, i, 0);
                 level.Add(clone);
             }
+        }
+
+        private void InitializePickups(Scene level)
+        {
+            #region Archetype
+
+            var speedMaterial = new BasicMaterial("model material");
+            speedMaterial.Texture = Content.Load<Texture2D>("Assets/Textures/Pickups/ElectricityTexture");
+            speedMaterial.Shader = new BasicShader();
+
+            var speedPickup = new GameObject("speed_pickup", GameObjectType.Consumable);
+            var speedRenderer = new ModelRenderer();
+            speedRenderer.Material = speedMaterial;
+            speedPickup.AddComponent(speedRenderer);
+            speedRenderer.Model = Content.Load<Model>("Assets/Models/Pickups/SpeedPickup");
+
+            //downsize the model a little because the sphere is quite large
+            speedPickup.Transform.SetScale(8f, 8f, 8f);
+            speedPickup.Transform.SetRotation(0, 90, 0);
+            speedPickup.Transform.SetTranslation(-630, 130, 260);
+            level.Add(speedPickup);
+
+            #endregion Archetype
+
+            //var count = 0;
+            //for (var i = -8; i <= 8; i += 2)
+            //{
+            //    var clone = archetypalSphere.Clone() as GameObject;
+            //    clone.Name = $"{clone.Name} - {count++}";
+            //    clone.Transform.SetTranslation(-5, i, 0);
+            //    level.Add(clone);
+            //}
         }
 
         /// <summary>

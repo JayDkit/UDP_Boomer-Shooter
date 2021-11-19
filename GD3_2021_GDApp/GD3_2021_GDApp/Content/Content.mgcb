@@ -108,6 +108,44 @@
 /processorParam:TextureFormat=Compressed
 /build:Assets/Models/Guns/PlayerGun.fbx
 
+#begin Assets/Models/Pickups/HealthKit.fbx
+/importer:FbxImporter
+/processor:ModelProcessor
+/processorParam:ColorKeyColor=0,0,0,0
+/processorParam:ColorKeyEnabled=True
+/processorParam:DefaultEffect=BasicEffect
+/processorParam:GenerateMipmaps=True
+/processorParam:GenerateTangentFrames=False
+/processorParam:PremultiplyTextureAlpha=True
+/processorParam:PremultiplyVertexColors=True
+/processorParam:ResizeTexturesToPowerOfTwo=False
+/processorParam:RotationX=0
+/processorParam:RotationY=0
+/processorParam:RotationZ=0
+/processorParam:Scale=1
+/processorParam:SwapWindingOrder=False
+/processorParam:TextureFormat=Compressed
+/build:Assets/Models/Pickups/HealthKit.fbx
+
+#begin Assets/Models/Pickups/SpeedPickup.fbx
+/importer:FbxImporter
+/processor:ModelProcessor
+/processorParam:ColorKeyColor=0,0,0,0
+/processorParam:ColorKeyEnabled=True
+/processorParam:DefaultEffect=BasicEffect
+/processorParam:GenerateMipmaps=True
+/processorParam:GenerateTangentFrames=False
+/processorParam:PremultiplyTextureAlpha=True
+/processorParam:PremultiplyVertexColors=True
+/processorParam:ResizeTexturesToPowerOfTwo=False
+/processorParam:RotationX=0
+/processorParam:RotationY=0
+/processorParam:RotationZ=0
+/processorParam:Scale=1
+/processorParam:SwapWindingOrder=False
+/processorParam:TextureFormat=Compressed
+/build:Assets/Models/Pickups/SpeedPickup.fbx
+
 #begin Assets/Models/sphere.FBX
 /importer:FbxImporter
 /processor:ModelProcessor
@@ -270,6 +308,30 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Assets/Textures/Foliage/Trees/tree5.png
+
+#begin Assets/Textures/Pickups/ElectricityTexture.jpg
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/Pickups/ElectricityTexture.jpg
+
+#begin Assets/Textures/Pickups/HealthkitTexture.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/Pickups/HealthkitTexture.png
 
 #begin Assets/Textures/Props/Crates/crate1.jpg
 /importer:TextureImporter
