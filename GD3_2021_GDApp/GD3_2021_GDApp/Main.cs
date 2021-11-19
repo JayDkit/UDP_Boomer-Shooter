@@ -124,6 +124,7 @@ namespace GDApp
             //Turrets + Pickups (Non-Props)
             textureDictionary.Add("speed_pickup", Content.Load<Texture2D>("Assets/Textures/Pickups/ElectricityTexture"));
             textureDictionary.Add("health_pickup", Content.Load<Texture2D>("Assets/Textures/Pickups/HealthKitTexture"));
+            textureDictionary.Add("rapidFire_pickup", Content.Load<Texture2D>("Assets/Textures/Pickups/BrassTexture"));
         }
 
         /// <summary>
@@ -372,21 +373,34 @@ namespace GDApp
         {
             #region Archetype
 
+            //Speed Pickup (represented by lightning bolt) - Commented out lines are to create Rapid-Fire pickup
+            //(represented by a bullet), both are included so they can be swapped between for demonstration purposes
+            //for CA2.
             var speedMaterial = new BasicMaterial("model material");
-            speedMaterial.Texture = Content.Load<Texture2D>("Assets/Textures/Pickups/ElectricityTexture");
+            //speedMaterial.Texture = Content.Load<Texture2D>("Assets/Textures/Pickups/ElectricityTexture");
+            speedMaterial.Texture = Content.Load<Texture2D>("Assets/Textures/Pickups/BrassTexture");
             speedMaterial.Shader = new BasicShader();
 
-            var speedPickup = new GameObject("speed_pickup", GameObjectType.Consumable);
+            //var speedPickup = new GameObject("speed_pickup", GameObjectType.Consumable);
+            var speedPickup = new GameObject("rapidFire_pickup", GameObjectType.Consumable);
             var speedRenderer = new ModelRenderer();
             speedRenderer.Material = speedMaterial;
             speedPickup.AddComponent(speedRenderer);
-            speedRenderer.Model = Content.Load<Model>("Assets/Models/Pickups/SpeedPickup");
+            //speedRenderer.Model = Content.Load<Model>("Assets/Models/Pickups/SpeedPickup");
+            speedRenderer.Model = Content.Load<Model>("Assets/Models/Pickups/RapidFirePickup");
 
-            //downsize the model a little because the sphere is quite large
+            //upsize the model a little because the lightning bolt is quite small
             speedPickup.Transform.SetScale(8f, 8f, 8f);
             speedPickup.Transform.SetRotation(0, 90, 0);
             speedPickup.Transform.SetTranslation(-630, 130, 260);
+
+            //Rapid-Fire Pickup Transform
+            //speedPickup.Transform.SetRotation(90, 0, 0);
+            //speedPickup.Transform.SetScale(3f, 3f, 3f);
+            //speedPickup.Transform.SetTranslation(-630, 130, 250);
             level.Add(speedPickup);
+
+            //Rapid Fire Pickup (represented by 2 bullets)
 
             #endregion Archetype
 
