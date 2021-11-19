@@ -458,7 +458,7 @@ namespace GDApp
 
             var count = 0;
             //Go up to 11
-            for (var i = 0; i <= 7; i += 1)
+            for (var i = 0; i <= 11; i += 1)
             {
                 var clone = turret.Clone() as GameObject;
                 clone.Name = $"{clone.Name} - {count++}";
@@ -467,14 +467,14 @@ namespace GDApp
                 {
                     clone.Transform.SetTranslation(-105, -22, -75);
                     clone.Transform.SetRotation(0, -90, 0);
-                    clone.Transform.SetScale(10f, 3f, 3f);
+                    clone.Transform.SetScale(3f, 3f, 3f);
                 }
                 //Far Right in Center Room
                 else if (i == 1)
                 {
                     clone.Transform.SetTranslation(210, -22, -75);
                     clone.Transform.SetRotation(0, -90, 0);
-                    clone.Transform.SetScale(10f, 3f, 3f);
+                    clone.Transform.SetScale(3f, 3f, 3f);
                 }
                 //Left Entrance to Center Room
                 else if (i == 2)
@@ -486,7 +486,7 @@ namespace GDApp
                 else if (i == 3)
                 {
                     clone.Transform.SetTranslation(105, -22, 15);
-                    clone.Transform.SetScale(10f, 3f, 3f);
+                    clone.Transform.SetScale(3, 3f, 3f);
                 }
                 //Far Right hall, Top Left
                 else if (i == 4)
@@ -505,7 +505,7 @@ namespace GDApp
                 //Far Left Hall, Bottom Left
                 else if (i == 6)
                 {
-                    clone.Transform.SetTranslation(-480, -22, 50);
+                    clone.Transform.SetTranslation(-480, -22, 80);
                     clone.Transform.SetRotation(0, 90, 0);
                     clone.Transform.SetScale(3f, 3f, 3f);
                 }
@@ -516,6 +516,34 @@ namespace GDApp
                     clone.Transform.SetRotation(0, 90, 0);
                     clone.Transform.SetScale(3f, 3f, 3f);
                 }
+                //Left Balcony, Top Left
+                else if (i == 8)
+                {   clone.Transform.SetTranslation(-540, 98, -260);
+                    clone.Transform.SetRotation(0, 90, 0);
+                    clone.Transform.SetScale(3f, 3f, 3f);
+                }
+                //Left Balcony, Bottom Left
+                else if (i == 9)
+                {
+                    clone.Transform.SetTranslation(-540, 98, 20);
+                    clone.Transform.SetRotation(0, 90, 0);
+                    clone.Transform.SetScale(3f, 3f, 3f);
+                }
+
+                //Back Balcony, Left Side
+                else if (i == 10)
+                {
+                    clone.Transform.SetTranslation(-30, 98, -360);
+                    clone.Transform.SetScale(3, 3f, 3f);
+                }
+
+                //Back Balcony, Left Side
+                else if (i == 11)
+                {
+                    clone.Transform.SetTranslation(160, 98, -360);
+                    clone.Transform.SetScale(3, 3f, 3f);
+                }
+
                 level.Add(clone);
             }
         }
