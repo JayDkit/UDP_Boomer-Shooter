@@ -451,81 +451,92 @@ namespace GDApp
             turret.AddComponent(turretRenderer);
             turretRenderer.Model = Content.Load<Model>("Assets/Models/Turret");
             //Far Left in Center Room
-            turret.Transform.SetTranslation(-80, -22, -15);
+            turret.Transform.SetTranslation(-80, -25, -15);
             turret.Transform.SetRotation(0, 90, 0);
             turret.Transform.SetScale(3f, 3f, 3f);
             level.Add(turret);
 
             var count = 0;
-            //Go up to 11
             for (var i = 0; i <= 11; i += 1)
             {
                 var clone = turret.Clone() as GameObject;
                 clone.Name = $"{clone.Name} - {count++}";
-                //Far Left Hall, Mid Right
+                //Far Right in Center Room
                 if (i == 0)
                 {
-                    clone.Transform.SetTranslation(-105, -22, -75);
+                    clone.Transform.SetTranslation(210, -25, -75);
                     clone.Transform.SetRotation(0, -90, 0);
                     clone.Transform.SetScale(3f, 3f, 3f);
                 }
-                //Far Right in Center Room
-                else if (i == 1)
-                {
-                    clone.Transform.SetTranslation(210, -22, -75);
-                    clone.Transform.SetRotation(0, -90, 0);
-                    clone.Transform.SetScale(3f, 3f, 3f);
-                }
-                //Left Entrance to Center Room
-                else if (i == 2)
-                {
-                    clone.Transform.SetTranslation(25, -22, 15);
-                    clone.Transform.SetScale(3f, 3f, 3f);
-                }
+
+                #region Entrance To Center Room Turrets
                 //Right Entrance to Center Room
-                else if (i == 3)
+                else if (i == 1)
                 {
                     clone.Transform.SetTranslation(105, -22, 15);
                     clone.Transform.SetScale(3, 3f, 3f);
                 }
+                //Left Entrance to Center Room
+                else if (i == 2)
+                {
+                    clone.Transform.SetTranslation(25, -25, 15);
+                    clone.Transform.SetScale(3f, 3f, 3f);
+                }
+                #endregion
+
+                #region Far Right Hall Turrets
+                //Far Right hall, Top Right
+                else if (i == 3)
+                {
+                    clone.Transform.SetTranslation(490, -25, -100);
+                    clone.Transform.SetRotation(0, -90, 0);
+                    clone.Transform.SetScale(3f, 3f, 3f);
+                }
                 //Far Right hall, Top Left
                 else if (i == 4)
                 {
-                    clone.Transform.SetTranslation(240, -22, -175);
+                    clone.Transform.SetTranslation(240, -25, -175);
                     clone.Transform.SetRotation(0, 90, 0);
                     clone.Transform.SetScale(3f, 3f, 3f);
                 }
-                //Far Right hall, Top Right
+                #endregion
+
+                #region Far Left Hall Turrets
+                //Far Left Hall, Mid Right
                 else if (i == 5)
                 {
-                    clone.Transform.SetTranslation(490, -22, -100);
+                    clone.Transform.SetTranslation(-105, -25, -75);
                     clone.Transform.SetRotation(0, -90, 0);
                     clone.Transform.SetScale(3f, 3f, 3f);
                 }
                 //Far Left Hall, Bottom Left
                 else if (i == 6)
                 {
-                    clone.Transform.SetTranslation(-480, -22, 80);
+                    clone.Transform.SetTranslation(-480, -25, 80);
                     clone.Transform.SetRotation(0, 90, 0);
                     clone.Transform.SetScale(3f, 3f, 3f);
                 }
                 //Far Left Hall, Top Left
                 else if (i == 7)
                 {
-                    clone.Transform.SetTranslation(-480, -22, -200);
+                    clone.Transform.SetTranslation(-480, -25, -200);
                     clone.Transform.SetRotation(0, 90, 0);
                     clone.Transform.SetScale(3f, 3f, 3f);
-                }
+                } 
+                #endregion
+
+                #region Balcony Turrets
                 //Left Balcony, Top Left
                 else if (i == 8)
-                {   clone.Transform.SetTranslation(-540, 98, -260);
+                {
+                    clone.Transform.SetTranslation(-540, 95, -260);
                     clone.Transform.SetRotation(0, 90, 0);
                     clone.Transform.SetScale(3f, 3f, 3f);
                 }
                 //Left Balcony, Bottom Left
                 else if (i == 9)
                 {
-                    clone.Transform.SetTranslation(-540, 98, 20);
+                    clone.Transform.SetTranslation(-540, 95, 20);
                     clone.Transform.SetRotation(0, 90, 0);
                     clone.Transform.SetScale(3f, 3f, 3f);
                 }
@@ -533,16 +544,17 @@ namespace GDApp
                 //Back Balcony, Left Side
                 else if (i == 10)
                 {
-                    clone.Transform.SetTranslation(-30, 98, -360);
+                    clone.Transform.SetTranslation(-30, 95, -360);
                     clone.Transform.SetScale(3, 3f, 3f);
                 }
 
                 //Back Balcony, Left Side
                 else if (i == 11)
                 {
-                    clone.Transform.SetTranslation(160, 98, -360);
+                    clone.Transform.SetTranslation(160, 95, -360);
                     clone.Transform.SetScale(3, 3f, 3f);
-                }
+                } 
+                #endregion
 
                 level.Add(clone);
             }
