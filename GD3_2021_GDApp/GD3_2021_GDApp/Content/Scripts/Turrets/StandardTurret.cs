@@ -17,7 +17,6 @@ namespace GDApp.Content.Scripts.Turrets
             if(count % 60 == 0)
             {
                 Shoot();
-                
             }
             
             count++;

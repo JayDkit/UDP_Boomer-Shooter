@@ -14,7 +14,7 @@ namespace GDApp.Content.Scripts.Turrets.Bullets
         {
             var material = new BasicMaterial("model material");
             material.Texture = Application.Main.Content.Load<Texture2D>("Assets/Demo/Textures/grey");
-            material.Shader = new BasicShader();
+            material.Shader = new BasicShader(Application.Content);
 
             var renderer = new ModelRenderer();
             renderer.Material = material;

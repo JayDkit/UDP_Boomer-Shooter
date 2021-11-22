@@ -1,10 +1,9 @@
-﻿#define DEMO
-using GDApp.Scripts.Debug;
-using GDLibrary.Utilities;
+﻿//#define DEMO
+
 using GDLibrary;
 using GDLibrary.Components;
+using GDLibrary.Components.UI;
 using GDLibrary.Core;
-using GDLibrary.Editor;
 using GDLibrary.Graphics;
 using GDLibrary.Inputs;
 using GDLibrary.Managers;
@@ -16,6 +15,8 @@ using System.Collections.Generic;
 using GDApp.Content.Scripts.Player;
 using GDApp.Content.Scripts.Turrets;
 using GDApp.Content.Scripts.Turrets.Bullets;
+using GDApp.Scripts.Debug;
+using GDApp.Content.Scripts.Level;
 
 namespace GDApp
 {
@@ -26,30 +27,41 @@ namespace GDApp
         PlayerUI playerUI = new PlayerUI();
         private SpriteFont font;
         FramerateCounter fps = new FramerateCounter();
-
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
         /// <summary>
-        /// Stores all scenes (which means all game objects i.e. players, cameras, pickups, behaviours, controllers)
+        /// Stores and updates all scenes (which means all game objects i.e. players, cameras, pickups, behaviours, controllers)
         /// </summary>
         private SceneManager sceneManager;
 
         /// <summary>
-        /// Renders all game objects with an attached and enabled renderer
+        /// Draws all game objects with an attached and enabled renderer
         /// </summary>
         private RenderManager renderManager;
+
+        /// <summary>
+        /// Updates and Draws all ui objects
+        /// </summary>
+        private UISceneManager uiSceneManager;
+
+        /// <summary>
+        /// Renders all ui objects
+        /// </summary>
+        private PhysicsManager physicsManager;
 
         /// <summary>
         /// Quick lookup for all textures used within the game
         /// </summary>
         private Dictionary<string, Texture2D> textureDictionary;
 
+        //temp
         private Scene activeScene;
         private GameObject camera;
         private PlayerGun gun;
         private StandardTurret turret;
         private StandardBullet bullet;
+        private Level1 level1;
 
         #endregion Fields
 
@@ -63,42 +75,51 @@ namespace GDApp
 
         #endregion Constructors
 
-        #region Initialization - Scene manager, Application data, Screen, Input, Scenes, Game Objects
-
-		/// <summary>
+        /// <summary>
         /// Initialize engine, dictionaries, assets, level contents
         /// </summary>
         protected override void Initialize()
         {
-            //data, input, scene manager
-            InitializeEngine("My Game Title Goes Here", 1024, 768);
+            //move here so that UISceneManager can use!
+            _spriteBatch = new SpriteBatch(GraphicsDevice); //19.11.21
 
-			//load structures that store assets (e.g. textures, sounds) or archetypes (e.g. Quad game object)
+            //data, input, scene manager
+            InitializeEngine("My Game Title Goes Here", 1920, 1080);
+
+            //load structures that store assets (e.g. textures, sounds) or archetypes (e.g. Quad game object)
             InitializeDictionaries();
 
-			//load assets into the relevant dictionary
+            //Initialize level 1 which is the only level in the game for now and might stay so
+            level1 = new Level1(Content);
+            //load assets into the relevant dictionary
             LoadAssets();
 
             //level with scenes and game objects
             InitializeLevel();
 
-			//TODO - remove hardcoded mouse values - update Screen class
-            //centre the mouse with hardcoded value - remove later
-            Input.Mouse.Position = new Vector2(512, 384);
+            //add menu and ui
+            InitializeUI();  //19.11.21
+
+            //TODO - remove hardcoded mouse values - update Screen class to centre the mouse with hardcoded value - remove later
+            Input.Mouse.Position = Screen.Instance.ScreenCentre;
+
+            //turn on/off debug info
+            InitializeDebugUI(true);
 
             base.Initialize();
         }
 
-		/// <summary>
+        #region Initialization - Dictionaries & Assets
+
+        /// <summary>
         /// Stores all re-used assets and archetypal game objects
         /// </summary>
-
         private void InitializeDictionaries()
         {
             textureDictionary = new Dictionary<string, Texture2D>();
         }
 
-		/// <summary>
+        /// <summary>
         /// Load resources from file
         /// </summary>
         private void LoadAssets()
@@ -106,7 +127,7 @@ namespace GDApp
             LoadTextures();
         }
 
-		/// <summary>
+        /// <summary>
         /// Load texture data from file and add to the dictionary
         /// </summary>
         private void LoadTextures()
@@ -120,9 +141,162 @@ namespace GDApp
             textureDictionary.Add("skybox_right", Content.Load<Texture2D>("Assets/Textures/Skybox/right"));
             textureDictionary.Add("skybox_back", Content.Load<Texture2D>("Assets/Textures/Skybox/back"));
             textureDictionary.Add("skybox_sky", Content.Load<Texture2D>("Assets/Textures/Skybox/sky"));
+
+            level1.LoadTextures();
         }
 
-		/// <summary>
+        protected override void LoadContent()
+        {
+            //  _spriteBatch = new SpriteBatch(GraphicsDevice); //Move to Initialize for UISceneManager
+            font = Content.Load<SpriteFont>("Assets/Fonts/Arial");
+        }
+
+        protected override void UnloadContent()
+        {
+            base.UnloadContent();
+        }
+
+        #endregion Initialization - Dictionaries & Assets
+
+        #region Initialization - UI & Menu
+
+        /// <summary>
+        /// Adds menu and UI elements
+        /// </summary>
+        private void InitializeUI()  //19.11.21
+        {
+            //TODO
+            //InitializeGameMenu();
+
+            InitializeGameUI();
+        }
+
+        /// <summary>
+        /// Adds ui elements seen in-game (e.g. health, timer)
+        /// </summary>
+        private void InitializeGameUI()
+        {
+            //create the scene
+            var mainGameUIScene = new UIScene("main game ui");
+
+            #region Add Health Bar
+
+            //create the UI element
+            var healthTextureObj = new UITextureObject("health",
+                UIObjectType.Texture,
+                new Transform2D(new Vector2(50, 100), new Vector2(8, 2), 0),
+                0, Content.Load<Texture2D>("Assets/Textures/UI/Progress/ui_progress_32_8"));
+
+            //add a demo time based behaviour - because we can!
+            healthTextureObj.AddComponent(new UITimeColorFlipBehaviour(Color.White, Color.Red, 1000));
+
+            //add the ui element to the scene
+            mainGameUIScene.Add(healthTextureObj);
+
+            #endregion Add Health Bar
+
+            #region Add Text
+
+            //create the UI element
+            var nameTextObj = new UITextObject("player name", UIObjectType.Text,
+                new Transform2D(new Vector2(50, 50), Vector2.One, 0),
+                0, Content.Load<SpriteFont>("Assets/Fonts/ui"), "Brutus Maximus");
+
+            //add the ui element to the scene
+            mainGameUIScene.Add(nameTextObj);
+
+            #endregion Add Text
+
+            #region Add Scene To Manager & Set Active Scene
+
+            //add the ui scene to the manager
+            uiSceneManager.Add(mainGameUIScene);
+
+            //set the active scene
+            uiSceneManager.SetActiveScene("main game ui");
+
+            #endregion Add Scene To Manager & Set Active Scene
+        }
+
+        /// <summary>
+        /// Adds component to draw debug info to the screen
+        /// </summary>
+        private void InitializeDebugUI(bool showDebug)
+        {
+            
+            if (showDebug)
+            {
+                Components.Add(new GDLibrary.Utilities.GDDebug.PerfUtility(
+                    this,
+                    _spriteBatch,
+                    Content.Load<SpriteFont>("Assets/GDDebug/Fonts/ui_debug"),
+                    new Vector2(20, _graphics.PreferredBackBufferHeight - 20),
+                    Color.Red));
+            }
+        }
+
+        #endregion Initialization - UI & Menu
+
+        #region Initialization - Engine, Cameras, Content
+
+        /// <summary>
+        /// Set application data, input, title and scene manager
+        /// </summary>
+        private void InitializeEngine(string gameTitle, int width, int height)
+        {
+            //set game title
+            Window.Title = gameTitle;
+
+            //add physics manager to enable CD/CR and physics
+            physicsManager = new PhysicsManager(this);
+
+            //instanciate scene manager to store all scenes
+            sceneManager = new SceneManager(this);
+
+            //create the ui scene manager to update and draw all ui scenes
+            uiSceneManager = new UISceneManager(this, _spriteBatch); //19.11.21
+
+            //initialize global application data
+            Application.Main = this;
+            Application.Content = Content;
+            Application.GraphicsDevice = _graphics.GraphicsDevice; //TODO - is this necessary?
+            Application.GraphicsDeviceManager = _graphics;
+            Application.SceneManager = sceneManager;
+
+            //instanciate render manager to render all drawn game objects using preferred renderer (e.g. forward, backward)
+            renderManager = new RenderManager(this, new ForwardRenderer(), false);
+
+            //instanciate screen (singleton) and set resolution etc
+            Screen.GetInstance().Set(width, height, true, true);
+
+            //instanciate input components and store reference in Input for global access
+            Input.Keys = new KeyboardComponent(this);
+            Input.Mouse = new MouseComponent(this);
+            Input.Gamepad = new GamepadComponent(this);
+
+            //************* add all input components to component list so that they will be updated and/or drawn ***********/
+            //add time support
+            Components.Add(Time.GetInstance(this));
+
+            //add input support
+            Components.Add(Input.Keys);
+            Components.Add(Input.Mouse);
+            Components.Add(Input.Gamepad);
+
+            //add scene manager to update game objects
+            Components.Add(sceneManager);
+
+            //add render manager to draw objects
+            Components.Add(renderManager);
+
+            //add ui scene manager to update and drawn ui objects
+            Components.Add(uiSceneManager);
+
+            //add physics manager to enable CD/CR and physics
+            Components.Add(physicsManager);
+        }
+
+        /// <summary>
         /// Create a scene, add content, add to the scene manager, and load default scene
         /// </summary>
         private void InitializeLevel()
@@ -130,9 +304,15 @@ namespace GDApp
             activeScene = new Scene("level 1");
 
             //InitializeSkybox(activeScene, 500);
+            InitializeCubes(activeScene);
+            InitializeModels(activeScene);
+
             InitializeCameras(activeScene);
-            //InitializeCubes(activeScene);
-            //InitializeModels(activeScene);
+            
+            level1.InitializeFloors(activeScene);
+            level1.InitializeWalls(activeScene);
+            level1.InitializePickups(activeScene);
+            level1.InitializeTurrets(activeScene);
             
             StandardBullet bulletPrefab = new StandardBullet();
             bulletPrefab.InitializeModel(activeScene);
@@ -152,23 +332,22 @@ namespace GDApp
             
 
 
-
-
             sceneManager.Add(activeScene);
             sceneManager.LoadScene("level 1");
         }
-		/// <summary>
+
+        /// <summary>
         /// Set up the skybox using a QuadMesh
         /// </summary>
         /// <param name="level">Scene Stores all game objects for current...</param>
         /// <param name="worldScale">float Value used to scale skybox normally 250 - 1000</param>
-        private void InitializeSkybox(Scene level, float worldScale = 1000)
+        private void InitializeSkybox(Scene level, float worldScale = 500)
         {
             #region Non-copy implementation BAD
             //front
             var material = new BasicMaterial("simple diffuse");
             material.Texture = textureDictionary["skybox_front"];
-            material.Shader = new BasicShader();
+            material.Shader = new BasicShader(Application.Content);
             var archetypalQuad = new GameObject("quad", GameObjectType.Skybox);
             var renderer = new MeshRenderer();
             renderer.Material = material;
@@ -180,7 +359,7 @@ namespace GDApp
             //right
             var material2 = new BasicMaterial("simple diffuse");
             material2.Texture = textureDictionary["skybox_left"];
-            material2.Shader = new BasicShader();
+            material2.Shader = new BasicShader(Application.Content);
             var archetypalQuad2 = new GameObject("quad", GameObjectType.Skybox);
             var renderer2 = new MeshRenderer();
             renderer2.Material = material2;
@@ -193,7 +372,7 @@ namespace GDApp
             //left
             var material3 = new BasicMaterial("simple diffuse");
             material3.Texture = textureDictionary["skybox_right"];
-            material3.Shader = new BasicShader();
+            material3.Shader = new BasicShader(Application.Content);
             var archetypalQuad3 = new GameObject("quad", GameObjectType.Skybox);
             var renderer3 = new MeshRenderer();
             renderer3.Material = material3;
@@ -206,7 +385,7 @@ namespace GDApp
             //back
             var material4 = new BasicMaterial("simple diffuse");
             material4.Texture = textureDictionary["skybox_back"];
-            material4.Shader = new BasicShader();
+            material4.Shader = new BasicShader(Application.Content);
             var archetypalQuad4 = new GameObject("quad", GameObjectType.Skybox);
             var renderer4 = new MeshRenderer();
             renderer4.Material = material4;
@@ -219,7 +398,7 @@ namespace GDApp
             //top
             var material5 = new BasicMaterial("simple diffuse");
             material5.Texture = textureDictionary["skybox_sky"];
-            material5.Shader = new BasicShader();
+            material5.Shader = new BasicShader(Application.Content);
             var archetypalQuad5 = new GameObject("quad", GameObjectType.Skybox);
             var renderer5 = new MeshRenderer();
             renderer5.Material = material5;
@@ -231,20 +410,20 @@ namespace GDApp
             level.Add(archetypalQuad5);
             #endregion Non-copy implementation
 
-            #region Nial buggy version
             /*
             #region Archetype
-            
+
             var material = new BasicMaterial("simple diffuse");
             material.Texture = textureDictionary["checkerboard"];
-            material.Shader = new BasicShader();
+            material.Shader = new BasicShader(Application.Content);
 
             var archetypalQuad = new GameObject("quad", GameObjectType.Skybox);
+            archetypalQuad.IsStatic = false;
             var renderer = new MeshRenderer();
             renderer.Material = material;
             archetypalQuad.AddComponent(renderer);
             renderer.Mesh = new QuadMesh();
-            
+
             #endregion Archetype
 
             //back
@@ -273,7 +452,6 @@ namespace GDApp
             right.Transform.Rotate(0, -90, 0);
             level.Add(right);
 
-
             //front
             GameObject front = archetypalQuad.Clone() as GameObject;
             front.Name = "skybox_front";
@@ -290,11 +468,11 @@ namespace GDApp
             top.Transform.Translate(0, worldScale / 2.0f, 0);
             top.Transform.Scale(worldScale, worldScale, null);
             top.Transform.Rotate(90, 0, 0);
-            level.Add(top); */
-            #endregion Nial buggy version
+            level.Add(top);
+            */
         }
 
-		/// <summary>
+        /// <summary>
         /// Initialize the camera(s) in our scene
         /// </summary>
         /// <param name="level"></param>
@@ -303,12 +481,21 @@ namespace GDApp
             #region First Person Camera
 
             //add camera game object
-            camera = new GameObject("main camera", GameObjectType.Camera);
-            //  _graphics.PreferredBackBufferWidth
-            int width = 1024, height = 768;
-            var viewport = new Viewport(0, 0, width, height);
-            camera.AddComponent(new Camera(viewport));
-            camera.AddComponent(new FPSController(0.05f, 0.025f, 0.00009f));            camera.Transform.SetTranslation(0, 0, 15);
+            var camera = new GameObject("main camera", GameObjectType.Camera);
+
+            //set viewport
+            //var viewportLeft = new Viewport(0, 0,
+            //    _graphics.PreferredBackBufferWidth / 2,
+            //    _graphics.PreferredBackBufferHeight);
+
+            //add components
+            camera.AddComponent(new Camera(_graphics.GraphicsDevice.Viewport));
+            camera.AddComponent(new FirstPersonController(0.05f, 0.025f, 0.00009f));
+
+            //set initial position
+            camera.Transform.SetTranslation(0, 0, 15);
+
+            //add to level
             level.Add(camera);
 
             #endregion First Person Camera
@@ -326,9 +513,18 @@ namespace GDApp
 
             //add camera game object
             var curveCamera = new GameObject("curve camera", GameObjectType.Camera);
+
+            //set viewport
+            //var viewportRight = new Viewport(_graphics.PreferredBackBufferWidth / 2, 0,
+            //    _graphics.PreferredBackBufferWidth / 2,
+            //    _graphics.PreferredBackBufferHeight);
+
+            //add components
             curveCamera.AddComponent(new Camera(_graphics.GraphicsDevice.Viewport));
             curveCamera.AddComponent(new CurveBehaviour(translationCurve));
             curveCamera.AddComponent(new FOVOnScrollController(MathHelper.ToRadians(2)));
+
+            //add to level
             level.Add(curveCamera);
 
             #endregion Curve Camera
@@ -340,7 +536,7 @@ namespace GDApp
             // Time.Instance.TimeScale = 0.1f;
         }
 
-		/// <summary>
+        /// <summary>
         /// Add demo game objects based on FBX vertex data
         /// </summary>
         /// <param name="level"></param>
@@ -350,9 +546,11 @@ namespace GDApp
 
             var material = new BasicMaterial("model material");
             material.Texture = Content.Load<Texture2D>("Assets/Demo/Textures/checkerboard");
-            material.Shader = new BasicShader();
+            material.Shader = new BasicShader(Application.Content);
 
             var archetypalSphere = new GameObject("sphere", GameObjectType.Consumable);
+            archetypalSphere.IsStatic = false;
+
             var renderer = new ModelRenderer();
             renderer.Material = material;
             archetypalSphere.AddComponent(renderer);
@@ -373,7 +571,8 @@ namespace GDApp
             }
         }
 
-		/// <summary>
+
+        /// <summary>
         /// Add demo game objects based on user-defined vertices and indices
         /// </summary>
         /// <param name="level"></param>
@@ -383,7 +582,7 @@ namespace GDApp
 
             var material = new BasicMaterial("simple diffuse");
             material.Texture = Content.Load<Texture2D>("Assets/Demo/Textures/mona lisa");
-            material.Shader = new BasicShader();
+            material.Shader = new BasicShader(Application.Content);
 
             var archetypalCube = new GameObject("cube", GameObjectType.Architecture);
             var renderer = new MeshRenderer();
@@ -404,69 +603,15 @@ namespace GDApp
             }
         }
 
-        /// <summary>
-        /// Set application data, input, title and scene manager
-        /// </summary>
-        private void InitializeEngine(string gameTitle, int width, int height)
-        {
-            //set game title
-            Window.Title = gameTitle;
+        #endregion Initialization - Engine, Cameras, Content
 
-            //instanciate scene manager to store all scenes
-            sceneManager = new SceneManager(this);
 
-            //initialize global application data
-            Application.Main = this;
-            Application.Content = Content;
-            Application.GraphicsDevice = _graphics.GraphicsDevice; //TODO - is this necessary?
-            Application.GraphicsDeviceManager = _graphics;
-            Application.SceneManager = sceneManager;
-
-            //instanciate render manager to render all drawn game objects using preferred renderer (e.g. forward, backward)
-            renderManager = new RenderManager(this, new ForwardRenderer());
-
-            //instanciate screen (singleton) and set resolution etc
-            Screen.GetInstance().Set(width, height, true, false);
-
-            //instanciate input components and store reference in Input for global access
-            Input.Keys = new KeyboardComponent(this);
-            Input.Mouse = new MouseComponent(this);
-            Input.Gamepad = new GamepadComponent(this);
-
-            //add all input components to component list so that they will be updated and/or drawn
-            //Q. what would happen is we commented out these lines?
-			Components.Add(sceneManager); //add so SceneManager::Update() will be called
-            Components.Add(renderManager); //add so RenderManager::Draw() will be called
-            Components.Add(Input.Keys);
-            Components.Add(Input.Mouse);
-            Components.Add(Input.Gamepad);
-            Components.Add(Time.GetInstance(this));
-        }
-
-        #endregion Initialization - Scene manager, Application data, Screen, Input, Scenes, Game Objects
-
-        #region Load & Unload Assets
-
-        protected override void LoadContent()
-        {
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
-            font = Content.Load<SpriteFont>("Assets/Fonts/Arial");
-        }
-
-        protected override void UnloadContent()
-        {
-            base.UnloadContent();
-        }
-
-        #endregion Load & Unload Assets
 
         #region Update & Draw
 
         protected override void Update(GameTime gameTime)
         {
-            //allow the system to update first
             base.Update(gameTime);
-
 #if DEMO
             activeScene.Update();
             //bullet.Update();
@@ -477,51 +622,35 @@ namespace GDApp
 #endif
         }
 
-#if DEMO
-
-        private void DemoFind()
-        {
-            /*
-            //lets look for an object - note - we can ONLY look for object AFTER SceneManager::Update has been called
-            if (cObject == null)
-                cObject = sceneManager.Find(gameObject => gameObject.Name.Equals("Clone - cube - 2"));
-
-            //the ? is short for (if cObject != null) then...
-
-            cObject?.Transform.Rotate(0,
-                Time.Instance.UnscaledDeltaTimeMs * 3 / 60.0f, 0);
-            */
-        }
-
-#endif
-
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.HotPink);
+            base.Draw(gameTime);
 
+            #if DEMO
             _spriteBatch.Begin();
             fps.DrawFps(_spriteBatch, font, new Vector2(10f, 10f), Color.MonoGameOrange);
             _spriteBatch.End();
+            #endif
             playerUI.DrawUI(gameTime);
-
-            base.Draw(gameTime);
+            
         }
 
         #endregion Update & Draw
-        
-        #if DEMO
+
+#if DEMO
 
         private void InitializeEditorHelpers()
         {
             //a game object to record camera positions to an XML file for use in a curve later
             var curveRecorder = new GameObject("curve recorder", GameObjectType.Editor);
-            curveRecorder.AddComponent(new CurveRecorderController());
+            curveRecorder.AddComponent(new GDLibrary.Editor.CurveRecorderController());
             activeScene.Add(curveRecorder);
         }
 
         private void RunDemos()
         {
-            #region Curve Demo
+        #region Curve Demo
 
             //var curve1D = new GDLibrary.Parameters.Curve1D(CurveLoopType.Cycle);
             //curve1D.Add(0, 0);
@@ -531,32 +660,31 @@ namespace GDApp
             //curve1D.Add(60, 6000);
             //var value = curve1D.Evaluate(500, 2);
 
-            #endregion Curve Demo
+        #endregion Curve Demo
 
-            #region Serialization Single Object Demo
+        #region Serialization Single Object Demo
 
             var demoSaveLoad = new DemoSaveLoad(new Vector3(1, 2, 3), new Vector3(45, 90, -180), new Vector3(1.5f, 0.1f, 20.25f));
-            SerializationUtility.Save("DemoSingle.xml", demoSaveLoad);
-            var readSingle = SerializationUtility.Load("DemoSingle.xml",
+            GDLibrary.Utilities.SerializationUtility.Save("DemoSingle.xml", demoSaveLoad);
+            var readSingle = GDLibrary.Utilities.SerializationUtility.Load("DemoSingle.xml",
                 typeof(DemoSaveLoad)) as DemoSaveLoad;
 
-            #endregion Serialization Single Object Demo
+        #endregion Serialization Single Object Demo
 
-            #region Serialization List Objects Demo
+        #region Serialization List Objects Demo
 
             List<DemoSaveLoad> listDemos = new List<DemoSaveLoad>();
             listDemos.Add(new DemoSaveLoad(new Vector3(1, 2, 3), new Vector3(45, 90, -180), new Vector3(1.5f, 0.1f, 20.25f)));
             listDemos.Add(new DemoSaveLoad(new Vector3(10, 20, 30), new Vector3(4, 9, -18), new Vector3(15f, 1f, 202.5f)));
             listDemos.Add(new DemoSaveLoad(new Vector3(100, 200, 300), new Vector3(145, 290, -80), new Vector3(6.5f, 1.1f, 8.05f)));
 
-            SerializationUtility.Save("ListDemo.xml", listDemos);
-            var readList = SerializationUtility.Load("ListDemo.xml",
+            GDLibrary.Utilities.SerializationUtility.Save("ListDemo.xml", listDemos);
+            var readList = GDLibrary.Utilities.SerializationUtility.Load("ListDemo.xml",
                 typeof(List<DemoSaveLoad>)) as List<DemoSaveLoad>;
 
-            #endregion Serialization List Objects Demo
+        #endregion Serialization List Objects Demo
         }
 
 #endif
-
     }
 }

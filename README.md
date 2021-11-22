@@ -8,7 +8,7 @@
 ### Game features
 - [ ] Quake Movement
 - [ ] Quake MouseLook
-- [ ] Shooting bullet
+- [x] Shooting bullet
 - [x] Loading models
 - [x] Camera look
 - [x] Skybox
@@ -17,4 +17,4 @@
 
 - [ ] Collisions
 - [ ] Sound
-- [ ] UI
+- [x] UI
