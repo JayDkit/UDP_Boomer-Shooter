@@ -314,7 +314,7 @@ namespace GDApp
             level1.InitializePickups(activeScene);
             level1.InitializeTurrets(activeScene);
             
-			StandardBullet bulletPrefab = new StandardBullet();
+            StandardBullet bulletPrefab = new StandardBullet();
             bulletPrefab.InitializeModel(activeScene);
             //activeScene.Add(bulletPrefab);
             turret = new StandardTurret();
@@ -329,6 +329,8 @@ namespace GDApp
             activeScene.Add(gun);
             
             playerUI.Initialize(this);
+            
+
 
             sceneManager.Add(activeScene);
             sceneManager.LoadScene("level 1");
@@ -610,10 +612,14 @@ namespace GDApp
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+#if DEMO
+            activeScene.Update();
             //bullet.Update();
             //turret.Update();
             //gun.Update();
-			fps.Update(gameTime);
+            //DemoFind();
+            fps.Update(gameTime);
+#endif
         }
 
         protected override void Draw(GameTime gameTime)
