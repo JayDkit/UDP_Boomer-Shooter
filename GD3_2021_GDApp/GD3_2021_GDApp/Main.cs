@@ -473,7 +473,7 @@ namespace GDApp
                 //Right Entrance to Center Room
                 else if (i == 1)
                 {
-                    clone.Transform.SetTranslation(105, -22, 15);
+                    clone.Transform.SetTranslation(105, -25, 15);
                     clone.Transform.SetScale(3, 3f, 3f);
                 }
                 //Left Entrance to Center Room
