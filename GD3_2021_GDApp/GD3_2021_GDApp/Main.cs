@@ -396,7 +396,8 @@ namespace GDApp
             speedPickup.Transform.SetRotation(0, 90, 0);
             speedPickup.Transform.SetTranslation(-630, 130, 260);
 
-            //Rapid-Fire Pickup Transform
+            //Rapid-Fire Pickup Transform - named the same so can be activated on a whim during demonstrations
+            //(will be changed later once all pickups are implemented)
             //speedPickup.Transform.SetRotation(90, 0, 0);
             //speedPickup.Transform.SetScale(3f, 3f, 3f);
             //speedPickup.Transform.SetTranslation(-630, 130, 250);
