@@ -12,9 +12,11 @@
 - [x] Loading models
 - [x] Camera look
 - [x] Skybox
+- [x] Loading level data from XML
 
 ### Engine Features Missing
 
+- [ ] Proper rendering
 - [ ] Collisions
 - [ ] Sound
 - [x] UI
