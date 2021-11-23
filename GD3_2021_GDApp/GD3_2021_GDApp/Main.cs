@@ -367,6 +367,7 @@ namespace GDApp
             loadLevel1.setGroundFloor();
             loadLevel1.LoadLevelFromXML();
 
+
             StandardBullet bulletPrefab = new StandardBullet();
             bulletPrefab.InitializeModel(activeScene);
             //activeScene.Add(bulletPrefab);
@@ -382,6 +383,8 @@ namespace GDApp
             activeScene.Add(gun);
             
             playerUI.Initialize(this);
+            
+
 
             sceneManager.Add(activeScene);
             sceneManager.LoadScene("level 1");
@@ -700,10 +703,14 @@ namespace GDApp
                 //  EventActionType.OnPlay));
             }
             base.Update(gameTime);
+#if DEMO
+            activeScene.Update();
             //bullet.Update();
             //turret.Update();
             //gun.Update();
-			fps.Update(gameTime);
+            //DemoFind();
+            fps.Update(gameTime);
+#endif
         }
 
         protected override void Draw(GameTime gameTime)
