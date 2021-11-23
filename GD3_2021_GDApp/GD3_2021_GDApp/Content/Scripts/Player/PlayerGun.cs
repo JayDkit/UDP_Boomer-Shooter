@@ -24,8 +24,10 @@ namespace GDApp.Content.Scripts.Player
             material.Shader = new BasicShader(Application.Content);
             var renderer = new ModelRenderer();
             renderer.Material = material;
+            //renderer.Model = Application.Main.Content.Load<Model>("Assets/Models/Guns/PlayerGun");
+            //renderer.Model = Application.Main.Content.Load<Model>("Assets/Models/Guns/OtherPlayerGun");
+            renderer.Model = Application.Main.Content.Load<Model>("Assets/Models/cube");
             this.AddComponent(renderer);
-            renderer.Model = Application.Main.Content.Load<Model>("Assets/Models/Guns/PlayerGun");
             setTranslationFromParent();
             this.Transform.SetScale(0.5f, 0.5f, 0.5f);
             this.Transform.SetRotation(0,-90,0);

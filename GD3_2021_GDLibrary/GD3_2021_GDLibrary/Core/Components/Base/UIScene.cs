@@ -66,6 +66,11 @@ namespace GDLibrary.Components.UI
             uiObjects.Add(uiObject);
         }
 
+        public bool Remove(UIObject uiObject)
+        {
+            return uiObjects.Remove(uiObject);
+        }
+
         public UIObject Find(Predicate<UIObject> predicate)
         {
             return uiObjects.Find(predicate);
@@ -80,12 +85,10 @@ namespace GDLibrary.Components.UI
 
         #region Actions - Update & Draw
 
-        private UIObject uiObject;
         public virtual void Update()
         {
-            for (int i = 0; i < uiObjects.Count; i++)
+            foreach (UIObject uiObject in uiObjects)
             {
-                var uiObject = uiObjects[i];
                 if (uiObject.IsEnabled)
                     uiObject.Update();
             }
@@ -93,9 +96,8 @@ namespace GDLibrary.Components.UI
 
         public virtual void Draw(SpriteBatch spriteBatch)
         {
-            for (int i = 0; i < uiObjects.Count; i++)
+            foreach (UIObject uiObject in uiObjects)
             {
-                var uiObject = uiObjects[i];
                 if (uiObject.IsEnabled)
                     uiObject.Draw(spriteBatch);
             }

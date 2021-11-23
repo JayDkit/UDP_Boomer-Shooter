@@ -225,7 +225,7 @@ namespace GDApp.Content.Scripts.Level
             healthRenderer.Material = healthMaterial;
             healthPickup.AddComponent(healthRenderer);
             healthRenderer.Model = Content.Load<Model>("Assets/Models/Pickups/HealthKit");
-            healthRenderer.Model = Content.Load<Model>("Assets/Models/Pickups/HealthKit");
+            //healthRenderer.Model = Content.Load<Model>("Assets/Models/Pickups/HealthKit");
             healthPickup.Transform.SetTranslation(65, -22, -60);
             healthPickup.Transform.SetScale(5f, 5f, 5f);
             level.Add(healthPickup);

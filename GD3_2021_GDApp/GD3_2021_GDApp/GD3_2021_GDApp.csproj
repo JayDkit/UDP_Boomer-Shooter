@@ -23,6 +23,7 @@
     <MonoGameContentReference Include="Content\Content.mgcb" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Content\Assets\Data\" />
     <Folder Include="Content\Assets\Textures\UI\Progress\" />
   </ItemGroup>
   <ItemGroup>

@@ -45,10 +45,12 @@ namespace GDApp
         /// </summary>
         private UISceneManager uiSceneManager;
 
+        private SoundManager soundManager;
+        private EventDispatcher eventDispatcher;
         /// <summary>
         /// Renders all ui objects
         /// </summary>
-        private PhysicsManager physicsManager;
+        //private PhysicsManager physicsManager;
 
         /// <summary>
         /// Quick lookup for all textures used within the game
@@ -61,8 +63,9 @@ namespace GDApp
         private PlayerGun gun;
         private StandardTurret turret;
         private StandardBullet bullet;
-        private Level1 level1;
 
+        private GameObject archetypalCube;
+        private UITextObject nameTextObj;
         #endregion Fields
 
         #region Constructors
@@ -75,22 +78,33 @@ namespace GDApp
 
         #endregion Constructors
 
+        public delegate void MyDelegate(string s, bool b);
+
+        public List<MyDelegate> delList = new List<MyDelegate>();
+
+        public void DoSomething(string msg, bool enableIt)
+        {
+        }
         /// <summary>
         /// Initialize engine, dictionaries, assets, level contents
         /// </summary>
         protected override void Initialize()
         {
+            //     function < void(string, bool) > fPtr = DoSomething;
+
+            var myDel = new MyDelegate(DoSomething);
+            myDel("sdfsdfdf", true);
+            delList.Add(DoSomething);        
+                
             //move here so that UISceneManager can use!
             _spriteBatch = new SpriteBatch(GraphicsDevice); //19.11.21
 
             //data, input, scene manager
-            InitializeEngine("My Game Title Goes Here", 1920, 1080);
+            InitializeEngine("Boomer Shooter", 1920, 1080);
 
             //load structures that store assets (e.g. textures, sounds) or archetypes (e.g. Quad game object)
             InitializeDictionaries();
 
-            //Initialize level 1 which is the only level in the game for now and might stay so
-            level1 = new Level1(Content);
             //load assets into the relevant dictionary
             LoadAssets();
 
@@ -98,7 +112,7 @@ namespace GDApp
             InitializeLevel();
 
             //add menu and ui
-            InitializeUI();  //19.11.21
+            InitializeUI();
 
             //TODO - remove hardcoded mouse values - update Screen class to centre the mouse with hardcoded value - remove later
             Input.Mouse.Position = Screen.Instance.ScreenCentre;
@@ -125,6 +139,23 @@ namespace GDApp
         private void LoadAssets()
         {
             LoadTextures();
+			LoadSounds();
+        }
+
+        /// <summary>
+        /// Load sound data used by sound manager
+        /// </summary>
+        private void LoadSounds()
+        {
+            //for example...
+            //soundManager.Add(new GDLibrary.Managers.Cue("smokealarm",
+            //    Content.Load<SoundEffect>("Assets/Sounds/Effects/smokealarm1"),
+            //    SoundCategoryType.Alarm, new Vector3(1, 0, 0), false));
+
+            //object[] parameters = { "smokealarm"};
+
+            //EventDispatcher.Raise(new EventData(EventCategoryType.Sound,
+            //    EventActionType.OnPlay, parameters));
         }
 
         /// <summary>
@@ -142,7 +173,6 @@ namespace GDApp
             textureDictionary.Add("skybox_back", Content.Load<Texture2D>("Assets/Textures/Skybox/back"));
             textureDictionary.Add("skybox_sky", Content.Load<Texture2D>("Assets/Textures/Skybox/sky"));
 
-            level1.LoadTextures();
         }
 
         protected override void LoadContent()
@@ -184,12 +214,16 @@ namespace GDApp
             //create the UI element
             var healthTextureObj = new UITextureObject("health",
                 UIObjectType.Texture,
-                new Transform2D(new Vector2(50, 100), new Vector2(8, 2), 0),
+                new Transform2D(new Vector2(50, 600),
+                new Vector2(8, 2),
+                MathHelper.ToRadians(-90)),
                 0, Content.Load<Texture2D>("Assets/Textures/UI/Progress/ui_progress_32_8"));
 
             //add a demo time based behaviour - because we can!
             healthTextureObj.AddComponent(new UITimeColorFlipBehaviour(Color.White, Color.Red, 1000));
 
+            healthTextureObj.AddComponent(
+                            new UIProgressBarController(0, 8, 0));
             //add the ui element to the scene
             mainGameUIScene.Add(healthTextureObj);
 
@@ -197,10 +231,18 @@ namespace GDApp
 
             #region Add Text
 
+            var font = Content.Load<SpriteFont>("Assets/Fonts/ui");
+            var str = "player name";
+
             //create the UI element
-            var nameTextObj = new UITextObject("player name", UIObjectType.Text,
-                new Transform2D(new Vector2(50, 50), Vector2.One, 0),
-                0, Content.Load<SpriteFont>("Assets/Fonts/ui"), "Brutus Maximus");
+            nameTextObj = new UITextObject(str, UIObjectType.Text,
+                new Transform2D(new Vector2(512, 386),
+                Vector2.One, 0),
+                0, font, "Brutus Maximus");
+
+            //  nameTextObj.Origin = font.MeasureString(str) / 2;
+
+            //  nameTextObj.AddComponent(new UIExpandFadeBehaviour());
 
             //add the ui element to the scene
             mainGameUIScene.Add(nameTextObj);
@@ -230,8 +272,8 @@ namespace GDApp
                     this,
                     _spriteBatch,
                     Content.Load<SpriteFont>("Assets/GDDebug/Fonts/ui_debug"),
-                    new Vector2(20, _graphics.PreferredBackBufferHeight - 20),
-                    Color.Red));
+                    new Vector2(40, _graphics.PreferredBackBufferHeight - 40),
+                    Color.White));
             }
         }
 
@@ -247,21 +289,27 @@ namespace GDApp
             //set game title
             Window.Title = gameTitle;
 
+            //the most important element! add event dispatcher for system events
+            eventDispatcher = new EventDispatcher(this);
             //add physics manager to enable CD/CR and physics
-            physicsManager = new PhysicsManager(this);
+            //physicsManager = new PhysicsManager(this);
 
             //instanciate scene manager to store all scenes
             sceneManager = new SceneManager(this);
 
             //create the ui scene manager to update and draw all ui scenes
-            uiSceneManager = new UISceneManager(this, _spriteBatch); //19.11.21
+            uiSceneManager = new UISceneManager(this, _spriteBatch);
+
+            //add support for playing sounds
+            soundManager = new SoundManager(this);
 
             //initialize global application data
             Application.Main = this;
             Application.Content = Content;
-            Application.GraphicsDevice = _graphics.GraphicsDevice; //TODO - is this necessary?
+            Application.GraphicsDevice = _graphics.GraphicsDevice;
             Application.GraphicsDeviceManager = _graphics;
             Application.SceneManager = sceneManager;
+			//Application.PhysicsManager = physicsManager;
 
             //instanciate render manager to render all drawn game objects using preferred renderer (e.g. forward, backward)
             renderManager = new RenderManager(this, new ForwardRenderer(), false);
@@ -275,6 +323,9 @@ namespace GDApp
             Input.Gamepad = new GamepadComponent(this);
 
             //************* add all input components to component list so that they will be updated and/or drawn ***********/
+			//add event dispatcher
+            Components.Add(eventDispatcher);       
+                 
             //add time support
             Components.Add(Time.GetInstance(this));
 
@@ -293,7 +344,10 @@ namespace GDApp
             Components.Add(uiSceneManager);
 
             //add physics manager to enable CD/CR and physics
-            Components.Add(physicsManager);
+            //Components.Add(physicsManager);
+            
+			//add sound
+            Components.Add(soundManager);
         }
 
         /// <summary>
@@ -302,25 +356,24 @@ namespace GDApp
         private void InitializeLevel()
         {
             activeScene = new Scene("level 1");
+			InitializeCameras(activeScene);
+            //InitializeSkybox(activeScene, 1000);
 
-            //InitializeSkybox(activeScene, 500);
-            InitializeCubes(activeScene);
-            InitializeModels(activeScene);
+            //InitializeCubes(activeScene);
+            //InitializeModels(activeScene);
 
-            InitializeCameras(activeScene);
-            
-            level1.InitializeFloors(activeScene);
-            level1.InitializeWalls(activeScene);
-            level1.InitializePickups(activeScene);
-            level1.InitializeTurrets(activeScene);
-            
-			StandardBullet bulletPrefab = new StandardBullet();
+            //Test load data from Level1.xml
+            LoadLevelXML loadLevel1 = new LoadLevelXML(activeScene);
+            loadLevel1.setGroundFloor();
+            loadLevel1.LoadLevelFromXML();
+
+            StandardBullet bulletPrefab = new StandardBullet();
             bulletPrefab.InitializeModel(activeScene);
             //activeScene.Add(bulletPrefab);
-            turret = new StandardTurret();
-            turret.InitializeModel(activeScene);
-            turret.bulletPrefab = bulletPrefab;
-            activeScene.Add(turret);
+            //turret = new StandardTurret();
+            //turret.InitializeModel(activeScene);
+            //turret.bulletPrefab = bulletPrefab;
+            //activeScene.Add(turret);
             //StandardBullet tempbullet = new StandardBullet();
             //tempbullet.InitializeModel(activeScene);
             //activeScene.Add(tempbullet);
@@ -333,6 +386,16 @@ namespace GDApp
             sceneManager.Add(activeScene);
             sceneManager.LoadScene("level 1");
         }
+
+        /// <summary>
+        /// Demo of the new physics manager and collidable objects
+        /// </summary>
+        private void InitializeCollidables()
+        {
+        }
+
+        /// <summary>
+
 
         /// <summary>
         /// Set up the skybox using a QuadMesh
@@ -491,7 +554,7 @@ namespace GDApp
             camera.AddComponent(new FirstPersonController(0.05f, 0.025f, 0.00009f));
 
             //set initial position
-            camera.Transform.SetTranslation(0, 0, 15);
+            camera.Transform.SetTranslation(0, 1.43f, 0);
 
             //add to level
             level.Add(camera);
@@ -609,6 +672,33 @@ namespace GDApp
 
         protected override void Update(GameTime gameTime)
         {
+        	
+        	if (Input.Keys.WasJustPressed(Microsoft.Xna.Framework.Input.Keys.P))
+            {
+                //DEMO - raise event
+                //EventDispatcher.Raise(new EventData(EventCategoryType.Menu,
+                //    EventActionType.OnPause));
+
+                object[] parameters = { nameTextObj };
+
+                EventDispatcher.Raise(new EventData(EventCategoryType.UiObject,
+                    EventActionType.OnRemoveObject, parameters));
+
+                ////renderManager.StatusType = StatusType.Off;
+            }
+            else if (Input.Keys.WasJustPressed(Microsoft.Xna.Framework.Input.Keys.U))
+            {
+                //DEMO - raise event
+
+                object[] parameters = { "main game ui", nameTextObj };
+
+                EventDispatcher.Raise(new EventData(EventCategoryType.UiObject,
+                    EventActionType.OnAddObject, parameters));
+
+                //renderManager.StatusType = StatusType.Drawn;
+                //EventDispatcher.Raise(new EventData(EventCategoryType.Menu,
+                //  EventActionType.OnPlay));
+            }
             base.Update(gameTime);
             //bullet.Update();
             //turret.Update();
@@ -644,8 +734,18 @@ namespace GDApp
 
         private void RunDemos()
         {
-        #region Curve Demo
+            // CurveDemo();
+            // SaveLoadDemo();
 
+            EventSenderDemo();
+        }
+
+        private void EventSenderDemo()
+        {
+        }
+
+        private void CurveDemo()
+        {
             //var curve1D = new GDLibrary.Parameters.Curve1D(CurveLoopType.Cycle);
             //curve1D.Add(0, 0);
             //curve1D.Add(10, 1000);
@@ -653,16 +753,26 @@ namespace GDApp
             //curve1D.Add(40, 4000);
             //curve1D.Add(60, 6000);
             //var value = curve1D.Evaluate(500, 2);
+        }
 
-        #endregion Curve Demo
-
+        private void SaveLoadDemo()
+        {
         #region Serialization Single Object Demo
 
             var demoSaveLoad = new DemoSaveLoad(new Vector3(1, 2, 3), new Vector3(45, 90, -180), new Vector3(1.5f, 0.1f, 20.25f));
             GDLibrary.Utilities.SerializationUtility.Save("DemoSingle.xml", demoSaveLoad);
             var readSingle = GDLibrary.Utilities.SerializationUtility.Load("DemoSingle.xml",
                 typeof(DemoSaveLoad)) as DemoSaveLoad;
+            /*//Test save data
+            List<LoadLevelXML> listDemos = new List<LoadLevelXML>();
+            listDemos.Add(new LoadLevelXML("Wall", new Vector3(1, 2, 3), new Vector3(45, 90, -180), new Vector3(1.5f, 0.1f, 20.25f)));
+            listDemos.Add(new LoadLevelXML("Wall", new Vector3(10, 20, 30), new Vector3(4, 9, -18), new Vector3(15f, 1f, 202.5f)));
+            listDemos.Add(new LoadLevelXML("Wall", new Vector3(100, 200, 300), new Vector3(145, 290, -80), new Vector3(6.5f, 1.1f, 8.05f)));
 
+            GDLibrary.Utilities.SerializationUtility.Save("Level1.xml", listDemos);
+            var readList = GDLibrary.Utilities.SerializationUtility.Load("Level1.xml",
+                typeof(List<LoadLevelXML>)) as List<LoadLevelXML>;
+            */
         #endregion Serialization Single Object Demo
 
         #region Serialization List Objects Demo

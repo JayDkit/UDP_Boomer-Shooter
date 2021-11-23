@@ -270,22 +270,22 @@ namespace GDLibrary
         /// <summary>
         /// Default texture shown for this object
         /// </summary>
-        private Texture2D defaultTexture;
+        protected Texture2D defaultTexture;
 
         /// <summary>
         /// Alternate image may be used for hover/mouse click effects
         /// </summary>
-        private Texture2D alternateTexture;
+        protected Texture2D alternateTexture;
 
         /// <summary>
         /// Used to control how much of the source image we draw (e.g. for a portion of an image as in a progress bar)
         /// </summary>
-        private Rectangle sourceRectangle;
+        protected Rectangle sourceRectangle;
 
         /// <summary>
         /// Sets current to be either active or alternate (e.g. used for hover over texture change)
         /// </summary>
-        private Texture2D currentTexture;
+        protected Texture2D currentTexture;
 
         #endregion Fields
 
@@ -299,6 +299,11 @@ namespace GDLibrary
         #endregion Properties
 
         #region Constructors
+
+        public void SetRectangle(int width, int height)
+        {
+            sourceRectangle = new Rectangle(0, 0, width, height);
+        }
 
         /// <summary>
         /// Construct a ui texture object when we draw WHITE BLEND, FULL, UNROTATED, ZERO-ORIGIN textures
@@ -407,12 +412,12 @@ namespace GDLibrary
         /// <summary>
         /// Font used to render text for this object
         /// </summary>
-        private SpriteFont spriteFont;
+        protected SpriteFont spriteFont;
 
         /// <summary>
         /// Text rendered for this object
         /// </summary>
-        private string text;
+        protected string text;
 
         #endregion Fields
 
@@ -505,4 +510,116 @@ namespace GDLibrary
     }
 
     //TODO - UITextObject
+
+    /// <summary>
+    /// Draws a button (i.e. text and texture) on screen
+    /// </summary>
+    public class UIButtonObject : UITextureObject
+    {
+        #region Fields
+
+        /// <summary>
+        /// Text for the button
+        /// </summary>
+        private string text;
+
+        /// <summary>
+        /// Font for button text
+        /// </summary>
+        private SpriteFont font;
+
+        /// <summary>
+        /// Collision bounding box for button
+        /// </summary>
+        private Rectangle boundingBox;
+
+        #endregion Fields
+
+        #region Properties
+
+        public string Text { get => text; set => text = value.Trim(); }
+        public SpriteFont Font { get => font; set => font = value; }
+        public Rectangle BoundingBox { get => boundingBox; set => boundingBox = value; }
+
+        #endregion Properties
+
+        #region Constructors
+
+        public UIButtonObject(string name, UIObjectType uiObjectType, Transform2D transform, float depth,
+           Color color, SpriteEffects spriteEffects, Vector2 origin,
+           Texture2D defaultTexture, Texture2D alternateTexture,
+           Rectangle sourceRectangle, string text, SpriteFont font)
+       : base(name, uiObjectType, transform, depth,
+           color, spriteEffects, origin,
+           defaultTexture, alternateTexture,
+           sourceRectangle)
+        {
+            Text = text;
+            Font = font;
+
+            //TODO - set bounding box
+            boundingBox = new Rectangle(0, 0,
+               (int)(defaultTexture.Width * transform.LocalScale.X),
+                (int)(defaultTexture.Height * transform.LocalScale.Y));
+        }
+
+        #endregion Constructors
+
+        #region Actions - Draw
+
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            //draw texture
+            base.Draw(spriteBatch);
+
+            //draw text
+            spriteBatch.DrawString(font,
+               text,
+               Transform.LocalTranslation,
+               color,
+               Transform.RotationInDegrees,
+               Origin,
+               Transform.LocalScale,
+               SpriteEffects,
+               LayerDepth * 0.9f); //ensures text is in front of texture (remember sorts from 1 (back) to 0 (front))
+        }
+
+        #endregion Actions - Draw
+
+        #region Actions - Housekeeping
+
+        public override void Dispose()
+        {
+            //TODO
+            //foreach (Component component in components)
+            //    component.Dispose();
+        }
+
+        public override object Clone()
+        {
+            //TODO
+            return null;
+            //var clone = new GameObject($"Clone - {Name}", gameObjectType);
+            //clone.ID = "GO-" + Guid.NewGuid();
+
+            //Component clonedComponent = null;
+            //Transform clonedTransform = null;
+
+            //foreach (Component component in components)
+            //{
+            //    clonedComponent = clone.AddComponent((Component)component.Clone());
+            //    clonedComponent.gameObject = clone;
+
+            //    clonedTransform = clonedComponent as Transform;
+
+            //    if (clonedTransform != null)
+            //        clonedComponent.transform = clonedTransform;
+            //}
+
+            //clone.IsStatic = this.isStatic;
+            //return clone;
+        }
+
+        #endregion Actions - Housekeeping
+    }
 }
