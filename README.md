@@ -20,3 +20,10 @@
 - [ ] Collisions
 - [ ] Sound
 - [x] UI
+
+### Running Instructions
+
+Run the game in Visual Studio as any monogame projects.
+Use WASD to move and mouse to look around.
+IMPORTANT: If you want t remove the gun to see more.
+Go to Content\Scripts\PlayerGun.cs and comment line 28 and uncomment line 29 to change models and have it still work.
