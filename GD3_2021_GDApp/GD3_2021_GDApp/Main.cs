@@ -24,7 +24,7 @@ namespace GDApp
     {
         #region Fields
 
-        PlayerUI playerUI = new PlayerUI();
+        PlayerUI playerUI;
         private SpriteFont font;
         FramerateCounter fps = new FramerateCounter();
         private GraphicsDeviceManager _graphics;
@@ -112,6 +112,7 @@ namespace GDApp
             InitializeLevel();
 
             //add menu and ui
+            
             InitializeUI();
 
             //TODO - remove hardcoded mouse values - update Screen class to centre the mouse with hardcoded value - remove later
@@ -197,8 +198,9 @@ namespace GDApp
         {
             //TODO
             //InitializeGameMenu();
-
-            InitializeGameUI();
+            playerUI = new PlayerUI(uiSceneManager);
+            playerUI.InitializeUI();
+            //InitializeGameUI();
         }
 
         /// <summary>
@@ -272,7 +274,7 @@ namespace GDApp
                     this,
                     _spriteBatch,
                     Content.Load<SpriteFont>("Assets/GDDebug/Fonts/ui_debug"),
-                    new Vector2(40, _graphics.PreferredBackBufferHeight - 40),
+                    new Vector2(40, 40),
                     Color.White));
             }
         }
@@ -315,7 +317,7 @@ namespace GDApp
             renderManager = new RenderManager(this, new ForwardRenderer(), false);
 
             //instanciate screen (singleton) and set resolution etc
-            Screen.GetInstance().Set(width, height, true, true);
+            Screen.GetInstance().Set(width, height, true, true); //change mosue cursor to false
 
             //instanciate input components and store reference in Input for global access
             Input.Keys = new KeyboardComponent(this);
@@ -357,7 +359,7 @@ namespace GDApp
         {
             activeScene = new Scene("level 1");
 			InitializeCameras(activeScene);
-            //InitializeSkybox(activeScene, 1000);
+            InitializeSkybox(activeScene, 1000);
 
             //InitializeCubes(activeScene);
             //InitializeModels(activeScene);
@@ -367,9 +369,8 @@ namespace GDApp
             loadLevel1.setGroundFloor();
             loadLevel1.LoadLevelFromXML();
 
-
-            StandardBullet bulletPrefab = new StandardBullet();
-            bulletPrefab.InitializeModel(activeScene);
+            //StandardBullet bulletPrefab = new StandardBullet();
+            //bulletPrefab.InitializeModel(activeScene);
             //activeScene.Add(bulletPrefab);
             //turret = new StandardTurret();
             //turret.InitializeModel(activeScene);
@@ -381,10 +382,6 @@ namespace GDApp
             gun = new PlayerGun();
             gun.InitializeModel(activeScene);
             activeScene.Add(gun);
-            
-            playerUI.Initialize(this);
-            
-
 
             sceneManager.Add(activeScene);
             sceneManager.LoadScene("level 1");
@@ -554,7 +551,7 @@ namespace GDApp
 
             //add components
             camera.AddComponent(new Camera(_graphics.GraphicsDevice.Viewport));
-            camera.AddComponent(new FirstPersonController(0.05f, 0.025f, 0.00009f));
+            camera.AddComponent(new FPSController(0.05f, 0.025f, 0.00009f));
 
             //set initial position
             camera.Transform.SetTranslation(0, 1.43f, 0);
@@ -675,7 +672,7 @@ namespace GDApp
 
         protected override void Update(GameTime gameTime)
         {
-        	
+        	/*
         	if (Input.Keys.WasJustPressed(Microsoft.Xna.Framework.Input.Keys.P))
             {
                 //DEMO - raise event
@@ -702,6 +699,7 @@ namespace GDApp
                 //EventDispatcher.Raise(new EventData(EventCategoryType.Menu,
                 //  EventActionType.OnPlay));
             }
+            */
             base.Update(gameTime);
 #if DEMO
             activeScene.Update();
@@ -723,7 +721,6 @@ namespace GDApp
             fps.DrawFps(_spriteBatch, font, new Vector2(10f, 10f), Color.MonoGameOrange);
             _spriteBatch.End();
             #endif
-            playerUI.DrawUI(gameTime);
             
         }
 

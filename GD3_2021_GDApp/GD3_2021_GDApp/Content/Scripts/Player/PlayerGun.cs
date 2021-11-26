@@ -25,7 +25,7 @@ namespace GDApp.Content.Scripts.Player
             var renderer = new ModelRenderer();
             renderer.Material = material;
             renderer.Model = Application.Main.Content.Load<Model>("Assets/Models/Guns/PlayerGun"); //Comment this
-            //renderer.Model = Application.Main.Content.Load<Model>("Assets/Models/cube);
+            //renderer.Model = Application.Main.Content.Load<Model>("Assets/Models/cube");
             this.AddComponent(renderer);
             setTranslationFromParent();
             this.Transform.SetScale(0.5f, 0.5f, 0.5f);

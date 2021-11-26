@@ -23,6 +23,7 @@ namespace GDLibrary.Renderers
                 scene = Application.SceneManager.ActiveScene;
 
             //set depth and blend state
+            graphicsDevice.DepthStencilState = DepthStencilState.Default;
 
             //set viewport
             graphicsDevice.Viewport = camera.Viewport;

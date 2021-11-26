@@ -99,7 +99,7 @@ namespace GDLibrary.Inputs
                 mouseDelta.X = (currentState.X - previousState.X);
                 mouseDelta.Y = (currentState.Y - previousState.Y);
             }
-
+            
             base.Update(gameTime);
         }
 

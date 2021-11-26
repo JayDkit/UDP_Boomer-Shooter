@@ -63,6 +63,13 @@
 /processorParam:TextureFormat=Compressed
 /build:Assets/Fonts/menu.spritefont
 
+#begin Assets/Fonts/PlayerUIFont.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Assets/Fonts/PlayerUIFont.spritefont
+
 #begin Assets/Fonts/ui.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
@@ -479,6 +486,18 @@
 /processorParam:TextureFormat=Color
 /build:Assets/Textures/UI/Backgrounds/audiomenu.png
 
+#begin Assets/Textures/UI/Backgrounds/backgroundTexture.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/UI/Backgrounds/backgroundTexture.png
+
 #begin Assets/Textures/UI/Backgrounds/controlsmenu.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -610,4 +629,16 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Assets/Textures/UI/Progress/ui_progress_32_8.png
+
+#begin Assets/Textures/UI/reticle.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/UI/reticle.png
 
