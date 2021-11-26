@@ -14,10 +14,8 @@ namespace GDLibrary
         Consumable,
         Architecture,
         Skybox,
-        Editor,
+        Editor
         //STU - add more for your game here...
-        Bullet,
-        Turret
     }
 
     //TODO - Add IComparable?
@@ -35,16 +33,13 @@ namespace GDLibrary
         #region Fields
 
         //Type, Tag, LayerMask, ID
-
-        /// <summary>
-        /// Indicates whether the game object will be removed during game play (e.g. any 3D object that persists during gameplay is static)
-        /// </summary>
-        protected bool isStatic = true;
-
-        /// <summary>
-        /// Enumerated type indicating what category ths game object belongs to (e.g. Camera, Pickup, NPC, Interactable)
-        /// </summary>
         protected GameObjectType gameObjectType;
+
+        public GameObjectType GameObjectType
+        {
+            get { return gameObjectType; }
+            protected set { gameObjectType = value; }
+        }
 
         /// <summary>
         /// Unique identifier for each game object - may be used for search, sort later
@@ -84,21 +79,6 @@ namespace GDLibrary
         #endregion Fields
 
         #region Properties
-
-        public bool IsStatic
-        {
-            get { return isStatic; }
-            set { isStatic = value; }
-        }
-
-        /// <summary>
-        /// Gets/sets the game object type
-        /// </summary>
-        public GameObjectType GameObjectType
-        {
-            get { return gameObjectType; }
-            protected set { gameObjectType = value; }
-        }
 
         /// <summary>
         /// Gets/sets the unique ID
@@ -197,8 +177,6 @@ namespace GDLibrary
 
             isEnabled = true;
             isRunning = false;
-            isStatic = true; //by default we will consider any new object static (i.e. belongs to a static list in GameObjectList used in Scene)
-
             ID = "GO-" + Guid.NewGuid();
             Name = string.IsNullOrEmpty(name) ? ID : name;
         }
@@ -385,7 +363,6 @@ namespace GDLibrary
                     clonedComponent.transform = clonedTransform;
             }
 
-            clone.IsStatic = this.isStatic;
             return clone;
         }
 

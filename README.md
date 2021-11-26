@@ -8,7 +8,7 @@ Welcome to the GitHub repository of the GD3 team, King Collection’s Universal 
 ### Game features
 - [ ] Quake Movement
 - [ ] Quake MouseLook
-- [x] Shooting bullet
+- [ ] Shooting bullet
 - [x] Loading models
 - [x] Camera look
 - [x] Skybox
@@ -17,4 +17,4 @@ Welcome to the GitHub repository of the GD3 team, King Collection’s Universal 
 
 - [ ] Collisions
 - [ ] Sound
-- [x] UI
+- [ ] UI

@@ -1,5 +1,4 @@
 ﻿using GDLibrary.Components;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace GDLibrary.Graphics
@@ -20,8 +19,7 @@ namespace GDLibrary.Graphics
 
         #region Constructors
 
-        public BasicShader(ContentManager content)
-            : base(content)
+        public BasicShader() : base()
         {
         }
 
@@ -29,12 +27,13 @@ namespace GDLibrary.Graphics
 
         #region Initialization
 
-        public override void LoadEffect(ContentManager content)
+        public override void LoadEffect()
         {
             effect = new BasicEffect(Application.GraphicsDevice);
-            (effect as BasicEffect).LightingEnabled = true;
-            (effect as BasicEffect).EnableDefaultLighting();
-            //  effectPass = effect.CurrentTechnique.Passes[0];
+
+            //TODO - remove this lazy code - just here to demo lighting
+            //(effect as BasicEffect).LightingEnabled = true;
+            //(effect as BasicEffect).EnableDefaultLighting();
         }
 
         #endregion Initialization
@@ -71,6 +70,7 @@ namespace GDLibrary.Graphics
             //set world for game object
             basicEffect.World = renderer.Transform.WorldMatrix;
 
+            //TODO - add support for multiple passes
             //set pass
             effect.CurrentTechnique.Passes[0].Apply();
         }

@@ -147,6 +147,11 @@ namespace GDLibrary.Managers
             }
         }
 
+        public bool isOdd(int x)
+        {
+            return x % 2 == 1;
+        }
+
         public GameObject Find(Predicate<GameObject> predicate)
         {
             return ActiveScene.Find(predicate);

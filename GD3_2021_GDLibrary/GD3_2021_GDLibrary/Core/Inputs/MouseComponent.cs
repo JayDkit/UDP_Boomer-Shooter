@@ -1,5 +1,4 @@
-﻿using GDLibrary.Core;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
 namespace GDLibrary.Inputs
@@ -89,16 +88,16 @@ namespace GDLibrary.Inputs
             previousState = currentState;
             currentState = Mouse.GetState();
 
-            if (Screen.Instance.IsCursorLocked)
-            {
-                mouseDelta.X = (currentState.X - Screen.Instance.ScreenCentre.X);
-                mouseDelta.Y = (currentState.Y - Screen.Instance.ScreenCentre.Y);
-            }
-            else
-            {
-                mouseDelta.X = (currentState.X - previousState.X);
-                mouseDelta.Y = (currentState.Y - previousState.Y);
-            }
+            //if (Screen.LockCursor)
+            //{
+            mouseDelta.X = (currentState.X - 512);
+            mouseDelta.Y = (currentState.Y - 384);
+            //}
+            //else
+            //{
+            //    mouseDelta.X = (currentState.X - previousState.X);
+            //    mouseDelta.Y = (currentState.Y - previousState.Y);
+            //}
 
             base.Update(gameTime);
         }
