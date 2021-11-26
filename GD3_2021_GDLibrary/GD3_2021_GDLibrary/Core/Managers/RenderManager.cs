@@ -1,17 +1,24 @@
 ﻿using GDLibrary.Components;
+using GDLibrary.Core;
 using GDLibrary.Renderers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
 
 namespace GDLibrary.Managers
 {
+    /// <summary>
+    /// Renders the game objects in the currently active scene using the IRenderScene and single, or multi cameras, available
+    /// </summary>
     public class RenderManager : DrawableGameComponent
     {
         #region Fields
 
         protected GraphicsDevice graphicsDevice;
-        private IRenderScene sceneRenderer;
+        protected IRenderScene sceneRenderer;
+        protected bool isMultiCamera;
+        protected List<Camera> activeSceneCameras;
 
         #endregion Fields
 
@@ -31,17 +38,26 @@ namespace GDLibrary.Managers
             }
         }
 
+        protected bool IsMultiCamera
+        {
+            get => isMultiCamera;
+            set => isMultiCamera = value;
+        }
+
         #endregion Properties
 
         #region Constructors
 
-        public RenderManager(Game game, IRenderScene sceneRenderer) : base(game)
+        public RenderManager(Game game, IRenderScene sceneRenderer, bool isMultiCamera = false) : base(game)
         {
             //cache this de-reference to save us some CPU cycles since its called often in Render below
             graphicsDevice = Application.GraphicsDevice;
 
             //set the render used to render/draw the scene
             SceneRenderer = sceneRenderer;
+
+            //sets whether we are drawing multiple cameras
+            IsMultiCamera = isMultiCamera;
         }
 
         #endregion Constructors
@@ -50,93 +66,24 @@ namespace GDLibrary.Managers
 
         public override void Draw(GameTime gameTime)
         {
-            sceneRenderer.Render(graphicsDevice, Camera.Main);
+            if (isMultiCamera)
+            {
+                //get a reference to the list of all cameras for the current scene
+                activeSceneCameras = Application.SceneManager.ActiveScene.GetAllActiveSceneCameras();
+
+                //draw scene with each camera
+                foreach (var camera in activeSceneCameras)
+                {
+                    sceneRenderer.Render(graphicsDevice, camera);
+                }
+            }
+            else
+            {
+                //draw scene with main camera
+                sceneRenderer.Render(graphicsDevice, Camera.Main);
+            }
         }
 
         #endregion Actions - Draw
     }
 }
-
-/*
- namespace GDLibrary.Managers
-{
-    public class RenderManager : IDisposable
-    {
-        #region Fields
-
-        protected GraphicsDevice graphicsDevice;
-
-        //temps
-        private Renderer renderer;
-
-        private Material material;
-        private Shader shader;
-
-        #endregion Fields
-
-        #region Constructors
-
-        public RenderManager()
-        {
-            //cache this de-reference to save us some CPU cycles since its called often in Render below
-            graphicsDevice = Application.GraphicsDevice;
-        }
-
-        #endregion Constructors
-
-        #region Initialization
-
-        public virtual void Initialize()
-        {
-        }
-
-        #endregion Initialization
-
-        #region Actions - Render
-
-        public virtual void Render(Scene scene)
-        {
-            //set depth and blend state
-
-            //render game objects
-            var length = scene.Renderers.Count;
-
-            for (var i = 0; i < length; i++)
-            {
-                renderer = scene.Renderers[i];
-                material = renderer.Material;
-
-                if (material == null)
-                    throw new NullReferenceException("This game object has no material set for its renderer!");
-
-                //access the shader (e.g. BasicEffect) for this rendered game object
-                shader = material.Shader;
-
-                //TODO - set Camera.Main in Main or SceneManager
-                //Set View and Projection
-                shader.PrePass(Camera.Main);
-
-                //Set World matrix
-                shader.Pass(renderer);
-
-                renderer.Draw(graphicsDevice);
-            }
-
-            //render post processing
-
-            //render ui
-        }
-
-        #endregion Actions - Render
-
-        #region Actions - Housekeeping
-
-        //TODO - add dispose code
-        public virtual void Dispose()
-        {
-        }
-
-        #endregion Actions - Housekeeping
-    }
-}
- */
