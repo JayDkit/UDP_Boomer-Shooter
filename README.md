@@ -26,6 +26,7 @@ Welcome to the GitHub repository of the GD3 team, King Collection’s Universal 
 
 - [ ] Collisions
 - [ ] Sound
+- [x] UI
 
 ### Running Instructions
 
