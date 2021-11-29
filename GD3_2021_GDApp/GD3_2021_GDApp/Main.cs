@@ -50,7 +50,7 @@ namespace GDApp
         /// <summary>
         /// Renders all ui objects
         /// </summary>
-        //private PhysicsManager physicsManager;
+        private PhysicsManager physicsManager;
 
         /// <summary>
         /// Quick lookup for all textures used within the game
@@ -106,11 +106,13 @@ namespace GDApp
             //move here so that UISceneManager can use!
             _spriteBatch = new SpriteBatch(GraphicsDevice); //19.11.21
 
+            //load structures that store assets (e.g. textures, sounds) or archetypes (e.g. Quad game object)
+            InitializeDictionaries();
+            
             //data, input, scene manager
             InitializeEngine("Boomer Shooter", 1920, 1080);
 
-            //load structures that store assets (e.g. textures, sounds) or archetypes (e.g. Quad game object)
-            InitializeDictionaries();
+            
 
             //load assets into the relevant dictionary
             LoadAssets();
@@ -305,7 +307,7 @@ namespace GDApp
             //the most important element! add event dispatcher for system events
             eventDispatcher = new EventDispatcher(this);
             //add physics manager to enable CD/CR and physics
-            //physicsManager = new PhysicsManager(this);
+            physicsManager = new PhysicsManager(this);
 
             //instanciate scene manager to store all scenes
             sceneManager = new SceneManager(this);
@@ -322,7 +324,7 @@ namespace GDApp
             Application.GraphicsDevice = _graphics.GraphicsDevice;
             Application.GraphicsDeviceManager = _graphics;
             Application.SceneManager = sceneManager;
-			//Application.PhysicsManager = physicsManager;
+			Application.PhysicsManager = physicsManager;
 
             //instanciate render manager to render all drawn game objects using preferred renderer (e.g. forward, backward)
             renderManager = new RenderManager(this, new ForwardRenderer(), false);
@@ -681,7 +683,7 @@ namespace GDApp
             var speedMaterial = new BasicMaterial("model material");
             speedMaterial.Texture = Content.Load<Texture2D>("Assets/Textures/Pickups/ElectricityTexture");
             //speedMaterial.Texture = Content.Load<Texture2D>("Assets/Textures/Pickups/BrassTexture");
-            speedMaterial.Shader = new BasicShader();
+            speedMaterial.Shader = new BasicShader(Content);
 
             var speedPickup = new GameObject("speed_pickup", GameObjectType.Consumable);
             //var speedPickup = new GameObject("rapidFire_pickup", GameObjectType.Consumable);
@@ -706,7 +708,7 @@ namespace GDApp
             //Health Kit Pickup (represented by a health kit box)
             var healthMaterial = new BasicMaterial("model material");
             healthMaterial.Texture = Content.Load<Texture2D>("Assets/Textures/Pickups/HealthKitTexture");
-            healthMaterial.Shader = new BasicShader();
+            healthMaterial.Shader = new BasicShader(Content);
 
             var healthPickup = new GameObject("health_pickup", GameObjectType.Consumable);
             var healthRenderer = new ModelRenderer();
@@ -743,7 +745,7 @@ namespace GDApp
             var turretMaterial = new BasicMaterial("model material");
             //Placeholder texture - not the final one!
             turretMaterial.Texture = Content.Load<Texture2D>("Assets/Demo/Textures/grey");
-            turretMaterial.Shader = new BasicShader();
+            turretMaterial.Shader = new BasicShader(Content);
 
             var turret = new GameObject("turret", GameObjectType.NPC);
             var turretRenderer = new ModelRenderer();
@@ -902,7 +904,7 @@ namespace GDApp
 
             var material = new BasicMaterial("simple diffuse");
             material.Texture = textureDictionary["brick"];
-            material.Shader = new BasicShader();
+            material.Shader = new BasicShader(Content);
 
             var archetypalWall = new GameObject("wall", GameObjectType.Architecture);
             var renderer = new MeshRenderer();
@@ -1019,7 +1021,7 @@ namespace GDApp
 
             var material = new BasicMaterial("simple diffuse");
             material.Texture = textureDictionary["floor"];
-            material.Shader = new BasicShader();
+            material.Shader = new BasicShader(Content);
 
             var archetypalQuad = new GameObject("floor", GameObjectType.Skybox);
             var renderer = new MeshRenderer();
@@ -1048,58 +1050,7 @@ namespace GDApp
             //level.Add(clone1);
         }
 
-        /// <summary>
-        /// Set application data, input, title and scene manager
-        /// </summary>
-        private void InitializeEngine(string gameTitle, int width, int height)
-        {
-            //set game title
-            Window.Title = gameTitle;
-
-            //initialize global application data
-            Application.Main = this;
-            Application.Content = Content;
-            Application.GraphicsDevice = _graphics.GraphicsDevice; //TODO - is this necessary?
-            Application.GraphicsDeviceManager = _graphics;
-            Application.SceneManager = sceneManager;
-
-            //instanciate render manager to render all drawn game objects using preferred renderer (e.g. forward, backward)
-            renderManager = new RenderManager(this, new ForwardRenderer());
-
-            //instanciate screen (singleton) and set resolution etc
-            Screen.GetInstance().Set(width, height, true, false);
-
-            //instanciate input components and store reference in Input for global access
-            Input.Keys = new KeyboardComponent(this);
-            Input.Mouse = new MouseComponent(this);
-            Input.Gamepad = new GamepadComponent(this);
-
-            //add all input components to component list so that they will be updated and/or drawn
-            //Q. what would happen is we commented out these lines?
-            Components.Add(sceneManager); //add so SceneManager::Update() will be called
-            Components.Add(renderManager); //add so RenderManager::Draw() will be called
-            Components.Add(Input.Keys);
-            Components.Add(Input.Mouse);
-            Components.Add(Input.Gamepad);
-            Components.Add(Time.GetInstance(this));
-        }
-
         #endregion Initialization - Scene manager, Application data, Screen, Input, Scenes, Game Objects
-
-        #region Load & Unload Assets
-
-        protected override void LoadContent()
-        {
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
-            font = Content.Load<SpriteFont>("Assets/Fonts/Arial");
-        }
-
-        protected override void UnloadContent()
-        {
-            base.UnloadContent();
-        }
-
-        #endregion Load & Unload Assets
 
         #region Update & Draw
 
