@@ -17,6 +17,8 @@ namespace GDLibrary.Inputs
     /// </summary>
     public class MouseComponent : GameComponent
     {
+        private static readonly int BOUNDS_DIMENSION = 2;
+
         #region Fields
 
         private MouseState currentState;
@@ -27,6 +29,14 @@ namespace GDLibrary.Inputs
 
         #region Properties
 
+        public Rectangle Bounds
+        {
+            get
+            {
+                return new Rectangle(currentState.X, currentState.Y,
+                BOUNDS_DIMENSION, BOUNDS_DIMENSION);
+            }
+        }
         public int X
         {
             get { return currentState.X; }
@@ -99,7 +109,7 @@ namespace GDLibrary.Inputs
                 mouseDelta.X = (currentState.X - previousState.X);
                 mouseDelta.Y = (currentState.Y - previousState.Y);
             }
-            
+
             base.Update(gameTime);
         }
 

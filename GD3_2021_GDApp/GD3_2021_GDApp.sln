@@ -7,15 +7,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GD3_2021_GDApp", "GD3_2021_
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "GD3_2021_GDLibrary", "..\GD3_2021_GDLibrary\GD3_2021_GDLibrary\GD3_2021_GDLibrary.shproj", "{A0CDBD0E-3A41-42B7-9425-A838BC2C7383}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests_GD3_2021_GDLibrary", "Tests_GD3_2021_GDLibrary\Tests_GD3_2021_GDLibrary.csproj", "{6E0883C4-80FA-4472-848E-4ADD97F4791C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests_GD3_2021_GDLibrary", "Tests_GD3_2021_GDLibrary\Tests_GD3_2021_GDLibrary.csproj", "{6E0883C4-80FA-4472-848E-4ADD97F4791C}"
 	ProjectSection(ProjectDependencies) = postProject
 		{ABA3C674-E64C-4FB1-AF6B-5EE5BA9D833D} = {ABA3C674-E64C-4FB1-AF6B-5EE5BA9D833D}
 	EndProjectSection
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "JigLibX", "..\JigLibX\JigLibX.shproj", "{52796A7B-90E4-4E28-81B1-288BA46C5599}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		..\JigLibX\JigLibX.projitems*{52796a7b-90e4-4e28-81b1-288ba46c5599}*SharedItemsImports = 13
 		..\GD3_2021_GDLibrary\GD3_2021_GDLibrary\GD3_2021_GDLibrary.projitems*{a0cdbd0e-3a41-42b7-9425-a838bc2c7383}*SharedItemsImports = 13
 		..\GD3_2021_GDLibrary\GD3_2021_GDLibrary\GD3_2021_GDLibrary.projitems*{aba3c674-e64c-4fb1-af6b-5ee5ba9d833d}*SharedItemsImports = 5
+		..\JigLibX\JigLibX.projitems*{aba3c674-e64c-4fb1-af6b-5ee5ba9d833d}*SharedItemsImports = 5
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
