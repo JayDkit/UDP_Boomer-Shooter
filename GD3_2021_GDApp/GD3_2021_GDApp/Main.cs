@@ -594,7 +594,7 @@ namespace GDApp
             //add to level
             camera = new GameObject("main camera", GameObjectType.Camera);
             //  _graphics.PreferredBackBufferWidth
-            int width = 1024, height = 768;
+            int width = 1920, height = 1080;
             var viewport = new Viewport(0, 0, width, height);
             camera.AddComponent(new Camera(viewport));
             camera.AddComponent(new FPSController(0.05f, 0.025f, 0.00009f)); camera.Transform.SetTranslation(0, 0, 15);
