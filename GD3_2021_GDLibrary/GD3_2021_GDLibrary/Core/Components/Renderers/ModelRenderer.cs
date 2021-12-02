@@ -64,7 +64,7 @@ namespace GDLibrary.Components
                 {
                     device.SetVertexBuffer(meshPart.VertexBuffer);
                     device.Indices = meshPart.IndexBuffer;
-                    device.DrawIndexedPrimitives(PrimitiveType.TriangleList, meshPart.VertexOffset, meshPart.StartIndex, meshPart.PrimitiveCount);
+                        device.DrawIndexedPrimitives(PrimitiveType.TriangleList, meshPart.VertexOffset, meshPart.StartIndex, meshPart.PrimitiveCount);
                 }
             }
 
