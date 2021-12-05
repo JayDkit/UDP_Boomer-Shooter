@@ -141,6 +141,7 @@ namespace GDApp
             InitializeFloors(activeScene);
             InitializeWalls(activeScene);
             InitializePickups(activeScene);
+            InitializeProps(activeScene);
             InitializeTurrets(activeScene);
             //InitializeModels(activeScene);
             gun = new PlayerGun(this);
@@ -368,6 +369,211 @@ namespace GDApp
                 clone.Name = $"{clone.Name} - {count++}";
                 clone.Transform.SetTranslation(-5, i, 0);
                 level.Add(clone);
+            }
+        }
+
+         private void InitializeProps(Scene level)
+        {
+            #region Barrels
+            var texture = Content.Load<Texture2D>("Assets/Textures/Props/BarrelTexture");
+            var shader = new BasicShader(Application.Content, false, true);
+            var barrelMaterial = new BasicMaterial("barrel", shader, texture);
+
+            var barrel = new GameObject("barrel", GameObjectType.Prop);
+            var barrelModel = Content.Load<Model>("Assets/Models/Props/Barrel");
+            var barrelRenderer = new ModelRenderer(barrelModel, barrelMaterial);
+
+            barrel.AddComponent(barrelRenderer);
+            barrel.Transform.SetScale(0.45f, 0.45f, 0.45f);
+            barrel.Transform.SetTranslation(-40, 0, -40);
+            level.Add(barrel);
+
+            var count = 0;
+            for (var i = 0; i <= 2; i++)
+            {
+                var clone = barrel.Clone() as GameObject;
+                clone.Name = $"{clone.Name} - {count++}";
+
+                if (i == 0)
+                {
+                    clone.Transform.SetScale(0.45f, 0.45f, 0.45f);
+                    clone.Transform.SetTranslation(-39, 0, -40);
+                }
+                else if (i == 1)
+                {
+                    clone.Transform.SetScale(0.45f, 0.45f, 0.45f);
+                    clone.Transform.SetTranslation(-39.5f, 0, -41);
+                }
+
+                else if (i == 2)
+                {
+                    clone.Transform.SetScale(0.45f, 0.45f, 0.45f);
+                    clone.Transform.SetTranslation(-12, 0, -78);
+                }
+
+                level.Add(clone);
+            }
+            #endregion
+
+            #region Bins
+            texture = Content.Load<Texture2D>("Assets/Textures/Props/BinTexture");
+            shader = new BasicShader(Application.Content, false, true);
+            var binMaterial = new BasicMaterial("bin", shader, texture);
+
+            var bin = new GameObject("bin", GameObjectType.Prop);
+            var binModel = Content.Load<Model>("Assets/Models/Props/Bin");
+            var binRenderer = new ModelRenderer(binModel, binMaterial);
+
+            bin.Transform.SetScale(0.3f, 0.3f, 0.3f);
+            bin.Transform.SetTranslation(-20, -0.15f, -77);
+            bin.AddComponent(binRenderer);
+            level.Add(bin);
+
+            count = 0;
+            for (var i = 0; i <= 4; i++)
+            {
+                var binClone = bin.Clone() as GameObject;
+                binClone.Name = $"{binClone.Name} - {count++}";
+
+                if (i == 0)
+                {
+                    binClone.Transform.SetScale(0.3f, 0.3f, 0.3f);
+                    binClone.Transform.SetTranslation(-5, -0.15f, -40);
+                }
+                else if (i == 1)
+                {
+                    binClone.Transform.SetScale(0.3f, 0.3f, 0.3f);
+                    binClone.Transform.SetTranslation(-3, -0.18f, -6);
+                }
+                else if (i == 2)
+                {
+                    binClone.Transform.SetScale(0.3f, 0.3f, 0.3f);
+                    binClone.Transform.SetTranslation(-3, -0.18f, -20);
+                }
+                else if (i == 3)
+                {
+                    binClone.Transform.SetScale(0.3f, 0.3f, 0.3f);
+                    binClone.Transform.SetTranslation(-2, -0.18f, -49);
+                }
+                else if (i == 4)
+                {
+                    binClone.Transform.SetScale(0.3f, 0.3f, 0.3f);
+                    binClone.Transform.SetTranslation(-2, -0.18f, -67);
+                }
+
+                level.Add(binClone);
+                #endregion
+
+            #region Boxes
+            texture = Content.Load<Texture2D>("Assets/Textures/Props/BoxTexture");
+            shader = new BasicShader(Application.Content, false, true);
+            var boxMaterial = new BasicMaterial("box", shader, texture);
+
+            var box = new GameObject("box", GameObjectType.Prop);
+            var boxModel = Content.Load<Model>("Assets/Models/Props/Box");
+            var boxRenderer = new ModelRenderer(boxModel, boxMaterial);
+
+            box.Transform.SetScale(0.3f, 0.3f, 0.3f);
+            box.Transform.SetTranslation(-49, -0.2f, -48);
+            box.AddComponent(boxRenderer);
+            level.Add(box);
+
+            count = 0;
+            for (var j = 0; j <= 1; j++)
+            {
+                var boxClone = box.Clone() as GameObject;
+                boxClone.Name = $"{boxClone.Name} - {count++}";
+
+                if (j == 0)
+                {
+                    boxClone.Transform.SetScale(0.3f, 0.3f, 0.3f);
+                    boxClone.Transform.SetRotation(0, 10, 0);
+                    boxClone.Transform.SetTranslation(-49, 0.6f, -48.5f);
+                }
+                else if (j == 1)
+                {
+                    boxClone.Transform.SetScale(0.3f, 0.3f, 0.3f);
+                    boxClone.Transform.SetTranslation(-49, -0.2f, -49);
+                }
+
+                level.Add(boxClone);
+            }
+                #endregion
+
+            #region Palettes
+            texture = Content.Load<Texture2D>("Assets/Textures/Props/PaletteTexture");
+            shader = new BasicShader(Application.Content, false, true);
+            var paletteMaterial = new BasicMaterial("palette", shader, texture);
+
+            var palette = new GameObject("palette", GameObjectType.Prop);
+            var paletteModel = Content.Load<Model>("Assets/Models/Props/Palette");
+            var paletteRenderer = new ModelRenderer(paletteModel, paletteMaterial);
+
+            palette.Transform.SetScale(0.4f, 0.4f, 0.4f);
+            palette.Transform.SetRotation(40, 90, 0);
+            palette.Transform.SetTranslation(-49, 0.5f, -44);
+            palette.AddComponent(paletteRenderer);
+            level.Add(palette);
+            #endregion
+
+            #region Bolts
+            texture = Content.Load<Texture2D>("Assets/Textures/Props/SteelTexture");
+            shader = new BasicShader(Application.Content, false, true);
+            var boltMaterial = new BasicMaterial("bolt", shader, texture);
+
+            var bolt = new GameObject("bolt", GameObjectType.Prop);
+            var boltModel = Content.Load<Model>("Assets/Models/Props/Bolt");
+            var boltRenderer = new ModelRenderer(boltModel, boltMaterial);
+
+            bolt.Transform.SetScale(0.05f, 0.05f, 0.05f);
+            bolt.Transform.SetRotation(90, 0, 0);
+            bolt.Transform.SetTranslation(-44, 0.05f, -44);
+            bolt.AddComponent(boltRenderer);
+            level.Add(bolt);
+            #endregion
+
+            #region Gears
+            texture = Content.Load<Texture2D>("Assets/Textures/Props/CopperTexture");
+            shader = new BasicShader(Application.Content, false, true);
+            var gearMaterial = new BasicMaterial("gear", shader, texture);
+
+            var gear = new GameObject("gear", GameObjectType.Prop);
+            var gearModel = Content.Load<Model>("Assets/Models/Props/Gear");
+            var gearRenderer = new ModelRenderer(gearModel, gearMaterial);
+
+            gear.Transform.SetScale(0.15f, 0.15f, 0.15f);
+            gear.Transform.SetTranslation(-38, 0f, -50);
+            gear.AddComponent(gearRenderer);
+            level.Add(gear);
+            #endregion
+
+            #region Newspapers
+            texture = Content.Load<Texture2D>("Assets/Textures/Props/NewspaperTexture");
+            shader = new BasicShader(Application.Content, false, true);
+            var newsMaterial = new BasicMaterial("newspaper", shader, texture);
+
+            var newspaper = new GameObject("newspaper", GameObjectType.Prop);
+            var newsModel = Content.Load<Model>("Assets/Models/Props/Newspaper");
+            var newsRenderer = new ModelRenderer(newsModel, newsMaterial);
+            newspaper.Transform.SetRotation(-90, 40, 0);
+            newspaper.Transform.SetScale(0.5f, 0.5f, 0.5f);
+            newspaper.AddComponent(newsRenderer);
+            level.Add(newspaper);
+            #endregion
+
+            #region Nuts
+            texture = Content.Load<Texture2D>("Assets/Textures/Props/SteelTexture");
+            shader = new BasicShader(Application.Content, false, true);
+            var nutMaterial = new BasicMaterial("nut", shader, texture);
+
+            var nut = new GameObject("nut", GameObjectType.Prop);
+            var nutModel = Content.Load<Model>("Assets/Models/Props/Nut");
+            var nutRenderer = new ModelRenderer(nutModel, nutMaterial);
+            nut.Transform.SetTranslation(-34, 0f, -55);
+            nut.Transform.SetScale(0.1f, 0.1f, 0.1f);
+            nut.AddComponent(nutRenderer);
+            level.Add(nut); 
+            #endregion
             }
         }
 
