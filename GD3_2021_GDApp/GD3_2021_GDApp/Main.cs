@@ -401,7 +401,10 @@ namespace GDApp
             //speedPickup.Transform.SetRotation(90, 0, 0);
             //speedPickup.Transform.SetScale(3f, 3f, 3f);
             //speedPickup.Transform.SetTranslation(-630, 130, 250);
+            speedPickup.AddComponent(new PickupBehaviour("speedPickup", 1));
             level.Add(speedPickup);
+
+
 
 
             //Health Kit Pickup (represented by a health kit box)
@@ -416,11 +419,13 @@ namespace GDApp
             healthRenderer.Model = Content.Load<Model>("Assets/Models/Pickups/HealthKit");
             healthPickup.Transform.SetTranslation(65, -22, -60);
             healthPickup.Transform.SetScale(5f, 5f, 5f);
+            healthPickup.AddComponent(new PickupBehaviour("healthPickup", 1));
             level.Add(healthPickup);
 
             #endregion Archetype
 
-            var count = 0;
+            #region Electricity Clones
+		    var count = 0;
             for (var i = 0; i <= 1; i += 1)
             {
                 var clone = healthPickup.Clone() as GameObject;
@@ -435,8 +440,42 @@ namespace GDApp
                     clone.Transform.SetTranslation(195, -22, -175);
                     clone.Transform.SetScale(5f, 5f, 5f);
                 }
+                clone.AddComponent(new PickupBehaviour("electricityClone", 1));
                 level.Add(clone);
-            }
+            } 
+	        #endregion
+
+            #region Shield Pickup
+            var texture = Content.Load<Texture2D>("Assets/Textures/Pickups/AluminiumTexture");
+            var shader = new BasicShader(Application.Content, false, true);
+            var shieldMaterial = new BasicMaterial("shield", shader, texture);
+
+            var shieldPickup = new GameObject("shield_pickup", GameObjectType.Consumable);
+            var shieldModel = Content.Load<Model>("Assets/Models/Pickups/ShieldPickup");
+            var shieldRenderer = new ModelRenderer(shieldModel, shieldMaterial);
+
+            shieldPickup.Transform.SetScale(0.1f, 0.1f, 0.1f);
+            shieldPickup.Transform.SetTranslation(15, 6, -78);
+            shieldPickup.AddComponent(shieldRenderer);
+            shieldPickup.AddComponent(new PickupBehaviour("shieldPickup", 1));
+            level.Add(shieldPickup);
+            #endregion
+
+            #region Rapid Fire Pickup
+            texture = Content.Load<Texture2D>("Assets/Textures/Pickups/BrassTexture");
+            shader = new BasicShader(Application.Content, false, true);
+            var rapidFireMaterial = new BasicMaterial("rapidFire", shader, texture);
+
+            var rapidFirePickup = new GameObject("rapid_fire_pickup", GameObjectType.Consumable);
+            var rapidFireModel = Content.Load<Model>("Assets/Models/Pickups/RapidFirePickup");
+            var rapidFireRenderer = new ModelRenderer(rapidFireModel, rapidFireMaterial);
+            rapidFirePickup.Transform.SetScale(0.1f, 0.1f, 0.1f);
+            rapidFirePickup.Transform.SetRotation(90, 90, 0);
+            rapidFirePickup.Transform.SetTranslation(15, 1.15f, -74);
+            shieldPickup.AddComponent(new PickupBehaviour("rapidFirePickup", 1));
+            rapidFirePickup.AddComponent(rapidFireRenderer);
+            level.Add(rapidFirePickup); 
+            #endregion
         }
 
         private void InitializeTurrets(Scene level)
