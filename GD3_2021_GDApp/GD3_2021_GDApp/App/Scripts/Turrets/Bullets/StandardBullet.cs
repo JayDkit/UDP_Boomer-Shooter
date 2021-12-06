@@ -9,7 +9,7 @@ namespace GDApp.Content.Scripts.Turrets.Bullets
 {
     public class StandardBullet : Bullet
     {
-        public float speed = 0.01f;
+        public float speed = 0.005f;
 
         public override void Update()
         {

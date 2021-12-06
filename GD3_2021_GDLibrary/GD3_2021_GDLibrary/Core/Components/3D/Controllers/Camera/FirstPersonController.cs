@@ -13,15 +13,25 @@ namespace GDLibrary.Components
         private bool isGrounded;
         private float moveSpeed = 0.05f;
         private float strafeSpeed = 0.025f;
-        private float rotationSpeed = 0.00009f;
+        private Vector2 rotationSpeed;
 
-        public FirstPersonController(float moveSpeed, float strafeSpeed, float rotationSpeed, bool isGrounded = true)
+        public FirstPersonController(float moveSpeed, float strafeSpeed,
+            float rotationSpeed,
+          bool isGrounded = true)
+            : this(moveSpeed, strafeSpeed, rotationSpeed * Vector2.One, isGrounded)
+        {
+        }
+
+        public FirstPersonController(float moveSpeed, float strafeSpeed,
+            Vector2 rotationSpeed,
+            bool isGrounded = true)
         {
             this.moveSpeed = moveSpeed;
             this.strafeSpeed = strafeSpeed;
             this.rotationSpeed = rotationSpeed;
             this.isGrounded = isGrounded;
         }
+
         public override void Update()
         {
             HandleInputs();
@@ -56,9 +66,12 @@ namespace GDLibrary.Components
         protected override void HandleMouseInput()
         {
             rotation = Vector3.Zero;
-            rotation.Y -= Input.Mouse.Delta.X * rotationSpeed * Time.Instance.DeltaTimeMs;
-            rotation.X -= Input.Mouse.Delta.Y * rotationSpeed * Time.Instance.DeltaTimeMs;
-            transform.Rotate(ref rotation);  //converts value type to a reference
+            var delta = Input.Mouse.Delta;
+            rotation.Y -= delta.X * rotationSpeed.X * Time.Instance.DeltaTimeMs;
+            rotation.X -= delta.Y * rotationSpeed.Y * Time.Instance.DeltaTimeMs;
+
+            if (delta.Length() != 0)
+                transform.SetRotation(ref rotation);  //converts value type to a reference
         }
 
         #region Unused

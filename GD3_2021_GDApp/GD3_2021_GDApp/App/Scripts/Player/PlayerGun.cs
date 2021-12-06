@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 
-namespace GDApp.Content.Scripts.Player
+namespace GDApp.App.Scripts.Player
 {
     public class PlayerGun : GameObject
     {
@@ -39,7 +39,9 @@ namespace GDApp.Content.Scripts.Player
             //gun.Transform.SetTranslation(Camera.Main.Transform.WorldMatrix.Translation + new Vector3(0, -3, -3));
             this.Transform.SetTranslation(Camera.Main.Transform.WorldMatrix.Translation + new Vector3(0,-3, 0));
             //gun.Transform.SetRotation(Camera.Main.Transform.LocalRotation  + new Vector3(0, -90, 0));
-            this.Transform.SetRotation(new Vector3(0, -90 + Camera.Main.Transform.LocalRotation.Y, MathHelper.Clamp(-Camera.Main.Transform.LocalRotation.X,-15,15)));
+            //new Vector3(MathHelper.Clamp(-Camera.Main.Transform.LocalRotation.X,-15,15))
+            this.Transform.SetRotation(new Vector3(0, -90 + Camera.Main.Transform.LocalRotation.Y, MathHelper.Clamp(-Camera.Main.Transform.LocalRotation.X, -15, 15)));
+            //this.Transform.Rotate(0, -90 + Camera.Main.Transform.LocalRotation.Y, 0);
         }
     }
 }

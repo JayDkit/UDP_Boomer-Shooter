@@ -8,7 +8,7 @@ public static class Texture2DExtensions
     /// </summary>
     /// <param name="texture">Texture2D</param>
     /// <returns>Vector2</returns>
-    public static Vector2 GetOriginAsCenter(this Texture2D target)
+    public static Vector2 GetOriginAtCenter(this Texture2D target)
     {
         return new Vector2((int)(target.Width / 2.0f), (int)(target.Height / 2.0f));
     }

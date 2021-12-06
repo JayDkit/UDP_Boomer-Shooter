@@ -101,11 +101,17 @@ namespace GDLibrary.Managers
 
         public bool Remove(string key)
         {
+            if (key == null)
+                return false;
+
             return uiScenes.Remove(key);
         }
 
         public bool Remove(UIObject uiObject)
         {
+            if (uiObject == null)
+                return false;
+
             var scenesList = uiScenes.Keys;
             foreach (string uiSceneName in uiScenes.Keys)
             {
@@ -137,7 +143,11 @@ namespace GDLibrary.Managers
         {
             //is this component paused because of the menu?
             if (IsUpdated)
+            {
+                //TODO - apply batch remove
+
                 activeUIScene?.Update();
+            }
         }
 
         public override void Draw(GameTime gameTime)
@@ -146,7 +156,7 @@ namespace GDLibrary.Managers
             if (IsDrawn)
             {
                 spriteBatch.Begin(SpriteSortMode.FrontToBack,
-                    BlendState.NonPremultiplied, samplerState, null);
+                    BlendState.NonPremultiplied, samplerState, null, null, null, null);
                 activeUIScene?.Draw(spriteBatch);
                 spriteBatch.End();
             }

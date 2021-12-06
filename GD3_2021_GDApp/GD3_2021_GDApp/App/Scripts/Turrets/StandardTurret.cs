@@ -14,7 +14,7 @@ namespace GDApp.Content.Scripts.Turrets
         public override void Update()
         {
             base.Update();
-            if(count % 60 == 0)
+            if(count % 120 == 0)
             {
                 Shoot();
             }

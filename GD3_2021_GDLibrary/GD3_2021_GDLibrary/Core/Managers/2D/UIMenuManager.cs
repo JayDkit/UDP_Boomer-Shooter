@@ -19,27 +19,41 @@ namespace GDLibrary.Managers
             if (eventData.EventCategoryType == EventCategoryType.Menu)
             {
                 if (eventData.EventActionType == EventActionType.OnPause)
+                {
                     statusType = StatusType.Drawn | StatusType.Updated;
+                    Input.Mouse.SetMouseVisible(true);
+                }
                 else if (eventData.EventActionType == EventActionType.OnPlay)
+                {
                     statusType = StatusType.Off;
+                    Input.Mouse.SetMouseVisible(false);
+                    this.Dispose();
+                }
             }
         }
 
         public override void Update(GameTime gameTime)
         {
-            foreach (UIObject uiObject in activeUIScene.UiObjects)
+            //call this first to update an components attached to the menu objects
+            base.Update(gameTime);
+
+            //if your game keeps on reacting to ui buttons in-game then ensure we disable this functionality when in game
+            if (IsUpdated)
             {
-                var btnObject = uiObject as UIButtonObject;
-
-                if (btnObject != null)
+                foreach (UIObject uiObject in activeUIScene.UiObjects)
                 {
-                    if (Input.Mouse.Bounds.Intersects(btnObject.Bounds))
-                    {
-                        HandleMouseOver(btnObject);
+                    var btnObject = uiObject as UIButtonObject;
 
-                        if (Input.Mouse.WasJustClicked(Inputs.MouseButton.Left))
+                    if (btnObject != null)
+                    {
+                        if (Input.Mouse.Bounds.Intersects(btnObject.Bounds))
                         {
-                            HandleMouseClicked(btnObject);
+                            HandleMouseOver(btnObject);
+
+                            if (Input.Mouse.WasJustClicked(Inputs.MouseButton.Left))
+                            {
+                                HandleMouseClicked(btnObject);
+                            }
                         }
                     }
                 }

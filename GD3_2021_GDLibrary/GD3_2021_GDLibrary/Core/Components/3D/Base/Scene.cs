@@ -87,6 +87,11 @@ namespace GDLibrary.Components
             gameObjects.Add(this, gameObject);
         }
 
+        public void Remove(GameObject gameObject)
+        {
+            gameObjects.Remove(gameObject);
+        }
+
         public GameObject Find(Predicate<GameObject> predicate)
         {
             return gameObjects.Find(predicate);

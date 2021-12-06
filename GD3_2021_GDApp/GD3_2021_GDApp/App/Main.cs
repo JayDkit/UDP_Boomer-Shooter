@@ -12,7 +12,6 @@ using GDLibrary.Renderers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
-using GDApp.Content.Scripts.Player;
 using GDApp.Content.Scripts.Turrets;
 using GDApp.Content.Scripts.Turrets.Bullets;
 using GDApp.Scripts.Debug;
@@ -22,6 +21,8 @@ using JigLibX.Geometry;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Media;
 using GDLibrary.Collections;
+using GDApp.App.Scripts.UI;
+using GDApp.App.Scripts.Player;
 
 namespace GDApp
 {
@@ -50,6 +51,11 @@ namespace GDApp
         /// </summary>
         private UISceneManager uiSceneManager;
 
+        /// <summary>
+        /// Updates and Draws all menu objects
+        /// </summary>
+        private MyMenuManager uiMenuManager;
+
         private SoundManager soundManager;
         private EventDispatcher eventDispatcher;
         /// <summary>
@@ -68,7 +74,8 @@ namespace GDApp
         private ContentDictionary<SpriteFont> fontDictionary;
 
         //temp
-        private Scene activeScene;
+        private Scene menu;
+        private Scene level1;
         private GameObject camera;
         private PlayerGun gun;
         private StandardTurret turret;
@@ -118,12 +125,18 @@ namespace GDApp
             //load assets into the relevant dictionary
             LoadAssets();
 
-            //level with scenes and game objects
-            InitializeLevel();
+            //Start with menu scene
+            menu = new Scene("menu scene");
+            level1 = new Scene("level 1");
+            sceneManager.Add(menu);
+            sceneManager.Add(level1);
 
-            //add menu and ui
-            
-            InitializeUI();
+            InitializeMenu();
+
+            //level with scenes and game objects
+            //InitializeLevel();
+
+
 
             //TODO - remove hardcoded mouse values - update Screen class to centre the mouse with hardcoded value - remove later
             Input.Mouse.Position = Screen.Instance.ScreenCentre;
@@ -196,6 +209,16 @@ namespace GDApp
             textureDictionary.Add("skybox_back", Content.Load<Texture2D>("Assets/Textures/Skybox/back"));
             textureDictionary.Add("skybox_sky", Content.Load<Texture2D>("Assets/Textures/Skybox/sky"));
 
+            //ui
+            textureDictionary.Add("ui_progress_32_8", Content.Load<Texture2D>("Assets/Textures/UI/Controls/ui_progress_32_8"));
+            textureDictionary.Add("progress_white", Content.Load<Texture2D>("Assets/Textures/UI/Controls/progress_white"));
+
+            //menu
+            textureDictionary.Add("mainmenu", Content.Load<Texture2D>("Assets/Textures/UI/Backgrounds/mainmenu"));
+            textureDictionary.Add("audiomenu", Content.Load<Texture2D>("Assets/Textures/UI/Backgrounds/audiomenu"));
+            textureDictionary.Add("controlsmenu", Content.Load<Texture2D>("Assets/Textures/UI/Backgrounds/controlsmenu"));
+            textureDictionary.Add("exitmenuwithtrans", Content.Load<Texture2D>("Assets/Textures/UI/Backgrounds/exitmenuwithtrans"));
+            textureDictionary.Add("genericbtn", Content.Load<Texture2D>("Assets/Textures/UI/Controls/genericbtn"));
         }
 
         protected override void LoadContent()
@@ -219,77 +242,8 @@ namespace GDApp
         private void InitializeUI()  //19.11.21
         {
             //TODO
-            //InitializeGameMenu();
-            playerUI = new PlayerUI(uiSceneManager);
-            playerUI.InitializeUI();
-            //InitializeGameUI();
+            
         }
-
-        /// <summary>
-        /// Adds ui elements seen in-game (e.g. health, timer)
-        /// </summary>
-        private void InitializeGameUI()
-        {
-            //create the scene
-            var mainGameUIScene = new UIScene(AppData.UI_SCENE_MAIN_NAME);
-
-            #region Add Health Bar
-
-            //add a health bar in the centre of the game window
-            var texture = textureDictionary["progress_white"];
-            var position = new Vector2(_graphics.PreferredBackBufferWidth / 2, 50);
-            var origin = new Vector2(texture.Width / 2, texture.Height / 2);
-
-            //create the UI element
-            var healthTextureObj = new UITextureObject("health",
-                UIObjectType.Texture,
-                new Transform2D(position, new Vector2(2, 0.5f), 0),
-                0,
-                Color.White,
-                origin,
-                texture);
-
-            //add a demo time based behaviour - because we can!
-            healthTextureObj.AddComponent(new UITimeColorFlipBehaviour(Color.White, Color.Red, 1000));
-
-            //add a progress controller
-            healthTextureObj.AddComponent(new UIProgressBarController(5, 10));
-
-            //add the ui element to the scene
-            mainGameUIScene.Add(healthTextureObj);
-
-            #endregion Add Health Bar
-
-            #region Add Text
-
-            var font = fontDictionary["ui"];
-            var str = "player name";
-
-            //create the UI element
-            nameTextObj = new UITextObject(str, UIObjectType.Text,
-                new Transform2D(new Vector2(50, 50),
-                Vector2.One, 0),
-                0, font, "Brutus Maximus");
-
-            //  nameTextObj.Origin = font.MeasureString(str) / 2;
-            //  nameTextObj.AddComponent(new UIExpandFadeBehaviour());
-
-            //add the ui element to the scene
-            mainGameUIScene.Add(nameTextObj);
-
-            #endregion Add Text
-
-            #region Add Scene To Manager & Set Active Scene
-
-            //add the ui scene to the manager
-            uiSceneManager.Add(mainGameUIScene);
-
-            //set the active scene
-            uiSceneManager.SetActiveScene(AppData.UI_SCENE_MAIN_NAME);
-
-            #endregion Add Scene To Manager & Set Active Scene
-        }
-
         /// <summary>
         /// Adds component to draw debug info to the screen
         /// </summary>
@@ -329,6 +283,9 @@ namespace GDApp
 
             //create the ui scene manager to update and draw all ui scenes
             uiSceneManager = new UISceneManager(this, _spriteBatch);
+
+            //create the ui menu manager to update and draw all menu scenes
+            uiMenuManager = new MyMenuManager(this, _spriteBatch, this);
 
             //add support for playing sounds
             soundManager = new SoundManager(this);
@@ -373,27 +330,48 @@ namespace GDApp
             //add ui scene manager to update and drawn ui objects
             Components.Add(uiSceneManager);
 
+            //add ui menu manager to update and drawn menu objects
+            Components.Add(uiMenuManager);
+
             //add physics manager to enable CD/CR and physics
             //Components.Add(physicsManager);
-            
-			//add sound
+
+            //add sound
             Components.Add(soundManager);
         }
+
+        private void InitializeMenu()
+        {
+            var camera = new GameObject("menu camera", GameObjectType.Camera);
+            camera.AddComponent(new Camera(_graphics.GraphicsDevice.Viewport));
+            camera.Transform.SetTranslation(0, 2f, -10);
+            menu.Add(camera);
+
+            InitializeSkybox(menu, 1000);
+
+            UIMenu uiMenu = new UIMenu();
+            uiMenu.InitializeGameMenu(uiMenuManager, _graphics, textureDictionary, fontDictionary);
+
+            sceneManager.LoadScene("menu scene");
+        }
+
 
         /// <summary>
         /// Create a scene, add content, add to the scene manager, and load default scene
         /// </summary>
-        private void InitializeLevel()
+        public void InitializeLevel()
         {
-            activeScene = new Scene("level 1");
-			InitializeCameras(activeScene);
-            InitializeSkybox(activeScene, 1000);
+            Player player = new Player();
+
+            InitializeCameras(level1);
+            InitializeSkybox(level1, 1000);
+
 
             //Test load data from Level1.xml
-            LoadLevelXML loadLevel1 = new LoadLevelXML(activeScene);
+            LoadLevelXML loadLevel1 = new LoadLevelXML(level1);
             loadLevel1.setGroundFloor();
             loadLevel1.LoadLevelFromXML();
-
+            InitializeProps(level1);
             //StandardBullet bulletPrefab = new StandardBullet();
             //bulletPrefab.InitializeModel(activeScene);
             //activeScene.Add(bulletPrefab);
@@ -404,23 +382,18 @@ namespace GDApp
             //StandardBullet tempbullet = new StandardBullet();
             //tempbullet.InitializeModel(activeScene);
             //activeScene.Add(tempbullet);
+
+            //add menu and ui
+            //InitializeUI();
+            playerUI = new PlayerUI(uiSceneManager);
+            playerUI.InitializeUI(player);
+
             gun = new PlayerGun();
-            gun.InitializeModel(activeScene);
-            activeScene.Add(gun);
+            gun.InitializeModel(level1);
+            level1.Add(gun);
 
-            sceneManager.Add(activeScene);
-            sceneManager.LoadScene("level 1");
+            sceneManager.LoadScene(level1);
         }
-
-        /// <summary>
-        /// Demo of the new physics manager and collidable objects
-        /// </summary>
-        private void InitializeCollidables()
-        {
-        }
-
-        /// <summary>
-
 
         /// <summary>
         /// Set up the skybox using a QuadMesh
@@ -552,41 +525,227 @@ namespace GDApp
 
         #endregion Initialization - Engine, Cameras, Content
 
+        private void InitializeProps(Scene level)
+        {
+            #region Barrels
+            var texture = Content.Load<Texture2D>("Assets/Textures/Props/BarrelTexture");
+            var shader = new BasicShader(Application.Content, false, true);
+            var barrelMaterial = new BasicMaterial("barrel", shader, texture);
+
+            var barrel = new GameObject("barrel", GameObjectType.Prop);
+            var barrelModel = Content.Load<Model>("Assets/Models/Props/Barrel");
+            var barrelRenderer = new ModelRenderer(barrelModel, barrelMaterial);
+
+            barrel.AddComponent(barrelRenderer);
+            barrel.Transform.SetScale(0.45f, 0.45f, 0.45f);
+            barrel.Transform.SetTranslation(-40, 0, -40);
+            level.Add(barrel);
+
+            var count = 0;
+            for (var i = 0; i <= 2; i++)
+            {
+                var clone = barrel.Clone() as GameObject;
+                clone.Name = $"{clone.Name} - {count++}";
+
+                if (i == 0)
+                {
+                    clone.Transform.SetScale(0.45f, 0.45f, 0.45f);
+                    clone.Transform.SetTranslation(-39, 0, -40);
+                }
+                else if (i == 1)
+                {
+                    clone.Transform.SetScale(0.45f, 0.45f, 0.45f);
+                    clone.Transform.SetTranslation(-39.5f, 0, -41);
+                }
+
+                else if (i == 2)
+                {
+                    clone.Transform.SetScale(0.45f, 0.45f, 0.45f);
+                    clone.Transform.SetTranslation(-12, 0, -78);
+                }
+
+                level.Add(clone);
+            }
+            #endregion
+
+            #region Bins
+            texture = Content.Load<Texture2D>("Assets/Textures/Props/BinTexture");
+            shader = new BasicShader(Application.Content, false, true);
+            var binMaterial = new BasicMaterial("bin", shader, texture);
+
+            var bin = new GameObject("bin", GameObjectType.Prop);
+            var binModel = Content.Load<Model>("Assets/Models/Props/Bin");
+            var binRenderer = new ModelRenderer(binModel, binMaterial);
+
+            bin.Transform.SetScale(0.3f, 0.3f, 0.3f);
+            bin.Transform.SetTranslation(-20, -0.15f, -77);
+            bin.AddComponent(binRenderer);
+            level.Add(bin);
+
+            count = 0;
+            for (var i = 0; i <= 4; i++)
+            {
+                var binClone = bin.Clone() as GameObject;
+                binClone.Name = $"{binClone.Name} - {count++}";
+
+                if (i == 0)
+                {
+                    binClone.Transform.SetScale(0.3f, 0.3f, 0.3f);
+                    binClone.Transform.SetTranslation(-5, -0.15f, -40);
+                }
+                else if (i == 1)
+                {
+                    binClone.Transform.SetScale(0.3f, 0.3f, 0.3f);
+                    binClone.Transform.SetTranslation(-3, -0.18f, -6);
+                }
+                else if (i == 2)
+                {
+                    binClone.Transform.SetScale(0.3f, 0.3f, 0.3f);
+                    binClone.Transform.SetTranslation(-3, -0.18f, -20);
+                }
+                else if (i == 3)
+                {
+                    binClone.Transform.SetScale(0.3f, 0.3f, 0.3f);
+                    binClone.Transform.SetTranslation(-2, -0.18f, -49);
+                }
+                else if (i == 4)
+                {
+                    binClone.Transform.SetScale(0.3f, 0.3f, 0.3f);
+                    binClone.Transform.SetTranslation(-2, -0.18f, -67);
+                }
+
+                level.Add(binClone);
+                #endregion
+
+                #region Boxes
+                texture = Content.Load<Texture2D>("Assets/Textures/Props/BoxTexture");
+                shader = new BasicShader(Application.Content, false, true);
+                var boxMaterial = new BasicMaterial("box", shader, texture);
+
+                var box = new GameObject("box", GameObjectType.Prop);
+                var boxModel = Content.Load<Model>("Assets/Models/Props/Box");
+                var boxRenderer = new ModelRenderer(boxModel, boxMaterial);
+
+                box.Transform.SetScale(0.3f, 0.3f, 0.3f);
+                box.Transform.SetTranslation(-49, -0.2f, -48);
+                box.AddComponent(boxRenderer);
+                level.Add(box);
+
+                count = 0;
+                for (var j = 0; j <= 1; j++)
+                {
+                    var boxClone = box.Clone() as GameObject;
+                    boxClone.Name = $"{boxClone.Name} - {count++}";
+
+                    if (j == 0)
+                    {
+                        boxClone.Transform.SetScale(0.3f, 0.3f, 0.3f);
+                        boxClone.Transform.SetRotation(0, 10, 0);
+                        boxClone.Transform.SetTranslation(-49, 0.6f, -48.5f);
+                    }
+                    else if (j == 1)
+                    {
+                        boxClone.Transform.SetScale(0.3f, 0.3f, 0.3f);
+                        boxClone.Transform.SetTranslation(-49, -0.2f, -49);
+                    }
+
+                    level.Add(boxClone);
+                }
+                #endregion
+
+                #region Palettes
+                texture = Content.Load<Texture2D>("Assets/Textures/Props/PaletteTexture");
+                shader = new BasicShader(Application.Content, false, true);
+                var paletteMaterial = new BasicMaterial("palette", shader, texture);
+
+                var palette = new GameObject("palette", GameObjectType.Prop);
+                var paletteModel = Content.Load<Model>("Assets/Models/Props/Palette");
+                var paletteRenderer = new ModelRenderer(paletteModel, paletteMaterial);
+
+                palette.Transform.SetScale(0.4f, 0.4f, 0.4f);
+                palette.Transform.SetRotation(40, 90, 0);
+                palette.Transform.SetTranslation(-49, 0.5f, -44);
+                palette.AddComponent(paletteRenderer);
+                level.Add(palette);
+                #endregion
+
+                #region Bolts
+                texture = Content.Load<Texture2D>("Assets/Textures/Props/SteelTexture");
+                shader = new BasicShader(Application.Content, false, true);
+                var boltMaterial = new BasicMaterial("bolt", shader, texture);
+
+                var bolt = new GameObject("bolt", GameObjectType.Prop);
+                var boltModel = Content.Load<Model>("Assets/Models/Props/Bolt");
+                var boltRenderer = new ModelRenderer(boltModel, boltMaterial);
+
+                bolt.Transform.SetScale(0.05f, 0.05f, 0.05f);
+                bolt.Transform.SetRotation(90, 0, 0);
+                bolt.Transform.SetTranslation(-44, 0.05f, -44);
+                bolt.AddComponent(boltRenderer);
+                level.Add(bolt);
+                #endregion
+
+                #region Gears
+                texture = Content.Load<Texture2D>("Assets/Textures/Props/CopperTexture");
+                shader = new BasicShader(Application.Content, false, true);
+                var gearMaterial = new BasicMaterial("gear", shader, texture);
+
+                var gear = new GameObject("gear", GameObjectType.Prop);
+                var gearModel = Content.Load<Model>("Assets/Models/Props/Gear");
+                var gearRenderer = new ModelRenderer(gearModel, gearMaterial);
+
+                gear.Transform.SetScale(0.15f, 0.15f, 0.15f);
+                gear.Transform.SetTranslation(-38, 0f, -50);
+                gear.AddComponent(gearRenderer);
+                level.Add(gear);
+                #endregion
+
+                #region Newspapers
+                texture = Content.Load<Texture2D>("Assets/Textures/Props/NewspaperTexture");
+                shader = new BasicShader(Application.Content, false, true);
+                var newsMaterial = new BasicMaterial("newspaper", shader, texture);
+
+                var newspaper = new GameObject("newspaper", GameObjectType.Prop);
+                var newsModel = Content.Load<Model>("Assets/Models/Props/Newspaper");
+                var newsRenderer = new ModelRenderer(newsModel, newsMaterial);
+                newspaper.Transform.SetRotation(-90, 40, 0);
+                newspaper.Transform.SetScale(0.5f, 0.5f, 0.5f);
+                newspaper.AddComponent(newsRenderer);
+                level.Add(newspaper);
+                #endregion
+
+                #region Nuts
+                texture = Content.Load<Texture2D>("Assets/Textures/Props/SteelTexture");
+                shader = new BasicShader(Application.Content, false, true);
+                var nutMaterial = new BasicMaterial("nut", shader, texture);
+
+                var nut = new GameObject("nut", GameObjectType.Prop);
+                var nutModel = Content.Load<Model>("Assets/Models/Props/Nut");
+                var nutRenderer = new ModelRenderer(nutModel, nutMaterial);
+                nut.Transform.SetTranslation(-34, 0f, -55);
+                nut.Transform.SetScale(0.1f, 0.1f, 0.1f);
+                nut.AddComponent(nutRenderer);
+                level.Add(nut);
+                #endregion
+            }
+        }
+
 
 
         #region Update & Draw
 
         protected override void Update(GameTime gameTime)
         {
-        	/*
-        	if (Input.Keys.WasJustPressed(Microsoft.Xna.Framework.Input.Keys.P))
+            if (Input.Keys.WasJustPressed(Microsoft.Xna.Framework.Input.Keys.Escape))
             {
-                //DEMO - raise event
-                //EventDispatcher.Raise(new EventData(EventCategoryType.Menu,
-                //    EventActionType.OnPause));
-
-                object[] parameters = { nameTextObj };
-
-                EventDispatcher.Raise(new EventData(EventCategoryType.UiObject,
-                    EventActionType.OnRemoveObject, parameters));
-
-                ////renderManager.StatusType = StatusType.Off;
+                InitializeMenu();
+                EventDispatcher.Raise(new EventData(EventCategoryType.Menu, EventActionType.OnPause));
             }
-            else if (Input.Keys.WasJustPressed(Microsoft.Xna.Framework.Input.Keys.U))
-            {
-                //DEMO - raise event
-
-                object[] parameters = { "main game ui", nameTextObj };
-
-                EventDispatcher.Raise(new EventData(EventCategoryType.UiObject,
-                    EventActionType.OnAddObject, parameters));
-
-                //renderManager.StatusType = StatusType.Drawn;
-                //EventDispatcher.Raise(new EventData(EventCategoryType.Menu,
-                //  EventActionType.OnPlay));
-            }
-            */
             base.Update(gameTime);
+            //GameObject obj = sceneManager?.Find(gameObject => gameObject.Name.Equals("main camera"));
+            //System.Diagnostics.Debug.WriteLine("Menu camera: " + obj?.Scene.Name);
+
+
 #if DEMO
             activeScene.Update();
             //bullet.Update();
@@ -599,15 +758,8 @@ namespace GDApp
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.HotPink);
+            GraphicsDevice.Clear(Color.Blue);
             base.Draw(gameTime);
-
-            #if DEMO
-            _spriteBatch.Begin();
-            fps.DrawFps(_spriteBatch, font, new Vector2(10f, 10f), Color.MonoGameOrange);
-            _spriteBatch.End();
-            #endif
-            
         }
 
         #endregion Update & Draw

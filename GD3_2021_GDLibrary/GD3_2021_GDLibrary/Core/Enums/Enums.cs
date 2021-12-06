@@ -117,6 +117,8 @@
         OnObjectPicked,
         OnNoObjectPicked,
         OnHealthDelta,
+        OnVolumeSetMaster,
+        OnVolumeChange,
 
         //add more here...
     }
