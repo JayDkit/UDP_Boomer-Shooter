@@ -566,7 +566,7 @@ namespace GDApp
         private void InitializeProps(Scene level)
         {
             #region Barrels
-            var texture = Content.Load<Texture2D>("Assets/Textures/Props/BarrelTexture");
+            var texture = Content.Load<Texture2D>("Assets/Textures/Props/Barrel_Texture");
             var shader = new BasicShader(Application.Content, false, true);
             var barrelMaterial = new BasicMaterial("barrel", shader, texture);
 
@@ -580,7 +580,7 @@ namespace GDApp
             level.Add(barrel);
 
             var count = 0;
-            for (var i = 0; i <= 2; i++)
+            for (var i = 0; i <= 4; i++)
             {
                 var clone = barrel.Clone() as GameObject;
                 clone.Name = $"{clone.Name} - {count++}";
@@ -600,6 +600,18 @@ namespace GDApp
                 {
                     clone.Transform.SetScale(0.45f, 0.45f, 0.45f);
                     clone.Transform.SetTranslation(-12, 0, -78);
+                }
+
+                else if (i == 3)
+                {
+                    clone.Transform.SetScale(0.45f, 0.45f, 0.45f);
+                    clone.Transform.SetTranslation(-23, 0, -55);
+                }
+
+                else if (i == 4)
+                {
+                    clone.Transform.SetScale(0.45f, 0.45f, 0.45f);
+                    clone.Transform.SetTranslation(10, 5.5f, -78);
                 }
 
                 level.Add(clone);
@@ -670,7 +682,7 @@ namespace GDApp
                 level.Add(box);
 
                 count = 0;
-                for (var j = 0; j <= 1; j++)
+                for (var j = 0; j <= 7; j++)
                 {
                     var boxClone = box.Clone() as GameObject;
                     boxClone.Name = $"{boxClone.Name} - {count++}";
@@ -686,7 +698,36 @@ namespace GDApp
                         boxClone.Transform.SetScale(0.3f, 0.3f, 0.3f);
                         boxClone.Transform.SetTranslation(-49, -0.2f, -49);
                     }
-
+                    else if (j == 2)
+                    {
+                        boxClone.Transform.SetScale(0.3f, 0.3f, 0.3f);
+                        boxClone.Transform.SetTranslation(-40, -0.2f, -86);
+                    }
+                    else if (j == 3)
+                    {
+                        boxClone.Transform.SetScale(0.3f, 0.3f, 0.3f);
+                        boxClone.Transform.SetTranslation(-26, -0.2f, -80);
+                    }
+                    else if (j == 4)
+                    {
+                        boxClone.Transform.SetScale(0.3f, 0.3f, 0.3f);
+                        boxClone.Transform.SetTranslation(12, -0.2f, -41);
+                    }
+                    else if (j == 5)
+                    {
+                        boxClone.Transform.SetScale(0.3f, 0.3f, 0.3f);
+                        boxClone.Transform.SetTranslation(-21, -0.2f, -68);
+                    }
+                    else if (j == 6)
+                    {
+                        boxClone.Transform.SetScale(0.3f, 0.3f, 0.3f);
+                        boxClone.Transform.SetTranslation(-30, 5.5f, -70);
+                    }
+                    else if (j == 7)
+                    {
+                        boxClone.Transform.SetScale(0.3f, 0.3f, 0.3f);
+                        boxClone.Transform.SetTranslation(-27, 5.5f, -66);
+                    }
                     level.Add(boxClone);
                 }
                 #endregion
@@ -705,6 +746,27 @@ namespace GDApp
                 palette.Transform.SetTranslation(-49, 0.5f, -44);
                 palette.AddComponent(paletteRenderer);
                 level.Add(palette);
+
+                count = 0;
+                for (var j = 0; j <= 1; j++)
+                {
+                    var paletteClone = palette.Clone() as GameObject;
+                    paletteClone.Name = $"{paletteClone.Name} - {count++}";
+
+                    #region Hallways
+                    if (j == 0)
+                    {
+                        paletteClone.Transform.SetScale(0.4f, 0.4f, 0.4f);
+                        paletteClone.Transform.SetTranslation(-24, 0, -62);
+                    }
+                    if (j == 1)
+                    {
+                        paletteClone.Transform.SetScale(0.4f, 0.4f, 0.4f);
+                        paletteClone.Transform.SetTranslation(-15, 5.75f, -78);
+                    }
+                    #endregion
+                    level.Add(paletteClone);
+                }
                 #endregion
 
                 #region Bolts
@@ -721,7 +783,49 @@ namespace GDApp
                 bolt.Transform.SetTranslation(-44, 0.05f, -44);
                 bolt.AddComponent(boltRenderer);
                 level.Add(bolt);
+
+                count = 0;
+                for (var j = 0; j <= 5; j++)
+                {
+                    var boltClone = bolt.Clone() as GameObject;
+                    boltClone.Name = $"{boltClone.Name} - {count++}";
+
+                    #region Hallways
+                    if (j == 0)
+                    {
+                        bolt.Transform.SetScale(0.05f, 0.05f, 0.05f);
+                        bolt.Transform.SetRotation(90, 0, 0);
+                        boltClone.Transform.SetTranslation(-25, 0.05f, -62);
+                    }
+                    else if (j == 1)
+                    {
+                        bolt.Transform.SetScale(0.05f, 0.05f, 0.05f);
+                        bolt.Transform.SetRotation(90, 40, 0);
+                        boltClone.Transform.SetTranslation(0, 0.05f, -84);
+                    }
+                    else if (j == 2)
+                    {
+                        bolt.Transform.SetScale(0.05f, 0.05f, 0.05f);
+                        bolt.Transform.SetRotation(-90, 70, 0);
+                        boltClone.Transform.SetTranslation(34, 0.05f, -12);
+                    }
+                    else if (j == 3)
+                    {
+                        bolt.Transform.SetScale(0.05f, 0.05f, 0.05f);
+                        bolt.Transform.SetRotation(90, 0, 0);
+                        boltClone.Transform.SetTranslation(10, 0.05f, -42);
+                    }
+                    else if (j == 4)
+                    {
+                        bolt.Transform.SetScale(0.05f, 0.05f, 0.05f);
+                        bolt.Transform.SetRotation(90, 20, 0);
+                        boltClone.Transform.SetTranslation(-10, 0.05f, -50);
+                    }
+                    level.Add(boltClone);
+                    #endregion
+                }
                 #endregion
+
 
                 #region Gears
                 texture = Content.Load<Texture2D>("Assets/Textures/Props/CopperTexture");
@@ -736,6 +840,61 @@ namespace GDApp
                 gear.Transform.SetTranslation(-38, 0f, -50);
                 gear.AddComponent(gearRenderer);
                 level.Add(gear);
+
+                count = 0;
+                for (var k = 0; k <= 7; k++)
+                {
+                    var gearClone = gear.Clone() as GameObject;
+                    gearClone.Name = $"{gearClone.Name} - {count++}";
+
+                    #region Hallways
+                    if (k == 0)
+                    {
+                        gearClone.Transform.SetScale(0.15f, 0.15f, 0.15f);
+                        gearClone.Transform.SetTranslation(-38, 0f, -50);
+                    }
+                    else if (k == 1)
+                    {
+                        gearClone.Transform.SetScale(0.15f, 0.15f, 0.15f);
+                        gearClone.Transform.SetRotation(50, 90, 0);
+                        gearClone.Transform.SetTranslation(-49.5f, 0.2f, -68);
+                    }
+                    else if (k == 2)
+                    {
+                        gearClone.Transform.SetScale(0.15f, 0.15f, 0.15f);
+                        gearClone.Transform.SetTranslation(7, 0, -50);
+                    }
+                    else if (k == 3)
+                    {
+                        gearClone.Transform.SetScale(0.15f, 0.15f, 0.15f);
+                        gearClone.Transform.SetRotation(60, 0, 0);
+                        gearClone.Transform.SetTranslation(-6, 0.2f, -47.7f);
+                    }
+                    else if (k == 4)
+                    {
+                        gearClone.Transform.SetScale(0.15f, 0.15f, 0.15f);
+                        gearClone.Transform.SetTranslation(-21, 0, -52f);
+                    }
+                    else if (k == 5)
+                    {
+                        gearClone.Transform.SetScale(0.3f, 0.3f, 0.3f);
+                        gearClone.Transform.SetTranslation(8, 0, -60f);
+                    }
+                    else if (k == 6)
+                    {
+                        gearClone.Transform.SetScale(0.3f, 0.3f, 0.3f);
+                        gearClone.Transform.SetRotation(60, -90, 0);
+                        gearClone.Transform.SetTranslation(17.55f, 0.27f, -71f);
+                    }
+                    else if (k == 7)
+                    {
+                        gearClone.Transform.SetScale(0.3f, 0.3f, 0.3f);
+                        gearClone.Transform.SetRotation(60, 0, 0);
+                        gearClone.Transform.SetTranslation(-10, 0.25f, -75.3f);
+                    }
+                    level.Add(gearClone);
+                    #endregion
+                }
                 #endregion
 
                 #region Newspapers
@@ -750,6 +909,29 @@ namespace GDApp
                 newspaper.Transform.SetScale(0.5f, 0.5f, 0.5f);
                 newspaper.AddComponent(newsRenderer);
                 level.Add(newspaper);
+
+                count = 0;
+                for (var k = 0; k <= 1; k++)
+                {
+                    var newsClone = newspaper.Clone() as GameObject;
+                    newsClone.Name = $"{newsClone.Name} - {count++}";
+
+                    //balcony
+                    if (k == 0)
+                    {
+                        newsClone.Transform.SetScale(0.5f, 0.5f, 0.5f);
+                        newsClone.Transform.SetRotation(-90, -40, 0);
+                        newsClone.Transform.SetTranslation(-20, 5.2f, -77f);
+                    }
+                    //hallway
+                    else if (k == 1)
+                    {
+                        newsClone.Transform.SetScale(0.5f, 0.5f, 0.5f);
+                        newsClone.Transform.SetRotation(-90, -40, 0);
+                        newsClone.Transform.SetTranslation(-15, -0.1f, -50);
+                    }
+                    level.Add(newsClone);
+                }
                 #endregion
 
                 #region Nuts
@@ -764,6 +946,43 @@ namespace GDApp
                 nut.Transform.SetScale(0.1f, 0.1f, 0.1f);
                 nut.AddComponent(nutRenderer);
                 level.Add(nut);
+
+                count = 0;
+                for (var k = 0; k <= 4; k++)
+                {
+                    var nutClone = nut.Clone() as GameObject;
+                    nutClone.Name = $"{nutClone.Name} - {count++}";
+
+                    #region Hallways
+                    if (k == 0)
+                    {
+                        nutClone.Transform.SetTranslation(-30, 0f, -74);
+                        nutClone.Transform.SetScale(0.1f, 0.1f, 0.1f);
+                    }
+                    else if (k == 1)
+                    {
+                        nutClone.Transform.SetTranslation(-15, 0f, -60);
+                        nutClone.Transform.SetScale(0.1f, 0.1f, 0.1f);
+                    }
+                    else if (k == 2)
+                    {
+                        nutClone.Transform.SetTranslation(15, 0f, -43);
+                        nutClone.Transform.SetScale(0.1f, 0.1f, 0.1f);
+                    }
+                    else if (k == 3)
+                    {
+                        nutClone.Transform.SetTranslation(-6, 0f, -53);
+                        nutClone.Transform.SetScale(0.1f, 0.1f, 0.1f);
+                    }
+                    else if (k == 4)
+                    {
+                        nutClone.Transform.SetTranslation(-6, 0f, -27);
+                        nutClone.Transform.SetScale(0.1f, 0.1f, 0.1f);
+                    }
+                    #endregion
+                    level.Add(nutClone);
+                }
+
                 #endregion
             }
         }

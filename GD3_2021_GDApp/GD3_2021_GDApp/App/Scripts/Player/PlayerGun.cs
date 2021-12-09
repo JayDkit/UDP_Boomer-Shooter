@@ -12,7 +12,7 @@ namespace GDApp.App.Scripts.Player
 
         Model gunMesh = Application.Main.Content.Load<Model>("Assets/Models/Guns/PlayerGun");
         BasicShader shader = new BasicShader(Application.Content, false, true);
-        Texture2D texture = Application.Main.Content.Load<Texture2D>("Assets/Demo/Textures/grey");
+        Texture2D texture = Application.Main.Content.Load<Texture2D>("Assets/Demo/Textures/Shotgun_Texture");
 
         public PlayerGun() : base("Gun", GameObjectType.Player, true) //Change type
         {

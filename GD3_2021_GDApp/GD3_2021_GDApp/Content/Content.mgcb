@@ -556,7 +556,7 @@
 /processorParam:TextureFormat=Color
 /build:Assets/Textures/Pickups/HealthkitTexture.png
 
-#begin Assets/Textures/Props/BarrelTexture.png
+#begin Assets/Textures/Props/Barrel_Texture.jpg
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -566,7 +566,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Assets/Textures/Props/BarrelTexture.png
+/build:Assets/Textures/Props/Barrel_Texture.jpg
 
 #begin Assets/Textures/Props/BinTexture.jpg
 /importer:TextureImporter
@@ -591,6 +591,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Assets/Textures/Props/BoxTexture.jpg
+
+#begin Assets/Textures/Props/Button_Texture.jpg
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/Props/Button_Texture.jpg
 
 #begin Assets/Textures/Props/CopperTexture.jpg
 /importer:TextureImporter
@@ -664,6 +676,18 @@
 /processorParam:TextureFormat=Color
 /build:Assets/Textures/Props/SteelTexture.jpg
 
+#begin Assets/Textures/Shotgun_Texture.jpg
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/Shotgun_Texture.jpg
+
 #begin Assets/Textures/Skybox/back.bmp
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -723,6 +747,30 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Assets/Textures/Skybox/sky.bmp
+
+#begin Assets/Textures/Turret_Off_Texture.jpg
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/Turret_Off_Texture.jpg
+
+#begin Assets/Textures/Turret_On_Texture.jpg
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/Turret_On_Texture.jpg
 
 #begin Assets/Textures/UI/Backgrounds/audiomenu.png
 /importer:TextureImporter
