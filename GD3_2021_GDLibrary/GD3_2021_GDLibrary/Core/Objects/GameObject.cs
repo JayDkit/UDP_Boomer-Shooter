@@ -13,8 +13,11 @@ namespace GDLibrary
         Interactable,
         Consumable,
         Architecture,
+        Environment,
         Skybox,
-        Editor
+        Editor,
+        Prop,
+        Ground
         //STU - add more for your game here...
     }
 
@@ -33,13 +36,16 @@ namespace GDLibrary
         #region Fields
 
         //Type, Tag, LayerMask, ID
-        protected GameObjectType gameObjectType;
 
-        public GameObjectType GameObjectType
-        {
-            get { return gameObjectType; }
-            protected set { gameObjectType = value; }
-        }
+        /// <summary>
+        /// Indicates whether the game object will be removed during game play (e.g. any 3D object that persists during gameplay is there for entire game)
+        /// </summary>
+        protected bool isPersistent = true;
+
+        /// <summary>
+        /// Enumerated type indicating what category ths game object belongs to (e.g. Camera, Pickup, NPC, Interactable)
+        /// </summary>
+        protected GameObjectType gameObjectType;
 
         /// <summary>
         /// Unique identifier for each game object - may be used for search, sort later
@@ -79,6 +85,21 @@ namespace GDLibrary
         #endregion Fields
 
         #region Properties
+
+        public bool IsPersistent  //replaces IsStatic for clarity of terminology
+        {
+            get { return isPersistent; }
+            set { isPersistent = value; }
+        }
+
+        /// <summary>
+        /// Gets/sets the game object type
+        /// </summary>
+        public GameObjectType GameObjectType
+        {
+            get { return gameObjectType; }
+            protected set { gameObjectType = value; }
+        }
 
         /// <summary>
         /// Gets/sets the unique ID
@@ -151,18 +172,30 @@ namespace GDLibrary
 
         #region Constructors
 
-        public GameObject() : this("", GameObjectType.Architecture)
+        /// <summary>
+        /// Instantiates a 3D game object
+        /// </summary>
+        /// <param name="name">String preferably a unique name but not essential</param>
+        /// <param name="gameObjectType">GameObjectType one of an enum of types in case we ever want to search by type</param>
+        public GameObject(string name, GameObjectType gameObjectType)
+            : this(name, gameObjectType, true)
         {
         }
 
+        /// <summary>
+        /// Instantiates a 3D game object
+        /// </summary>
+        /// <param name="name">String preferably a unique name but not essential</param>
+        /// <param name="gameObjectType">GameObjectType one of an enum of types in case we ever want to search by type</param>
+        /// <param name="isPersistent">bool decides which list we put the game object in when added to the scene (i.e. persistent(lasts all the game) or dynamic (added/removed during gameplay)</param>
         public GameObject(string name,
-            GameObjectType gameObjectType = GameObjectType.Architecture)
+           GameObjectType gameObjectType, bool isPersistent)
         {
-            InternalConstructor(name, gameObjectType);
+            InternalConstructor(name, gameObjectType, isPersistent);
         }
 
         private void InternalConstructor(string name,
-            GameObjectType gameObjectType)
+            GameObjectType gameObjectType, bool isPersistent)
         {
             this.gameObjectType = gameObjectType;
             if (transform == null)
@@ -171,12 +204,14 @@ namespace GDLibrary
                 transform = new Transform();                                            //add default transform
                 transform.transform = transform;
                 transform.GameObject = this;                                            //tell transform who it belongs to
-                transform.Awake();
+                transform.Awake(this);
                 components.Add(transform);                                              //add transform to the list
             }
 
             isEnabled = true;
             isRunning = false;
+            IsPersistent = isPersistent; //by default we will consider any new object static (i.e. belongs to a static list in GameObjectList used in Scene)
+
             ID = "GO-" + Guid.NewGuid();
             Name = string.IsNullOrEmpty(name) ? ID : name;
         }
@@ -235,7 +270,8 @@ namespace GDLibrary
 
             if (transform != null)
             {
-                InternalConstructor(name, gameObjectType);
+                //TODO - check IsPersistent on components - is default true ok?
+                InternalConstructor(name, gameObjectType, true);
                 transform.SetTranslation(transform.LocalTranslation);
                 transform.SetRotation(transform.LocalRotation);
                 transform.SetScale(transform.LocalScale);
@@ -247,7 +283,7 @@ namespace GDLibrary
                 //set components transform same as this component
                 component.transform = this.transform;
                 //perform any initial wake up operations
-                component.Awake();
+                component.Awake(this);
                 //TODO - prevent duplicate components? Component::Equals and GetHashCode need to be implemented
                 components.Add(component);
             }
@@ -363,6 +399,7 @@ namespace GDLibrary
                     clonedComponent.transform = clonedTransform;
             }
 
+            clone.IsPersistent = this.isPersistent;
             return clone;
         }
 

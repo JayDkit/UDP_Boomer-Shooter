@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -11,8 +11,6 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
     <RootNamespace>GDApp</RootNamespace>
     <AssemblyName>GDApp</AssemblyName>
-    <Authors>GDApp</Authors>
-    <Company>King Collection</Company>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -21,12 +19,26 @@
     <TrimmerRootAssembly Include="Microsoft.Xna.Framework.Content.ContentTypeReader" Visible="false" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="ImGui.NET" Version="1.78.0" />
     <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.0.1641" />
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.0.1641" />
   </ItemGroup>
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App\Data\" />
+    <Folder Include="App\Menu\" />
+    <Folder Include="Content\Assets\Data\" />
+    <Folder Include="Content\Assets\Textures\UI\Progress\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="BEPUphysics">
+      <HintPath>..\..\Dependencies\BEPUphysics.dll</HintPath>
+    </Reference>
+    <Reference Include="BEPUutilities">
+      <HintPath>..\..\Dependencies\BEPUutilities.dll</HintPath>
+    </Reference>
+  </ItemGroup>
   <Import Project="..\..\GD3_2021_GDLibrary\GD3_2021_GDLibrary\GD3_2021_GDLibrary.projitems" Label="Shared" />
+  <Import Project="..\..\JigLibX\JigLibX.projitems" Label="Shared" />
 </Project>

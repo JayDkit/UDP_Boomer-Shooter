@@ -21,20 +21,23 @@ namespace GDLibrary.Graphics
 
         #region Constructors
 
-        public BasicMaterial(string name) : base(name)
+        public BasicMaterial(string name, Shader shader, Texture2D texture)
+            : this(name, shader, new Color(255, 255, 255, 255), 1, texture)
         {
-            DiffuseColor = Color.White.ToVector3();
+        }
+
+        public BasicMaterial(string name, Shader shader, Color diffuseColor, float alpha, Texture2D texture)
+            : base(name, shader, alpha)
+        {
+            this.diffuseColor = diffuseColor.ToVector3();
+            this.texture = texture;
         }
 
         #endregion Constructors
 
         public override object Clone()
         {
-            var clone = new BasicMaterial($"Clone - {name}");
-            clone.diffuseColor = diffuseColor; //deep
-            clone.texture = texture;  //shallow
-            clone.shader = shader; //shallow
-            return clone;
+            return new BasicMaterial($"Clone - {name}", shader, new Color(diffuseColor), alpha, texture);
         }
     }
 }
