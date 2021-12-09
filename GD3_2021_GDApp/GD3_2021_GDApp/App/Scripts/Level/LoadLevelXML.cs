@@ -102,8 +102,8 @@ namespace GDApp.Content.Scripts.Level
             textureDictionary.Add("speed_pickup", Application.Main.Content.Load<Texture2D>("Assets/Textures/Pickups/ElectricityTexture"));
             textureDictionary.Add("health_pickup", Application.Main.Content.Load<Texture2D>("Assets/Textures/Pickups/HealthKitTexture"));
             textureDictionary.Add("rapidFire_pickup", Application.Main.Content.Load<Texture2D>("Assets/Textures/Pickups/BrassTexture"));
-            textureDictionary.Add("turret", Application.Main.Content.Load<Texture2D>("Assets/Demo/Textures/Turret_Off_Texture"));
-            textureDictionary.Add("turretOn", Application.Main.Content.Load<Texture2D>("Assets/Demo/Textures/Turret_On_Texture"));
+            textureDictionary.Add("turret", Application.Main.Content.Load<Texture2D>("Assets/Textures/Turret_Off_Texture"));
+            textureDictionary.Add("turretOn", Application.Main.Content.Load<Texture2D>("Assets/Textures/Turret_On_Texture"));
         }
 
         public void setGroundFloor() //Setting the ground floor manually

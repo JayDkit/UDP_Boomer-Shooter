@@ -15,7 +15,7 @@ namespace GDApp.Content.Scripts.Turrets
 
         Model turretMesh = Application.Main.Content.Load<Model>("Assets/Models/Turret");
         BasicShader shader = new BasicShader(Application.Content, false, true);
-        Texture2D texture = Application.Main.Content.Load<Texture2D>("Assets/Demo/Textures/grey");
+        Texture2D texture = Application.Main.Content.Load<Texture2D>("Assets/Textures/Turret_Off_Texture");
         public void InitializeModel(Scene level)
         {
             this.AddComponent(new ModelRenderer(turretMesh, new BasicMaterial("turret_material", shader, texture)));
