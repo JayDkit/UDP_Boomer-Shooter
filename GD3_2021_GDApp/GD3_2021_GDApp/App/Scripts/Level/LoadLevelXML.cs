@@ -153,19 +153,20 @@ namespace GDApp.Content.Scripts.Level
                     cloneWall.Transform.Transform.SetTranslation(translation);
                     cloneWall.Transform.Transform.SetRotation(rotation);
                     cloneWall.Transform.SetScale(scale);
-                    /*
+                    
+                    
                     collider = new Collider();
                     cloneWall.AddComponent(collider);
-                   
                     collider.AddPrimitive(new Box(
                         cloneWall.Transform.LocalTranslation,
-                        //new Vector3(cloneWall.Transform.LocalRotation.X, cloneWall.Transform.LocalRotation.X, -cloneWall.Transform.LocalRotation.Z),
-                        new Vector3(0, -cloneWall.Transform.LocalRotation.Y, 0),
+                        //new Vector3(cloneWall.Transform.LocalRotation.X, cloneWall.Transform.LocalRotation.X, cloneWall.Transform.LocalRotation.Z),
+                        //new Vector3(0, -cloneWall.Transform.LocalRotation.Y, 0),
+                        cloneWall.Transform.LocalRotation,
                         cloneWall.Transform.LocalScale),
-                        new MaterialProperties(0,0,0)
+                        new MaterialProperties(0, 0, 0)
                         );
                     collider.Enable(true, 1);
-                    */
+                    
                     level.Add(cloneWall);
                     break;
                 case "Turret":
@@ -182,6 +183,17 @@ namespace GDApp.Content.Scripts.Level
                     cloneFloor.Transform.Transform.SetTranslation(translation);
                     cloneFloor.Transform.Transform.SetRotation(rotation);
                     cloneFloor.Transform.SetScale(scale);
+
+                    collider = new Collider();
+                    cloneFloor.AddComponent(collider);
+                    collider.AddPrimitive(new Box(
+                        cloneFloor.Transform.LocalTranslation,
+                        cloneFloor.Transform.LocalRotation,
+                        cloneFloor.Transform.LocalScale),
+                        new MaterialProperties(0, 0, 0)
+                        );
+                    collider.Enable(true, 1);
+
                     level.Add(cloneFloor);
                     break;
                 case "Pickup-Health":
