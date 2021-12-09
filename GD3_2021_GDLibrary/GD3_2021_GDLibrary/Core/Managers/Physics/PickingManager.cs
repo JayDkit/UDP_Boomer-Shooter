@@ -32,7 +32,7 @@ namespace GDLibrary.Managers
 
         protected virtual void HandleMouse(GameTime gameTime)
         {
-            //       if (Input.Mouse.WasJustClicked(Inputs.MouseButton.Left))
+            //if (Input.Mouse.WasJustClicked(Inputs.MouseButton.Left))
             GetPickedObject();
 
             //predicate was matched and i should notify
@@ -63,7 +63,7 @@ namespace GDLibrary.Managers
                 pickStartDistance, pickEndDistance,
                 out pos, out normal) as GameObject;
 
-            if (collisionPredicate(pickedObject))
+            if (pickedObject != null && collisionPredicate(pickedObject))
             {
                 var behaviour = pickedObject.GetComponent<PickupBehaviour>();
 

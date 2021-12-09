@@ -1,4 +1,4 @@
-﻿//#define DEMO
+﻿#define DEMO
 
 using GDLibrary;
 using GDLibrary.Components;
@@ -23,6 +23,7 @@ using Microsoft.Xna.Framework.Media;
 using GDLibrary.Collections;
 using GDApp.App.Scripts.UI;
 using GDApp.App.Scripts.Player;
+using System;
 
 namespace GDApp
 {
@@ -61,7 +62,7 @@ namespace GDApp
         /// <summary>
         /// Renders all ui objects
         /// </summary>
-        //private PhysicsManager physicsManager;
+        private PhysicsManager physicsManager;
 
         /// <summary>
         /// Quick lookup for all textures used within the game
@@ -131,10 +132,10 @@ namespace GDApp
             sceneManager.Add(menu);
             sceneManager.Add(level1);
 
-            InitializeMenu();
+            //InitializeMenu();
 
             //level with scenes and game objects
-            //InitializeLevel();
+            InitializeLevel();
 
 
 
@@ -142,7 +143,7 @@ namespace GDApp
             Input.Mouse.Position = Screen.Instance.ScreenCentre;
 
             //turn on/off debug info
-            InitializeDebugUI(true);
+            InitializeDebugUI(true, true);
 
             base.Initialize();
         }
@@ -247,7 +248,7 @@ namespace GDApp
         /// <summary>
         /// Adds component to draw debug info to the screen
         /// </summary>
-        private void InitializeDebugUI(bool showDebug)
+        private void InitializeDebugUI(bool showDebug, bool showCollisionSkins = true)
         {
             
             if (showDebug)
@@ -259,6 +260,10 @@ namespace GDApp
                     new Vector2(40, 40),
                     Color.White));
             }
+            if (showCollisionSkins)
+                Components.Add(new GDLibrary.Utilities.GDDebug.PhysicsDebugDrawer(this, Color.Red));
+
+
         }
 
         #endregion Initialization - UI & Menu
@@ -276,7 +281,7 @@ namespace GDApp
             //the most important element! add event dispatcher for system events
             eventDispatcher = new EventDispatcher(this);
             //add physics manager to enable CD/CR and physics
-            //physicsManager = new PhysicsManager(this);
+            physicsManager = new PhysicsManager(this);
 
             //instanciate scene manager to store all scenes
             sceneManager = new SceneManager(this);
@@ -285,16 +290,30 @@ namespace GDApp
             uiSceneManager = new UISceneManager(this, _spriteBatch);
 
             //create the ui menu manager to update and draw all menu scenes
-            uiMenuManager = new MyMenuManager(this, _spriteBatch, this);
+            //uiMenuManager = new MyMenuManager(this, _spriteBatch, this);
 
             //add support for playing sounds
             soundManager = new SoundManager(this);
+
+            //picking support using physics engine
+            //this predicate lets us say ignore all the other collidable objects except interactables and consumables
+            Predicate<GameObject> collisionPredicate =
+                (collidableObject) =>
+                {
+                    if (collidableObject != null)
+                        return collidableObject.GameObjectType
+                        == GameObjectType.Interactable
+                        || collidableObject.GameObjectType == GameObjectType.Consumable;
+
+                    return false;
+                };
 
             //initialize global application data
             Application.Main = this;
             Application.Content = Content;
             Application.GraphicsDevice = _graphics.GraphicsDevice;
             Application.GraphicsDeviceManager = _graphics;
+            Application.PhysicsManager = physicsManager;
             Application.SceneManager = sceneManager;
 			//Application.PhysicsManager = physicsManager;
 
@@ -321,6 +340,9 @@ namespace GDApp
             Components.Add(Input.Mouse);
             Components.Add(Input.Gamepad);
 
+            //add physics manager to enable CD/CR and physics
+            Components.Add(physicsManager);
+
             //add scene manager to update game objects
             Components.Add(sceneManager);
 
@@ -331,10 +353,7 @@ namespace GDApp
             Components.Add(uiSceneManager);
 
             //add ui menu manager to update and drawn menu objects
-            Components.Add(uiMenuManager);
-
-            //add physics manager to enable CD/CR and physics
-            //Components.Add(physicsManager);
+            //Components.Add(uiMenuManager);
 
             //add sound
             Components.Add(soundManager);
@@ -465,15 +484,11 @@ namespace GDApp
         /// <param name="level"></param>
         private void InitializeCameras(Scene level)
         {
+            /*
             #region First Person Camera
 
             //add camera game object
             var camera = new GameObject("main camera", GameObjectType.Camera);
-
-            //set viewport
-            //var viewportLeft = new Viewport(0, 0,
-            //    _graphics.PreferredBackBufferWidth / 2,
-            //    _graphics.PreferredBackBufferHeight);
 
             //add components
             camera.AddComponent(new Camera(_graphics.GraphicsDevice.Viewport));
@@ -486,6 +501,29 @@ namespace GDApp
             level.Add(camera);
 
             #endregion First Person Camera
+            */
+            //add camera game object
+            var camera = new GameObject(AppData.CAMERA_FIRSTPERSON_COLLIDABLE_NAME, GameObjectType.Camera);
+
+            //set initial position - important to set before the collider as collider capsule feeds off this position
+            camera.Transform.SetTranslation(0, 2.6f, 0);
+
+            //add components
+            camera.AddComponent(new Camera(_graphics.GraphicsDevice.Viewport));
+
+            //adding a collidable surface that enables acceleration, jumping
+            //var collider = new CharacterCollider(2, 2, true, false);
+
+            var collider = new MyHeroCollider(2, 2, true, false);
+            camera.AddComponent(collider);
+            collider.AddPrimitive(new Capsule(camera.Transform.LocalTranslation,
+                Matrix.CreateRotationX(MathHelper.PiOver2), 0.3f, 1.6f),
+                new MaterialProperties(0.2f, 0.8f, 0.7f));
+            collider.Enable(false, 2);
+
+            //add controller to actually move the collidable camera
+            camera.AddComponent(new FPSController(0.5f, 0.3f, 0.006f, 12));
+            level.Add(camera);
 
             #region Curve Camera
 
@@ -517,8 +555,8 @@ namespace GDApp
             #endregion Curve Camera
 
             //set theMain camera, if we dont call this then the first camera added will be the Main
-            level.SetMainCamera("main camera");
-
+            //level.SetMainCamera("main camera");
+            level.SetMainCamera(AppData.CAMERA_FIRSTPERSON_COLLIDABLE_NAME);
             //allows us to scale time on all game objects that based movement on Time
             // Time.Instance.TimeScale = 0.1f;
         }
@@ -747,12 +785,12 @@ namespace GDApp
 
 
 #if DEMO
-            activeScene.Update();
+            
             //bullet.Update();
             //turret.Update();
             //gun.Update();
             //DemoFind();
-            fps.Update(gameTime);
+            //fps.Update(gameTime);
 #endif
         }
 
@@ -764,73 +802,6 @@ namespace GDApp
 
         #endregion Update & Draw
 
-#if DEMO
 
-        private void InitializeEditorHelpers()
-        {
-            //a game object to record camera positions to an XML file for use in a curve later
-            var curveRecorder = new GameObject("curve recorder", GameObjectType.Editor);
-            curveRecorder.AddComponent(new GDLibrary.Editor.CurveRecorderController());
-            activeScene.Add(curveRecorder);
-        }
-
-        private void RunDemos()
-        {
-            // CurveDemo();
-            // SaveLoadDemo();
-
-            EventSenderDemo();
-        }
-
-        private void EventSenderDemo()
-        {
-        }
-
-        private void CurveDemo()
-        {
-            //var curve1D = new GDLibrary.Parameters.Curve1D(CurveLoopType.Cycle);
-            //curve1D.Add(0, 0);
-            //curve1D.Add(10, 1000);
-            //curve1D.Add(20, 2000);
-            //curve1D.Add(40, 4000);
-            //curve1D.Add(60, 6000);
-            //var value = curve1D.Evaluate(500, 2);
-        }
-
-        private void SaveLoadDemo()
-        {
-        #region Serialization Single Object Demo
-
-            var demoSaveLoad = new DemoSaveLoad(new Vector3(1, 2, 3), new Vector3(45, 90, -180), new Vector3(1.5f, 0.1f, 20.25f));
-            GDLibrary.Utilities.SerializationUtility.Save("DemoSingle.xml", demoSaveLoad);
-            var readSingle = GDLibrary.Utilities.SerializationUtility.Load("DemoSingle.xml",
-                typeof(DemoSaveLoad)) as DemoSaveLoad;
-            /*//Test save data
-            List<LoadLevelXML> listDemos = new List<LoadLevelXML>();
-            listDemos.Add(new LoadLevelXML("Wall", new Vector3(1, 2, 3), new Vector3(45, 90, -180), new Vector3(1.5f, 0.1f, 20.25f)));
-            listDemos.Add(new LoadLevelXML("Wall", new Vector3(10, 20, 30), new Vector3(4, 9, -18), new Vector3(15f, 1f, 202.5f)));
-            listDemos.Add(new LoadLevelXML("Wall", new Vector3(100, 200, 300), new Vector3(145, 290, -80), new Vector3(6.5f, 1.1f, 8.05f)));
-
-            GDLibrary.Utilities.SerializationUtility.Save("Level1.xml", listDemos);
-            var readList = GDLibrary.Utilities.SerializationUtility.Load("Level1.xml",
-                typeof(List<LoadLevelXML>)) as List<LoadLevelXML>;
-            */
-        #endregion Serialization Single Object Demo
-
-        #region Serialization List Objects Demo
-
-            List<DemoSaveLoad> listDemos = new List<DemoSaveLoad>();
-            listDemos.Add(new DemoSaveLoad(new Vector3(1, 2, 3), new Vector3(45, 90, -180), new Vector3(1.5f, 0.1f, 20.25f)));
-            listDemos.Add(new DemoSaveLoad(new Vector3(10, 20, 30), new Vector3(4, 9, -18), new Vector3(15f, 1f, 202.5f)));
-            listDemos.Add(new DemoSaveLoad(new Vector3(100, 200, 300), new Vector3(145, 290, -80), new Vector3(6.5f, 1.1f, 8.05f)));
-
-            GDLibrary.Utilities.SerializationUtility.Save("ListDemo.xml", listDemos);
-            var readList = GDLibrary.Utilities.SerializationUtility.Load("ListDemo.xml",
-                typeof(List<DemoSaveLoad>)) as List<DemoSaveLoad>;
-
-        #endregion Serialization List Objects Demo
-        }
-
-#endif
     }
 }

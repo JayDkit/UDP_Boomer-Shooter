@@ -1,47 +1,48 @@
 ﻿using GDLibrary;
 using GDLibrary.Components;
-using GDLibrary.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System;
 
-namespace GDApp.App.Scripts.Player
+namespace GDApp
 {
-    public class FPSController : Controller
+    /// <summary>
+    /// Adds collidable 1st person controller to camera using keyboard and mouse input
+    /// </summary>
+    public class MyCollidableFirstPersonController : FirstPersonController
     {
+        #region Statics
+
         private static readonly float DEFAULT_JUMP_HEIGHT = 5;
+
+        #endregion Statics
+
+        #region Fields
 
         private CharacterCollider characterCollider;
         private Character characterBody;
 
+        //temp vars
         private Vector3 restrictedLook, restrictedRight;
+
         private float jumpHeight;
 
+        #endregion Fields
 
-        private PlayerMouseLook m_MouseLook = new PlayerMouseLook();
+        #region Contructors
 
-        protected Vector3 rotation = Vector3.Zero;
-        private Vector2 rotationSpeedV2 = new Vector2(0.006f, 0.004f);
-
-        protected Vector3 translation = Vector3.Zero;
-
-        protected Vector2 rotation2D;
-        private float moveSpeed = 0.05f;
-        private float strafeSpeed = 0.025f;
-        private float rotationSpeed = 100.0f;
-        MouseState prevMouseState;
-        MouseState currentMouseState;
-        Vector3 mouseRotationBuffer;
-        public FPSController(float moveSpeed, float strafeSpeed, float rotationSpeed, float jumpHeight)
+        public MyCollidableFirstPersonController(float jumpHeight, float moveSpeed, float strafeSpeed, float rotationSpeed)
+        : this(jumpHeight, moveSpeed, strafeSpeed, rotationSpeed * Vector2.One)
         {
-            this.moveSpeed = moveSpeed;
-            this.strafeSpeed = strafeSpeed;
-            this.rotationSpeed = rotationSpeed;
-
-            this.jumpHeight = jumpHeight > 0 ? jumpHeight : DEFAULT_JUMP_HEIGHT;
-
-            prevMouseState = Mouse.GetState();
         }
+
+        public MyCollidableFirstPersonController(float jumpHeight, float moveSpeed, float strafeSpeed, Vector2 rotationSpeed)
+        : base(moveSpeed, strafeSpeed, rotationSpeed, true)
+        {
+            this.jumpHeight = jumpHeight > 0 ? jumpHeight : DEFAULT_JUMP_HEIGHT;
+        }
+
+        #endregion Contructors
 
         public override void Awake(GameObject gameObject)
         {
@@ -52,25 +53,15 @@ namespace GDApp.App.Scripts.Player
             base.Awake(gameObject);
         }
 
-        public override void Start()
-        {
-            m_MouseLook.Init(Camera.Main.Transform);
-        }
-        
         public override void Update()
         {
             HandleInputs();
-            //m_MouseLook.LookRotation(Camera.Main.Transform);
-            //System.Diagnostics.Debug.WriteLine("Rotation: " + Camera.Main.Transform.LocalTranslation);
-            base.Update();
         }
 
         protected override void HandleInputs()
         {
             HandleMouseInput();
             HandleKeyboardInput();
-            //    HandleGamepadInput(); //not using for this controller implementation
-            //   base.Update(); //nothing happens so dont call this
         }
 
         protected override void HandleKeyboardInput()
@@ -127,17 +118,6 @@ namespace GDApp.App.Scripts.Player
         {
             if (Input.Keys.IsPressed(Keys.Space))
                 characterBody.DoJump(jumpHeight);
-        }
-
-        protected override void HandleMouseInput()
-        {
-            rotation = Vector3.Zero;
-            var delta = Input.Mouse.Delta;
-            rotation.Y -= delta.X * rotationSpeedV2.X * Time.Instance.DeltaTimeMs;
-            rotation.X -= delta.Y * rotationSpeedV2.Y * Time.Instance.DeltaTimeMs;
-
-            if (delta.Length() != 0)
-                transform.SetRotation(ref rotation);  //converts value type to a reference
         }
 
         #region Unused

@@ -1,6 +1,8 @@
 ﻿using GDLibrary;
 using GDLibrary.Components;
 using GDLibrary.Graphics;
+using JigLibX.Collision;
+using JigLibX.Geometry;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
@@ -18,6 +20,7 @@ namespace GDApp.Content.Scripts.Level
     {
         private Dictionary<string, Texture2D> textureDictionary;
         Scene level;
+        private Collider collider;
 
         private string type;
         private Vector3 localTranslation;
@@ -104,11 +107,20 @@ namespace GDApp.Content.Scripts.Level
 
         public void setGroundFloor() //Setting the ground floor manually
         {
-            var floor = new GameObject("floor", GameObjectType.Environment, false);
+            var floor = new GameObject("floor", GameObjectType.Ground, false);
             floor.Transform.Translate(0, 0, -40);
             floor.Transform.Scale(100, 95, 0);
             floor.Transform.Rotate(-90, 0, 0);
             floor.AddComponent(new MeshRenderer(quadMesh, new BasicMaterial("groundfloor_material", shader, textureDictionary["floor"])));
+            //Set Collision
+            
+            collider = new Collider(); //position is set weird after putting collisions
+            floor.AddComponent(collider);
+            collider.AddPrimitive(
+                new JigLibX.Geometry.Plane(floor.Transform.Up, floor.Transform.LocalTranslation),
+                new JigLibX.Collision.MaterialProperties(0.8f, 0.8f, 0.7f)
+                );
+            collider.Enable(true, 1);
             level.Add(floor);
         }
 
@@ -141,6 +153,19 @@ namespace GDApp.Content.Scripts.Level
                     cloneWall.Transform.Transform.SetTranslation(translation);
                     cloneWall.Transform.Transform.SetRotation(rotation);
                     cloneWall.Transform.SetScale(scale);
+                    /*
+                    collider = new Collider();
+                    cloneWall.AddComponent(collider);
+                   
+                    collider.AddPrimitive(new Box(
+                        cloneWall.Transform.LocalTranslation,
+                        //new Vector3(cloneWall.Transform.LocalRotation.X, cloneWall.Transform.LocalRotation.X, -cloneWall.Transform.LocalRotation.Z),
+                        new Vector3(0, -cloneWall.Transform.LocalRotation.Y, 0),
+                        cloneWall.Transform.LocalScale),
+                        new MaterialProperties(0,0,0)
+                        );
+                    collider.Enable(true, 1);
+                    */
                     level.Add(cloneWall);
                     break;
                 case "Turret":

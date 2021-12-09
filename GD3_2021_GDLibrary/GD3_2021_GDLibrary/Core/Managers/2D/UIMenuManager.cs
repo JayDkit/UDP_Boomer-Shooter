@@ -27,7 +27,6 @@ namespace GDLibrary.Managers
                 {
                     statusType = StatusType.Off;
                     Input.Mouse.SetMouseVisible(false);
-                    this.Dispose();
                 }
             }
         }

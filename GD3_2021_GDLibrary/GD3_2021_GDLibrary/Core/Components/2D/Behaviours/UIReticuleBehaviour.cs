@@ -46,7 +46,9 @@ namespace GDLibrary.Components.UI
             {
                 GameObject picked = eventData?.Parameters[0] as GameObject;
                 var dist = Vector3.Distance(Camera.Main.Transform.LocalTranslation, picked.Transform.LocalTranslation);
-                System.Diagnostics.Debug.WriteLine(dist);
+
+                //dont forget to remove debug messages as they are CPU hungry
+                //System.Diagnostics.Debug.WriteLine(dist);
             }
         }
 

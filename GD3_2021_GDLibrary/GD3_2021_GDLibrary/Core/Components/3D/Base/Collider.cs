@@ -2,7 +2,6 @@
 using JigLibX.Geometry;
 using JigLibX.Physics;
 using Microsoft.Xna.Framework;
-using System;
 
 namespace GDLibrary.Components
 {
@@ -16,15 +15,15 @@ namespace GDLibrary.Components
         /// <summary>
         /// Holds the mass, position, angular momentum, velocity of the collidable object
         /// </summary>
-        private Body body;
+        protected Body body;
 
         /// <summary>
         /// Holds the primitive (e.g. sphere, capsule, box) which tests for collisions
         /// </summary>
-        private CollisionSkin collision;
+        protected CollisionSkin collision;
 
-        private bool isHandlingCollision;
-        private bool isTrigger;
+        protected bool isHandlingCollision;
+        protected bool isTrigger;
 
         #endregion Fields
 

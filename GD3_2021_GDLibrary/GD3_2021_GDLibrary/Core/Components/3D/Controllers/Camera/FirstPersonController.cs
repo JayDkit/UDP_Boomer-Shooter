@@ -4,20 +4,16 @@ using Microsoft.Xna.Framework.Input;
 namespace GDLibrary.Components
 {
     /// <summary>
-    /// Adds simple 1st person controller to camera using keyboard and mouse input
+    /// Adds simple non-collidable 1st person controller to camera using keyboard and mouse input
     /// </summary>
     public class FirstPersonController : Controller
     {
-        protected Vector3 translation = Vector3.Zero;
-        protected Vector3 rotation = Vector3.Zero;
+        protected float moveSpeed = 0.05f;
+        protected float strafeSpeed = 0.025f;
+        protected Vector2 rotationSpeed;
         private bool isGrounded;
-        private float moveSpeed = 0.05f;
-        private float strafeSpeed = 0.025f;
-        private Vector2 rotationSpeed;
 
-        public FirstPersonController(float moveSpeed, float strafeSpeed,
-            float rotationSpeed,
-          bool isGrounded = true)
+        public FirstPersonController(float moveSpeed, float strafeSpeed, float rotationSpeed, bool isGrounded = true)
             : this(moveSpeed, strafeSpeed, rotationSpeed * Vector2.One, isGrounded)
         {
         }
@@ -43,6 +39,8 @@ namespace GDLibrary.Components
             HandleKeyboardInput();
         }
 
+        protected Vector3 translation = Vector3.Zero;
+        protected Vector3 rotation = Vector3.Zero;
         protected override void HandleKeyboardInput()
         {
             translation = Vector3.Zero;
