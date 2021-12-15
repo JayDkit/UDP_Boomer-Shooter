@@ -7,15 +7,19 @@ using System;
 
 namespace GDApp.Content.Scripts.Turrets.Bullets
 {
-    public class Bullet : GameObject
+    public class Bullet : Component
     {
-
-        public void InitializeModel(Scene level)
+        public Bullet()
         {
-            var material = new BasicMaterial("model material", new BasicShader(Application.Content), Application.Main.Content.Load<Texture2D>("Assets/Demo/Textures/grey"));
+        }
 
-            var renderer = new ModelRenderer(Application.Main.Content.Load<Model>("Assets/Models/sphere"), material);
-            this.AddComponent(renderer);
+        Model bulletMesh = Application.Main.Content.Load<Model>("Assets/Models/sphere");
+        BasicShader shader = new BasicShader(Application.Content, false, true);
+        Texture2D texture = Application.Main.Content.Load<Texture2D>("Assets/Demo/Textures/grey");
+        public void InitializeModel()
+        {
+            GameObject.AddComponent(new ModelRenderer(bulletMesh, new BasicMaterial("turret_material", shader, texture)));
+
         }
 
     }

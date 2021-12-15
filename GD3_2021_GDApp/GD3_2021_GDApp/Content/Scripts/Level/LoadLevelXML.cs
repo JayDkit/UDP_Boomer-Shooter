@@ -1,6 +1,8 @@
 ﻿using GDLibrary;
 using GDLibrary.Components;
 using GDLibrary.Graphics;
+using JigLibX.Collision;
+using JigLibX.Geometry;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
@@ -18,6 +20,7 @@ namespace GDApp.Content.Scripts.Level
     {
         private Dictionary<string, Texture2D> textureDictionary;
         Scene level;
+        private Collider collider;
 
         private string type;
         private Vector3 localTranslation;
@@ -29,6 +32,13 @@ namespace GDApp.Content.Scripts.Level
         private GameObject archetypalSpeedPickup;
         private GameObject archetypalHealthPickup;
         private GameObject archetypalTurret;
+
+        QuadMesh quadMesh = new QuadMesh();
+        CubeMesh cubeMesh = new CubeMesh();
+        Model turretMesh = Application.Main.Content.Load<Model>("Assets/Models/Turret");
+        Model healthMesh = Application.Main.Content.Load<Model>("Assets/Models/Pickups/HealthKit");
+        Model speedMesh = Application.Main.Content.Load<Model>("Assets/Models/Pickups/SpeedPickup");
+        BasicShader shader = new BasicShader(Application.Content, false, true);
 
         [DataMember]
         public string Type
@@ -97,78 +107,41 @@ namespace GDApp.Content.Scripts.Level
 
         public void setGroundFloor() //Setting the ground floor manually
         {
-            var material = new BasicMaterial("simple diffuse");
-            material.Texture = textureDictionary["floor"];
-            material.Shader = new BasicShader(Application.Content);
-
-            var archetypalQuad = new GameObject("floor", GameObjectType.Skybox);
-            var renderer = new MeshRenderer();
-            renderer.Material = material;
-            archetypalQuad.AddComponent(renderer);
-            renderer.Mesh = new QuadMesh();
-
-            //Main Plane
-            GameObject clone = archetypalQuad.Clone() as GameObject;
-            clone.Name = $"main floor -{clone.Name}";
-            material.Texture = textureDictionary["floor"];
-            clone.Transform.Translate(0, 0, -40);
-            clone.Transform.Scale(100, 95, 0);
-            clone.Transform.Rotate(-90, 0, 0);
-            level.Add(clone);
+            var floor = new GameObject("floor", GameObjectType.Ground, false);
+            floor.Transform.Translate(0, 0, -40);
+            floor.Transform.Scale(100, 95, 0);
+            floor.Transform.Rotate(-90, 0, 0);
+            floor.AddComponent(new MeshRenderer(quadMesh, new BasicMaterial("groundfloor_material", shader, textureDictionary["floor"])));
+            //Set Collision
+            
+            collider = new Collider(); //position is set weird after putting collisions
+            floor.AddComponent(collider);
+            collider.AddPrimitive(
+                new JigLibX.Geometry.Plane(floor.Transform.Up, floor.Transform.LocalTranslation),
+                new JigLibX.Collision.MaterialProperties(0.8f, 0.8f, 0.7f)
+                );
+            collider.Enable(true, 1);
+            level.Add(floor);
         }
 
         private void preLoadAllTypesOfModels()
         {
             //Floor
-            var materialFloor = new BasicMaterial("simple diffuse");
-            materialFloor.Texture = textureDictionary["turret"]; //Needs to be changed
-            materialFloor.Shader = new BasicShader(Application.Content);
-            archetypalFloor = new GameObject("floor", GameObjectType.Architecture);
-            var rendererFloor = new MeshRenderer();
-            rendererFloor.Material = materialFloor;
-            rendererFloor.Mesh = new CubeMesh();
-            archetypalFloor.AddComponent(rendererFloor);
-            
+            archetypalFloor = new GameObject("floor", GameObjectType.Environment, true);
+            archetypalFloor.AddComponent(new MeshRenderer(cubeMesh, new BasicMaterial("floor_material", shader, textureDictionary["turret"]))); //Texture needs to be changed to be changed
             //Wall
-            var materialWall = new BasicMaterial("simple diffuse");
-            materialWall.Texture = textureDictionary["brick"];
-            materialWall.Shader = new BasicShader(Application.Content);
-            archetypalWall = new GameObject("wall", GameObjectType.Architecture);
-            var rendererWall = new MeshRenderer();
-            rendererWall.Material = materialWall;
-            rendererWall.Mesh = new CubeMesh();
-            archetypalWall.AddComponent(rendererWall);
-
+            archetypalWall = new GameObject("wall", GameObjectType.Environment, true);
+            archetypalWall.AddComponent(new MeshRenderer(cubeMesh, new BasicMaterial("wall_material", shader, textureDictionary["brick"])));
             //Turret
-            var turretMaterial = new BasicMaterial("model material");
-            turretMaterial.Texture = textureDictionary["turret"]; //Placeholder texture - not the final one!
-            turretMaterial.Shader = new BasicShader(Application.Content);
-            archetypalTurret = new GameObject("turret", GameObjectType.NPC);
-            var turretRenderer = new ModelRenderer();
-            turretRenderer.Material = turretMaterial;
-            turretRenderer.Model = Application.Main.Content.Load<Model>("Assets/Models/Turret");
-            archetypalTurret.AddComponent(turretRenderer);
-
+            archetypalTurret = new GameObject("turret", GameObjectType.NPC, true);
+            archetypalTurret.AddComponent(new ModelRenderer(turretMesh, new BasicMaterial("turret_material", shader, textureDictionary["turret"]))); //Placeholder texture - not the final one!
+            //archetypalTurret.AddComponent(new Turrets.StandardTurret());
             //Pickups - HEALTH
-            var healthMaterial = new BasicMaterial("model material");
-            healthMaterial.Texture = textureDictionary["health_pickup"];
-            healthMaterial.Shader = new BasicShader(Application.Content);
-            archetypalHealthPickup = new GameObject("health_pickup", GameObjectType.Consumable);
-            var healthRenderer = new ModelRenderer();
-            healthRenderer.Material = healthMaterial;
-            healthRenderer.Model = Application.Main.Content.Load<Model>("Assets/Models/Pickups/HealthKit");
-            archetypalHealthPickup.AddComponent(healthRenderer);
-
+            archetypalHealthPickup = new GameObject("health_pickup", GameObjectType.Consumable, true);
+            archetypalHealthPickup.AddComponent(new ModelRenderer(healthMesh, new BasicMaterial("health_material", shader, textureDictionary["health_pickup"])));
             //Pickups - SPEEDUP
-            var speedMaterial = new BasicMaterial("model material");
-            speedMaterial.Texture = textureDictionary["speed_pickup"];
-            speedMaterial.Shader = new BasicShader(Application.Content);
-            archetypalSpeedPickup = new GameObject("speed_pickup", GameObjectType.Consumable);
-            var speedRenderer = new ModelRenderer();
-            speedRenderer.Material = speedMaterial;
-            speedRenderer.Model = Application.Main.Content.Load<Model>("Assets/Models/Pickups/SpeedPickup");
-            archetypalSpeedPickup.AddComponent(speedRenderer);
-
+            archetypalSpeedPickup = new GameObject("speed_pickup", GameObjectType.Consumable, true);
+            archetypalSpeedPickup.AddComponent(new ModelRenderer(speedMesh, new BasicMaterial("speed_material", shader, textureDictionary["speed_pickup"])));
         }
 
         private void InitializeModel(int id, string type, Vector3 translation, Vector3 rotation, Vector3 scale)
@@ -181,6 +154,20 @@ namespace GDApp.Content.Scripts.Level
                     cloneWall.Transform.Transform.SetTranslation(translation);
                     cloneWall.Transform.Transform.SetRotation(rotation);
                     cloneWall.Transform.SetScale(scale);
+                    
+                    
+                    collider = new Collider();
+                    cloneWall.AddComponent(collider);
+                    collider.AddPrimitive(new Box(
+                        cloneWall.Transform.LocalTranslation,
+                        //new Vector3(cloneWall.Transform.LocalRotation.X, cloneWall.Transform.LocalRotation.X, cloneWall.Transform.LocalRotation.Z),
+                        //new Vector3(0, -cloneWall.Transform.LocalRotation.Y, 0),
+                        cloneWall.Transform.LocalRotation,
+                        cloneWall.Transform.LocalScale),
+                        new MaterialProperties(0, 0, 0)
+                        );
+                    collider.Enable(true, 1);
+                    
                     level.Add(cloneWall);
                     break;
                 case "Turret":
@@ -197,6 +184,17 @@ namespace GDApp.Content.Scripts.Level
                     cloneFloor.Transform.Transform.SetTranslation(translation);
                     cloneFloor.Transform.Transform.SetRotation(rotation);
                     cloneFloor.Transform.SetScale(scale);
+
+                    collider = new Collider();
+                    cloneFloor.AddComponent(collider);
+                    collider.AddPrimitive(new Box(
+                        cloneFloor.Transform.LocalTranslation,
+                        cloneFloor.Transform.LocalRotation,
+                        cloneFloor.Transform.LocalScale),
+                        new MaterialProperties(0, 0, 0)
+                        );
+                    collider.Enable(true, 1);
+
                     level.Add(cloneFloor);
                     break;
                 case "Pickup-Health":

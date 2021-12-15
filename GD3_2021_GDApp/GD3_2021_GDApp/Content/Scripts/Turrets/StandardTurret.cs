@@ -8,13 +8,13 @@ namespace GDApp.Content.Scripts.Turrets
 {
     public class StandardTurret : Turret
     {
-        public StandardBullet bulletPrefab;
+        public GameObject bulletPrefab;
         public int count = 1;
 
         public override void Update()
         {
             base.Update();
-            if(count % 60 == 0)
+            if(count % 120 == 0)
             {
                 Shoot();
             }
@@ -24,6 +24,7 @@ namespace GDApp.Content.Scripts.Turrets
 
         public void Shoot()
         {
+            Application.SoundManager.Play3D(shotSound.ID, Application.playerListener, soundEmitter);
             InsantiateFunctionExtensions.InstantiateGameObject(bulletPrefab, this.transform.LocalTranslation, this.transform.LocalRotation);
         }
     }

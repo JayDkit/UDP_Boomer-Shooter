@@ -376,6 +376,168 @@
 /processorParam:TextureFormat=Compressed
 /build:Assets/Models/Turret.fbx
 
+#begin Assets/Sounds/Backing_Track.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/Sounds/Backing_Track.wav
+
+#begin Assets/Sounds/Backing_Track.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/Sounds/Backing_Track.wav
+
+#begin Assets/Sounds/Button_Press.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/Sounds/Button_Press.wav
+
+#begin Assets/Sounds/Button_Press.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/Sounds/Button_Press.wav
+
+#begin Assets/Sounds/Footsteps.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/Sounds/Footsteps.wav
+
+#begin Assets/Sounds/Footsteps.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/Sounds/Footsteps.wav
+
+#begin Assets/Sounds/Health_Pickup.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/Sounds/Health_Pickup.wav
+
+#begin Assets/Sounds/Health_Pickup.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/Sounds/Health_Pickup.wav
+
+#begin Assets/Sounds/Lose.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/Sounds/Lose.wav
+
+#begin Assets/Sounds/Lose.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/Sounds/Lose.wav
+
+#begin Assets/Sounds/Main_Menu_Music.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/Sounds/Main_Menu_Music.wav
+
+#begin Assets/Sounds/Main_Menu_Music.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/Sounds/Main_Menu_Music.wav
+
+#begin Assets/Sounds/Pneumatic_Door.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/Sounds/Pneumatic_Door.wav
+
+#begin Assets/Sounds/Pneumatic_Door.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/Sounds/Pneumatic_Door.wav
+
+#begin Assets/Sounds/Power_Up.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/Sounds/Power_Up.wav
+
+#begin Assets/Sounds/Power_Up.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/Sounds/Power_Up.wav
+
+#begin Assets/Sounds/Shotgun_Blast.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/Sounds/Shotgun_Blast.wav
+
+#begin Assets/Sounds/Shotgun_Blast.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/Sounds/Shotgun_Blast.wav
+
+#begin Assets/Sounds/Turret_Power_Down.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/Sounds/Turret_Power_Down.wav
+
+#begin Assets/Sounds/Turret_Power_Down.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/Sounds/Turret_Power_Down.wav
+
+#begin Assets/Sounds/Turret_Power_Up.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/Sounds/Turret_Power_Up.wav
+
+#begin Assets/Sounds/Turret_Power_Up.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/Sounds/Turret_Power_Up.wav
+
+#begin Assets/Sounds/Turret_Shooting.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/Sounds/Turret_Shooting.wav
+
+#begin Assets/Sounds/Turret_Shooting.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/Sounds/Turret_Shooting.wav
+
+#begin Assets/Sounds/Turret_Shooting_Short.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/Sounds/Turret_Shooting_Short.wav
+
+#begin Assets/Sounds/Win.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/Sounds/Win.wav
+
+#begin Assets/Sounds/Win.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/Sounds/Win.wav
+
 #begin Assets/Textures/Architecture/Floors/TarmacTexture.jpg
 /importer:TextureImporter
 /processor:TextureProcessor

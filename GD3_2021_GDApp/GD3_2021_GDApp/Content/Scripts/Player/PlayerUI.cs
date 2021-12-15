@@ -6,22 +6,30 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 
-namespace GDApp.Content.Scripts.Player
+namespace GDApp.App.Scripts.Player
 {
     public class PlayerUI 
     {
         private UISceneManager uiSceneManager;
-        private int score;
-        private sbyte health;
-        private float time;
+        private int score = 0;
+        private sbyte health = 0;
+        private float time = 0;
 
         public PlayerUI(UISceneManager manager)
         {
             uiSceneManager = manager;
         }
 
-        public void InitializeUI()
+        public void updateScore(int newScore) { score = newScore; }
+        public void updateHealth(sbyte newHealth) { health = newHealth; }
+        public void updateTime(float newTime) { time = newTime; }
+
+        public void InitializeUI(Player player)
         {
+            updateScore(player.Score);
+            updateHealth(player.Health);
+            //updateTime();
+
             //create the scene
             var mainGameUIScene = new UIScene("Player UI");
 
@@ -68,6 +76,20 @@ namespace GDApp.Content.Scripts.Player
                 playerFont,
                 score.ToString("D6")
                 );
+
+            //Text: health
+            Vector2 hDimensions = playerFont.MeasureString(health.ToString());
+            Vector2 healthOrigin = new Vector2(hDimensions.X / 2, hDimensions.Y / 2);
+            var healthTextObj = new UITextObject("Score", UIObjectType.Text,
+                new Transform2D(new Vector2(Application.Main.GraphicsDevice.Viewport.Width / 2, Application.Main.GraphicsDevice.Viewport.Height - 100), Vector2.One, 0),
+                0,
+                Color.Red,
+                SpriteEffects.None,
+                healthOrigin,
+                playerFont,
+                health.ToString()
+                ); ;
+
             //Text : ammo
             var strAmmo = "Ammo";
             Vector2 aDimensions = playerFont.MeasureString(strAmmo);
@@ -100,6 +122,7 @@ namespace GDApp.Content.Scripts.Player
             mainGameUIScene.Add(reticleTexture);
 
             mainGameUIScene.Add(scoreTextObj);
+            mainGameUIScene.Add(healthTextObj);
             mainGameUIScene.Add(ammoTextObject);
             mainGameUIScene.Add(timerextObject);
             
