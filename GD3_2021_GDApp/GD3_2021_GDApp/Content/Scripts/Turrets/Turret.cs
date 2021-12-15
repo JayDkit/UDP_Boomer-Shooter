@@ -13,7 +13,7 @@ namespace GDApp.Content.Scripts.Turrets
     {
 
         public GDLibrary.Managers.Cue shotSound = new GDLibrary.Managers.Cue("shotSound", Application.Main.Content.Load<SoundEffect>("Assets/Sounds/Turret_Shooting_Short")
-                                                                         , SoundCategoryType.SoundByte, new Vector3(1f, 1f, 0.3f), false);
+                                                                         , SoundCategoryType.SoundByte, new Vector3(1f, 1f, 1f), false);
         public AudioEmitter soundEmitter = new AudioEmitter();
         Model turretMesh = Application.Main.Content.Load<Model>("Assets/Models/Turret");
         BasicShader shader = new BasicShader(Application.Content, false, true);

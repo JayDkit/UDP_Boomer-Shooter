@@ -435,7 +435,7 @@ namespace GDApp
 
             GDLibrary.Managers.Cue backgroundMusic = new GDLibrary.Managers.Cue("BackgroundMusic"
                                                                                 , Application.Main.Content.Load<SoundEffect>("Assets/Sounds/Backing_Track")
-                                                                                , SoundCategoryType.BackgroundMusic, new Vector3(1f, 1f, 0.5f), true);
+                                                                                , SoundCategoryType.BackgroundMusic, new Vector3(0.2f, 1f, 1f), true);
             AudioEmitter emitter = new AudioEmitter();
 
 
