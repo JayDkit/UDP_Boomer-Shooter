@@ -38,6 +38,11 @@ namespace GDLibrary
         public static SceneManager SceneManager { get; internal set; }
 
         /// <summary>
+        /// Gets or sets the UI scene manager
+        /// </summary>
+        public static UISceneManager UISceneManager { get; internal set; }
+
+        /// <summary>
         /// Gets or sets the state manager.
         /// </summary>
         public static MyStateManager StateManager { get; internal set; }

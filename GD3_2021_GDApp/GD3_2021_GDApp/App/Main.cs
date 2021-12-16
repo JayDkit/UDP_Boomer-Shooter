@@ -74,8 +74,10 @@ namespace GDApp
         /// </summary>
         private ContentDictionary<SpriteFont> fontDictionary;
 
+        private MyStateManager stateManager;
+        private PickingManager pickingManager;
+
         //temp
-        private Scene menu;
         private Scene level1;
         private GameObject camera;
         private PlayerGun gun;
@@ -118,7 +120,7 @@ namespace GDApp
             _spriteBatch = new SpriteBatch(GraphicsDevice); //19.11.21
 
             //data, input, scene manager
-            InitializeEngine("Boomer Shooter", 1920, 1080);
+            InitializeEngine(AppData.GAME_TITLE_NAME, AppData.GAME_RESOLUTION_WIDTH, AppData.GAME_RESOLUTION_HEIGHT);
 
             //load structures that store assets (e.g. textures, sounds) or archetypes (e.g. Quad game object)
             InitializeDictionaries();
@@ -127,23 +129,20 @@ namespace GDApp
             LoadAssets();
 
             //Start with menu scene
-            menu = new Scene("menu scene");
             level1 = new Scene("level 1");
-            sceneManager.Add(menu);
             sceneManager.Add(level1);
 
-            //InitializeMenu();
-
+            InitializeGameMenu();
             //level with scenes and game objects
             InitializeLevel();
 
-
+            sceneManager.LoadScene(level1);
 
             //TODO - remove hardcoded mouse values - update Screen class to centre the mouse with hardcoded value - remove later
             Input.Mouse.Position = Screen.Instance.ScreenCentre;
 
             //turn on/off debug info
-            InitializeDebugUI(true, true);
+            InitializeDebugUI(false, false);
 
             base.Initialize();
         }
@@ -237,13 +236,11 @@ namespace GDApp
 
         #region Initialization - UI & Menu
 
-        /// <summary>
-        /// Adds menu and UI elements
-        /// </summary>
-        private void InitializeUI()  //19.11.21
+        private void InitializeGameMenu()
         {
-            //TODO
-            
+            UIMenu uiMenu = new UIMenu();
+            uiMenu.InitializeGameMenu(uiMenuManager, _graphics, textureDictionary, fontDictionary);
+            uiMenuManager.SetActiveScene(AppData.MENU_MAIN_NAME);
         }
         /// <summary>
         /// Adds component to draw debug info to the screen
@@ -290,7 +287,7 @@ namespace GDApp
             uiSceneManager = new UISceneManager(this, _spriteBatch);
 
             //create the ui menu manager to update and draw all menu scenes
-            //uiMenuManager = new MyMenuManager(this, _spriteBatch, this);
+            uiMenuManager = new MyMenuManager(this, _spriteBatch, this);
 
             //add support for playing sounds
             soundManager = new SoundManager(this);
@@ -353,25 +350,10 @@ namespace GDApp
             Components.Add(uiSceneManager);
 
             //add ui menu manager to update and drawn menu objects
-            //Components.Add(uiMenuManager);
+            Components.Add(uiMenuManager);
 
             //add sound
             Components.Add(soundManager);
-        }
-
-        private void InitializeMenu()
-        {
-            var camera = new GameObject("menu camera", GameObjectType.Camera);
-            camera.AddComponent(new Camera(_graphics.GraphicsDevice.Viewport));
-            camera.Transform.SetTranslation(0, 2f, -10);
-            menu.Add(camera);
-
-            InitializeSkybox(menu, 1000);
-
-            UIMenu uiMenu = new UIMenu();
-            uiMenu.InitializeGameMenu(uiMenuManager, _graphics, textureDictionary, fontDictionary);
-
-            sceneManager.LoadScene("menu scene");
         }
 
 
@@ -380,11 +362,8 @@ namespace GDApp
         /// </summary>
         public void InitializeLevel()
         {
-            Player player = new Player();
-
             InitializeCameras(level1);
             InitializeSkybox(level1, 1000);
-
 
             //Test load data from Level1.xml
             LoadLevelXML loadLevel1 = new LoadLevelXML(level1);
@@ -403,14 +382,12 @@ namespace GDApp
             //activeScene.Add(tempbullet);
 
             //add menu and ui
-            //InitializeUI();
-            playerUI = new PlayerUI(uiSceneManager);
-            playerUI.InitializeUI(player);
-
-            gun = new PlayerGun();
+            gun = new PlayerGun(level1);
             gun.InitializeModel(level1);
             level1.Add(gun);
-
+            Player player = new Player();
+            playerUI = new PlayerUI(uiSceneManager);
+            playerUI.InitializeUI(player);
             sceneManager.LoadScene(level1);
         }
 
@@ -517,7 +494,7 @@ namespace GDApp
             var collider = new MyHeroCollider(2, 2, true, false);
             camera.AddComponent(collider);
             collider.AddPrimitive(new Capsule(camera.Transform.LocalTranslation,
-                Matrix.CreateRotationX(MathHelper.PiOver2), 0.3f, 1.6f),
+                Matrix.CreateRotationX(MathHelper.PiOver2), 0.3f, 1.3f),
                 new MaterialProperties(0.2f, 0.8f, 0.7f));
             collider.Enable(false, 2);
 
@@ -776,7 +753,6 @@ namespace GDApp
         {
             if (Input.Keys.WasJustPressed(Microsoft.Xna.Framework.Input.Keys.Escape))
             {
-                InitializeMenu();
                 EventDispatcher.Raise(new EventData(EventCategoryType.Menu, EventActionType.OnPause));
             }
             base.Update(gameTime);

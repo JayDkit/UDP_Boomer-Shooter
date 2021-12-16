@@ -117,7 +117,8 @@ namespace GDLibrary.Components
             //calculate the centre of mass
             Vector3 com = SetMass(mass);
             //adjust skin so that it corresponds to the 3D mesh as drawn on screen
-            Body.MoveTo(transform.LocalTranslation, Matrix.Identity);
+            Body.MoveTo(transform.LocalTranslation,
+                gameObject.Transform.RotationMatrix);
             //set the centre of mass
             Collision.ApplyLocalTransform(new JigLibX.Math.Transform(-com, Matrix.Identity));
             //enable so that any applied forces (e.g. gravity) will affect the object
@@ -151,7 +152,7 @@ namespace GDLibrary.Components
                 = Matrix.CreateScale(transform.LocalScale) *
                     collision.GetPrimitiveLocal(0).Transform.Orientation *
                         body.Orientation *
-                            transform.RotationMatrix *
+                                //     transform.RotationMatrix *
                                 Matrix.CreateTranslation(body.Position);
         }
     }

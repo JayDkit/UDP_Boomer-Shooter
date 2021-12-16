@@ -1,4 +1,5 @@
-﻿using GDLibrary;
+﻿using GDApp.App.Scripts.Items;
+using GDLibrary;
 using GDLibrary.Components;
 using GDLibrary.Core;
 using JigLibX.Collision;
@@ -23,12 +24,14 @@ namespace GDApp
                 EventDispatcher.Raise(new EventData(EventCategoryType.GameObject,
                     EventActionType.OnRemoveObject, parameters));
 
+                /*
                 object[] parameters1 = { "health", 1 };
                 EventDispatcher.Raise(new EventData(EventCategoryType.UI,
                     EventActionType.OnHealthDelta, parameters1));
 
                 // EventDispatcher.Raise(new EventData(EventCategoryType.Inventory,
                 //  EventActionType.OnAddInventory, parameters1));
+                */
             }
 
             base.HandleResponse(parentGameObject);

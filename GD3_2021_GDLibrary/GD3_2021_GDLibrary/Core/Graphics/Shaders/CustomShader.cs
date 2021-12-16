@@ -32,18 +32,18 @@ namespace GDLibrary.Graphics
 
         public override void LoadEffect(ContentManager content)
         {
-            effect = content.Load<Effect>("Assets/Shaders/Deferred/Standard");
-            effectPass = effect.CurrentTechnique.Passes[0];
+            Effect = content.Load<Effect>("Assets/Shaders/Deferred/Standard");
+            EffectPass = Effect.CurrentTechnique.Passes[0];
 
-            m_EPView = effect.Parameters["View"];
-            m_EPProjection = effect.Parameters["Projection"];
-            m_EPEyePosition = effect.Parameters["EyePosition"];
-            m_EPWorld = effect.Parameters["World"];
-            m_EPTextureTilling = effect.Parameters["TextureTiling"];
-            m_EPDiffuseColor = effect.Parameters["DiffuseColor"];
-            m_EPMainTexture = effect.Parameters["MainTexture"];
-            m_EPNormalTexture = effect.Parameters["NormalMap"];
-            m_EPNormalTextureEnabled = effect.Parameters["NormalTextureEnabled"];
+            m_EPView = Effect.Parameters["View"];
+            m_EPProjection = Effect.Parameters["Projection"];
+            m_EPEyePosition = Effect.Parameters["EyePosition"];
+            m_EPWorld = Effect.Parameters["World"];
+            m_EPTextureTilling = Effect.Parameters["TextureTiling"];
+            m_EPDiffuseColor = Effect.Parameters["DiffuseColor"];
+            m_EPMainTexture = Effect.Parameters["MainTexture"];
+            m_EPNormalTexture = Effect.Parameters["NormalMap"];
+            m_EPNormalTextureEnabled = Effect.Parameters["NormalTextureEnabled"];
         }
 
         #endregion Initialization
@@ -69,7 +69,7 @@ namespace GDLibrary.Graphics
             m_EPMainTexture.SetValue(material.Texture);
             m_EPNormalTexture.SetValue(material.NormalTexture);
             m_EPNormalTextureEnabled.SetValue(material.NormalTexture != null);
-            effectPass.Apply();
+            EffectPass.Apply();
         }
 
         #endregion Actions - Pass

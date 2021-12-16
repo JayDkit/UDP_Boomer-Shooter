@@ -37,6 +37,11 @@ namespace GDLibrary.Components
 
         #endregion Constructors
 
+        protected override void HandleResponse(GameObject parentGameObject)
+        {
+            base.HandleResponse(parentGameObject);
+        }
+
         public override void Awake(GameObject gameObject)
         {
             //cache the transform

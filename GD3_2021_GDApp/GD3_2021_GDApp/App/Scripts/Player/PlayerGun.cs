@@ -12,16 +12,25 @@ namespace GDApp.App.Scripts.Player
 
         Model gunMesh = Application.Main.Content.Load<Model>("Assets/Models/Guns/PlayerGun");
         BasicShader shader = new BasicShader(Application.Content, false, true);
-        Texture2D texture = Application.Main.Content.Load<Texture2D>("Assets/Demo/Textures/grey");
+        Texture2D texture = Application.Main.Content.Load<Texture2D>("Assets/Textures/Props/Shotgun_Texture");
 
-        public PlayerGun() : base("Gun", GameObjectType.Player, true) //Change type
+        Scene scene;
+
+        public PlayerGun(Scene scene) : base("Gun", GameObjectType.Player, false) //Change type
         {
+            this.scene = scene;
         }
 
         public override void Update()
         {
-            
             base.Update();
+
+            if (Input.Mouse.WasJustClicked(GDLibrary.Inputs.MouseButton.Left))
+            {
+                var bullet = new Bullet(Camera.Main.transform.LocalTranslation, Camera.Main.Forward);
+                scene.Add(bullet);
+            }
+
             setTranslationFromParent();
         }
 
@@ -37,7 +46,7 @@ namespace GDApp.App.Scripts.Player
         {
             //System.Diagnostics.Debug.WriteLine("Location: "+ Camera.Main.Transform.LocalTranslation);
             //gun.Transform.SetTranslation(Camera.Main.Transform.WorldMatrix.Translation + new Vector3(0, -3, -3));
-            this.Transform.SetTranslation(Camera.Main.Transform.WorldMatrix.Translation + new Vector3(0,-3, 0));
+            this.Transform.SetTranslation(Camera.Main.Transform.WorldMatrix.Translation + new Vector3(0,-3, -3));
             //gun.Transform.SetRotation(Camera.Main.Transform.LocalRotation  + new Vector3(0, -90, 0));
             //new Vector3(MathHelper.Clamp(-Camera.Main.Transform.LocalRotation.X,-15,15))
             this.Transform.SetRotation(new Vector3(0, -90 + Camera.Main.Transform.LocalRotation.Y, MathHelper.Clamp(-Camera.Main.Transform.LocalRotation.X, -15, 15)));

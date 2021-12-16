@@ -1,7 +1,6 @@
-﻿using GDLibrary.Components.UI;
-using System;
+﻿using GDLibrary.Core;
 
-namespace GDLibrary.Core.Components._2D.Behaviours
+namespace GDLibrary.Components.UI
 {
     public class UIPickupBehaviour : UIBehaviour
     {

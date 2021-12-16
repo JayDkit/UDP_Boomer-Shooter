@@ -81,8 +81,16 @@ namespace GDLibrary.Components
             boundingSphere.Center = transform.LocalTranslation;
         }
 
-        public override void Draw(GraphicsDevice device)
+        public override void Draw(GraphicsDevice device, Effect effect)
         {
+            var basicEffect = effect as BasicEffect;
+
+            //set world for game object
+            basicEffect.World = transform.WorldMatrix;
+
+            //set pass
+            basicEffect.CurrentTechnique.Passes[0].Apply();
+
             device.SetVertexBuffer(mesh.VertexBuffer);
             device.Indices = mesh.IndexBuffer;
             device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, mesh.IndexBuffer.IndexCount / 3);

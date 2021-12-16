@@ -15,6 +15,7 @@ namespace GDLibrary.Utilities
         private static Vector2 min;
         private static Vector2 rightBottom;
         private static Vector2 rightTop;
+        private static Matrix worldMatrix;
 
         /// <summary>
         /// Calculates an axis aligned rectangle which fully contains an arbitrarily transformed axis aligned rectangle.
@@ -63,10 +64,11 @@ namespace GDLibrary.Utilities
 
             ExtractData(vertexList, indexList, model);
 
+            worldMatrix = GetWorldMatrix(translation, rotation, scale);
+
             for (int i = 0; i < vertexList.Count; i++)
             {
-                vertexList[i] = Vector3.Transform(vertexList[i],
-                    GetWorldMatrix(translation, rotation, scale));
+                vertexList[i] = Vector3.Transform(vertexList[i], worldMatrix);
             }
 
             // create the collision mesh

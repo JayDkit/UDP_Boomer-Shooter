@@ -83,6 +83,9 @@ namespace GDLibrary.Components
         {
             get
             {
+                if (isRotationDirty)
+                    UpdateRotationMatrix();
+
                 return rotationMatrix;
             }
         }
@@ -91,6 +94,9 @@ namespace GDLibrary.Components
         {
             get
             {
+                if (isWorldDirty || isRotationDirty)
+                    UpdateWorldMatrix();
+
                 return worldMatrix;
             }
             set
@@ -99,12 +105,71 @@ namespace GDLibrary.Components
             }
         }
 
-        public Vector3 Forward => worldMatrix.Forward;
-        public Vector3 Backward => worldMatrix.Backward;
-        public Vector3 Right => worldMatrix.Right;
-        public Vector3 Left => worldMatrix.Left;
-        public Vector3 Up => worldMatrix.Up;
-        public Vector3 Down => worldMatrix.Down;
+        public Vector3 Forward
+        {
+            get
+            {
+                if (isWorldDirty)
+                    UpdateWorldMatrix();
+
+                return worldMatrix.Forward;
+            }
+        }
+
+        public Vector3 Backward
+        {
+            get
+            {
+                if (isWorldDirty)
+                    UpdateWorldMatrix();
+
+                return worldMatrix.Backward;
+            }
+        }
+
+        public Vector3 Right
+        {
+            get
+            {
+                if (isWorldDirty)
+                    UpdateWorldMatrix();
+
+                return worldMatrix.Right;
+            }
+        }
+
+        public Vector3 Left
+        {
+            get
+            {
+                if (isWorldDirty)
+                    UpdateWorldMatrix();
+
+                return worldMatrix.Left;
+            }
+        }
+
+        public Vector3 Up
+        {
+            get
+            {
+                if (isWorldDirty)
+                    UpdateWorldMatrix();
+
+                return worldMatrix.Up;
+            }
+        }
+
+        public Vector3 Down
+        {
+            get
+            {
+                if (isWorldDirty)
+                    UpdateWorldMatrix();
+
+                return worldMatrix.Down;
+            }
+        }
 
         #endregion Properties
 
@@ -118,6 +183,9 @@ namespace GDLibrary.Components
 
             worldMatrix = Matrix.Identity;
             rotationMatrix = Matrix.Identity;
+
+            isWorldDirty = true;
+            isRotationDirty = true;
         }
 
         /// <summary>
@@ -385,7 +453,9 @@ namespace GDLibrary.Components
         {
             worldMatrix = Matrix.Identity
                       * Matrix.CreateScale(localScale)
-                          * rotationMatrix
+                          * Matrix.CreateRotationX(MathHelper.ToRadians(localRotation.X))
+                      * Matrix.CreateRotationY(MathHelper.ToRadians(localRotation.Y))
+                          * Matrix.CreateRotationZ(MathHelper.ToRadians(localRotation.Z))
                           * Matrix.CreateTranslation(localTranslation);
             isWorldDirty = false;
         }

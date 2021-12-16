@@ -35,12 +35,12 @@ namespace GDLibrary.Graphics
 
         public override void LoadEffect(ContentManager content)
         {
-            effect = new BasicEffect(Application.GraphicsDevice);
+            Effect = new BasicEffect(Application.GraphicsDevice);
 
             if (isLightingEnabled)
             {
-                (effect as BasicEffect).LightingEnabled = true;
-                (effect as BasicEffect).EnableDefaultLighting();
+                (Effect as BasicEffect).LightingEnabled = true;
+                (Effect as BasicEffect).EnableDefaultLighting();
             }
         }
 
@@ -50,7 +50,7 @@ namespace GDLibrary.Graphics
 
         public override void PrePass(Camera camera)
         {
-            basicEffect = effect as BasicEffect;
+            basicEffect = Effect as BasicEffect;
             basicEffect.View = camera.ViewMatrix;
             basicEffect.Projection = camera.ProjectionMatrix;
         }
@@ -76,11 +76,11 @@ namespace GDLibrary.Graphics
             //set ambient
             basicEffect.AmbientLightColor = ambientLightColor;
 
-            //set world for game object
-            basicEffect.World = renderer.Transform.WorldMatrix;
+            ////set world for game object
+            //basicEffect.World = renderer.Transform.WorldMatrix;
 
-            //set pass
-            effect.CurrentTechnique.Passes[0].Apply();
+            ////set pass
+            //effect.CurrentTechnique.Passes[0].Apply();
         }
 
         #endregion Actions - Pass

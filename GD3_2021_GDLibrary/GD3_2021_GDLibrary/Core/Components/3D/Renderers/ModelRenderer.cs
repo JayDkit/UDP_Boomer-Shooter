@@ -69,10 +69,18 @@ namespace GDLibrary.Components
             }
         }
 
-        public override void Draw(GraphicsDevice device)
+        public override void Draw(GraphicsDevice device, Effect effect)
         {
             foreach (ModelMesh mesh in model.Meshes)
             {
+                var basicEffect = effect as BasicEffect;
+
+                //set world for game object
+                basicEffect.World = boneTransforms[mesh.ParentBone.Index] * transform.WorldMatrix;
+
+                //set pass
+                basicEffect.CurrentTechnique.Passes[0].Apply();
+
                 foreach (ModelMeshPart meshPart in mesh.MeshParts)
                 {
                     device.SetVertexBuffer(meshPart.VertexBuffer);
@@ -81,14 +89,14 @@ namespace GDLibrary.Components
                 }
             }
 
-            //Alternatively we can draw using the BasicEffect
+            ////  Alternatively we can draw using the BasicEffect
             //foreach (ModelMesh mesh in model.Meshes)
             //{
             //    foreach (BasicEffect effect in mesh.Effects)
             //    {
             //        effect.World = boneTransforms[mesh.ParentBone.Index] * transform.WorldMatrix;
-            //        effect.View = camera._viewMatrix;
-            //        effect.Projection = camera._projectionMatrix;
+            //        effect.View = Camera.Main.ViewMatrix;
+            //        effect.Projection = Camera.Main.ProjectionMatrix;
             //        effect.EnableDefaultLighting();
             //        effect.CurrentTechnique.Passes[0].Apply();
             //    }

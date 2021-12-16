@@ -29,9 +29,13 @@
     <Compile Include="$(MSBuildThisFileDirectory)Core\Components\2D\Behaviours\UIColorMouseOverBehaviour.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Components\2D\Behaviours\UIPickupBehaviour.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Components\2D\Behaviours\UIReticuleBehaviour.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\Components\2D\Behaviours\UIVideoTextureBehaviour.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Components\3D\Base\CharacterCollider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Components\3D\Base\Collider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Components\3D\Base\CollisionResponse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\Components\3D\Behaviours\AlphaLerpBehaviour.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\Components\3D\Behaviours\ColorChangeBehaviour.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\Components\3D\Behaviours\ColorLerpBehaviour.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Components\3D\Behaviours\CurveBehaviour.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Components\2D\Behaviours\UIExpandFadeBehaviour.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Components\2D\Controllers\UIProgressBarController.cs" />
@@ -47,10 +51,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)Core\Components\Pausable\PausableDrawableGameComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Components\Pausable\PausableGameComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Extensions\Texture2DExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\Graphics\Video\VideoCue.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Managers\Physics\PhysicsManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Managers\Physics\PickingManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Managers\SoundManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Managers\2D\UIMenuManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\Timers\TimerManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Utilities\GDDebug\PhysicsDebugDrawer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Utilities\Collision\CollisionUtility.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Utilities\String\StringUtility.cs" />

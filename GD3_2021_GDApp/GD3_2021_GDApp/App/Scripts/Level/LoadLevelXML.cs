@@ -1,4 +1,6 @@
-﻿using GDLibrary;
+﻿using GDApp.App.Scripts;
+using GDApp.App.Scripts.Items;
+using GDLibrary;
 using GDLibrary.Components;
 using GDLibrary.Graphics;
 using JigLibX.Collision;
@@ -102,7 +104,7 @@ namespace GDApp.Content.Scripts.Level
             textureDictionary.Add("speed_pickup", Application.Main.Content.Load<Texture2D>("Assets/Textures/Pickups/ElectricityTexture"));
             textureDictionary.Add("health_pickup", Application.Main.Content.Load<Texture2D>("Assets/Textures/Pickups/HealthKitTexture"));
             textureDictionary.Add("rapidFire_pickup", Application.Main.Content.Load<Texture2D>("Assets/Textures/Pickups/BrassTexture"));
-            textureDictionary.Add("turret", Application.Main.Content.Load<Texture2D>("Assets/Demo/Textures/grey"));
+            textureDictionary.Add("turret", Application.Main.Content.Load<Texture2D>("Assets/Textures/Props/Turret_On_Texture"));
         }
 
         public void setGroundFloor() //Setting the ground floor manually
@@ -116,10 +118,11 @@ namespace GDApp.Content.Scripts.Level
             
             collider = new Collider(); //position is set weird after putting collisions
             floor.AddComponent(collider);
-            collider.AddPrimitive(
-                new JigLibX.Geometry.Plane(floor.Transform.Up, floor.Transform.LocalTranslation),
-                new JigLibX.Collision.MaterialProperties(0.8f, 0.8f, 0.7f)
-                );
+            collider.AddPrimitive(new Box(
+                   floor.Transform.LocalTranslation,
+                   floor.Transform.LocalRotation,
+                   floor.Transform.LocalScale),
+                   new MaterialProperties(0.8f, 0.8f, 0.7f));
             collider.Enable(true, 1);
             level.Add(floor);
         }
@@ -154,13 +157,10 @@ namespace GDApp.Content.Scripts.Level
                     cloneWall.Transform.Transform.SetRotation(rotation);
                     cloneWall.Transform.SetScale(scale);
                     
-                    
                     collider = new Collider();
                     cloneWall.AddComponent(collider);
                     collider.AddPrimitive(new Box(
                         cloneWall.Transform.LocalTranslation,
-                        //new Vector3(cloneWall.Transform.LocalRotation.X, cloneWall.Transform.LocalRotation.X, cloneWall.Transform.LocalRotation.Z),
-                        //new Vector3(0, -cloneWall.Transform.LocalRotation.Y, 0),
                         cloneWall.Transform.LocalRotation,
                         cloneWall.Transform.LocalScale),
                         new MaterialProperties(0, 0, 0)
@@ -175,6 +175,17 @@ namespace GDApp.Content.Scripts.Level
                     cloneTurret.Transform.Transform.SetTranslation(translation);
                     cloneTurret.Transform.Transform.SetRotation(rotation);
                     cloneTurret.Transform.SetScale(scale);
+
+                    collider = new Collider();
+                    cloneTurret.AddComponent(collider);
+                    collider.AddPrimitive(new Box(
+                        cloneTurret.Transform.LocalTranslation,
+                        cloneTurret.Transform.LocalRotation,
+                        new Vector3(cloneTurret.Transform.LocalScale.X * 2, cloneTurret.Transform.LocalScale.Y * 10, cloneTurret.Transform.LocalScale.Z * 2)),
+                        new MaterialProperties(0, 0, 0)
+                        );
+                    collider.Enable(true, 1);
+
                     level.Add(cloneTurret);
                     break;
                 case "Floor":
@@ -202,6 +213,19 @@ namespace GDApp.Content.Scripts.Level
                     cloneHealth.Transform.Transform.SetTranslation(translation);
                     cloneHealth.Transform.Transform.SetRotation(rotation);
                     cloneHealth.Transform.SetScale(scale);
+
+                    collider = new Collider();
+                    cloneHealth.AddComponent(collider);
+                    collider.AddPrimitive(new Box(
+                        cloneHealth.Transform.LocalTranslation,
+                        cloneHealth.Transform.LocalRotation,
+                        cloneHealth.Transform.LocalScale),
+                        new MaterialProperties(0, 0, 0)
+                        );
+                    collider.Enable(true, 1);
+                    cloneHealth.AddComponent(new PickupSpin());
+                    cloneHealth.AddComponent(new PickupItem("health", 1));
+
                     level.Add(cloneHealth);
                     break;
                 case "Pickup-Speed":
@@ -210,6 +234,16 @@ namespace GDApp.Content.Scripts.Level
                     cloneSpeed.Transform.Transform.SetTranslation(translation);
                     cloneSpeed.Transform.Transform.SetRotation(rotation);
                     cloneSpeed.Transform.SetScale(scale);
+
+                    collider = new Collider();
+                    cloneSpeed.AddComponent(collider);
+                    collider.AddPrimitive(new Box(
+                        cloneSpeed.Transform.LocalTranslation,
+                        cloneSpeed.Transform.LocalRotation,
+                        cloneSpeed.Transform.LocalScale),
+                        new MaterialProperties(0, 0, 0)
+                        );
+
                     level.Add(cloneSpeed);
                     break;
                 default:

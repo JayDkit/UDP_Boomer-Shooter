@@ -652,6 +652,18 @@
 /processorParam:TextureFormat=Color
 /build:Assets/Textures/Props/PaletteTexture.tif
 
+#begin Assets/Textures/Props/Shotgun_Texture.jpg
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/Props/Shotgun_Texture.jpg
+
 #begin Assets/Textures/Props/SteelTexture.jpg
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -663,6 +675,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Assets/Textures/Props/SteelTexture.jpg
+
+#begin Assets/Textures/Props/Turret_On_Texture.jpg
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/Props/Turret_On_Texture.jpg
 
 #begin Assets/Textures/Skybox/back.bmp
 /importer:TextureImporter

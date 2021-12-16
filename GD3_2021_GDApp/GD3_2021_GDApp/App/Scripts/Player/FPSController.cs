@@ -87,15 +87,15 @@ namespace GDApp.App.Scripts.Player
         {
             if (Input.Keys.IsPressed(Keys.W))//&& Input.Keys.IsPressed(Keys.LeftControl))
             {
-                restrictedLook = transform.Up; //we use Up instead of Forward
+                restrictedLook = transform.Forward; //we use Up instead of Forward
                 restrictedLook.Y = 0;
-                characterBody.Velocity -= moveSpeed * restrictedLook * Time.Instance.DeltaTimeMs;
+                characterBody.Velocity += moveSpeed * restrictedLook * Time.Instance.DeltaTimeMs;
             }
             else if (Input.Keys.IsPressed(Keys.S))
             {
-                restrictedLook = transform.Up;
+                restrictedLook = transform.Forward;
                 restrictedLook.Y = 0;
-                characterBody.Velocity += moveSpeed * restrictedLook * Time.Instance.DeltaTimeMs;
+                characterBody.Velocity -= moveSpeed * restrictedLook * Time.Instance.DeltaTimeMs;
             }
             else
             {
@@ -135,7 +135,16 @@ namespace GDApp.App.Scripts.Player
             var delta = Input.Mouse.Delta;
             rotation.Y -= delta.X * rotationSpeedV2.X * Time.Instance.DeltaTimeMs;
             rotation.X -= delta.Y * rotationSpeedV2.Y * Time.Instance.DeltaTimeMs;
-
+            /*
+            if (Input.Mouse.Position.X <= 0)
+            {
+                Mouse.SetPosition(AppData.GAME_RESOLUTION_WIDTH, (int)Input.Mouse.Position.Y);
+            }
+            if (Input.Mouse.Position.X >= AppData.GAME_RESOLUTION_WIDTH-1)
+            {
+                Mouse.SetPosition(0, (int)Input.Mouse.Position.Y);
+            }
+            */
             if (delta.Length() != 0)
                 transform.SetRotation(ref rotation);  //converts value type to a reference
         }
