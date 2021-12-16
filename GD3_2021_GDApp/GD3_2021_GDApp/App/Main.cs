@@ -133,6 +133,7 @@ namespace GDApp
             sceneManager.Add(level1);
 
             InitializeGameMenu();
+            EventDispatcher.Raise(new EventData(EventCategoryType.Menu, EventActionType.OnPause));
             //level with scenes and game objects
             InitializeLevel();
 
@@ -772,7 +773,7 @@ namespace GDApp
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.Blue);
+            GraphicsDevice.Clear(Color.Black);
             base.Draw(gameTime);
         }
 

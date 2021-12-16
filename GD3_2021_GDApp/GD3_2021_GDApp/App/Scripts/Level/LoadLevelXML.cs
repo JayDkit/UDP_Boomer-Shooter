@@ -243,7 +243,7 @@ namespace GDApp.Content.Scripts.Level
                         cloneSpeed.Transform.LocalScale),
                         new MaterialProperties(0, 0, 0)
                         );
-
+                    cloneSpeed.AddComponent(new PickupSpin());
                     level.Add(cloneSpeed);
                     break;
                 default:

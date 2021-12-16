@@ -25,7 +25,7 @@ namespace GDApp.App.Scripts.UI
             var mainMenuUIScene = new UIScene(AppData.MENU_MAIN_NAME);
 
             /**************************** Background Image ****************************/
-
+            /*
             //main background
             var texture = textureDictionary["mainmenu"];
             //get how much we need to scale background to fit screen, then downsizes a little so we can see game behind background
@@ -41,7 +41,7 @@ namespace GDApp.App.Scripts.UI
 
             //add ui object to scene
             mainMenuUIScene.Add(menuObject);
-
+            */
             /**************************** Game Title ****************************/
             var titleFont = Application.Main.Content.Load<SpriteFont>("Assets/Fonts/Title");
             var title = "BOOMER SHOOTER";
