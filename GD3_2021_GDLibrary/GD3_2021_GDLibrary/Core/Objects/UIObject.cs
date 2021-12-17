@@ -380,6 +380,7 @@ namespace GDLibrary
 
         public Texture2D DefaultTexture { get => defaultTexture; set => defaultTexture = value; }
         public Texture2D AlternateTexture { get => alternateTexture; set => alternateTexture = value; }
+        public Texture2D CurrentTexture { get => currentTexture; protected set => currentTexture = value; }
         public Rectangle SourceRectangle { get => sourceRectangle; set => sourceRectangle = value; }
         public int SourceRectangleWidth { get => sourceRectangle.Width; set => sourceRectangle.Width = value; }
         public int SourceRectangleHeight { get => sourceRectangle.Height; set => sourceRectangle.Height = value; }
@@ -391,8 +392,6 @@ namespace GDLibrary
                 return originalSourceRectangle;
             }
         }
-
-        public Texture2D CurrentTexture { get => currentTexture; set => currentTexture = value; }
 
         public Rectangle Bounds
         {

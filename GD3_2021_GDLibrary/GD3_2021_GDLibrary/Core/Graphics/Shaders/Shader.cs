@@ -16,15 +16,15 @@ namespace GDLibrary.Graphics
 
         #region Fields
 
-        protected Effect effect;
-        protected EffectPass effectPass;
+        private Effect effect;
+        private EffectPass effectPass;
 
         #endregion Fields
 
         #region Properties
 
-        public Effect Effect { get; }
-        public EffectPass EffectPass { get; }
+        public Effect Effect { get => effect; protected set => effect = value; }
+        public EffectPass EffectPass { get => effectPass; protected set => effectPass = value; }
 
         #endregion Properties
 

@@ -72,7 +72,7 @@ namespace GDLibrary.Components
         /// <summary>
         /// Draw the content of the mesh
         /// </summary>
-        public abstract void Draw(GraphicsDevice device);
+        public abstract void Draw(GraphicsDevice device, Effect effect);
 
         #endregion Actions - Bounding sphere, Draw
 

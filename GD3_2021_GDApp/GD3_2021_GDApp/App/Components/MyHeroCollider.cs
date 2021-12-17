@@ -1,4 +1,6 @@
-﻿using GDLibrary;
+﻿using GDApp.App.Scripts.Items;
+using GDApp.App.Scripts.Player;
+using GDLibrary;
 using GDLibrary.Components;
 using GDLibrary.Core;
 using JigLibX.Collision;
@@ -19,16 +21,24 @@ namespace GDApp
             {
                 System.Diagnostics.Debug.WriteLine(parentGameObject?.Name);
 
+                if (parentGameObject?.GetComponent<PickupItem>().Desc.ToString() == "Health")
+                {
+                    System.Diagnostics.Debug.WriteLine("HEALTH+++++++++++++++++++++");
+                    Camera.Main.GetComponent<Player>().addHealth();
+                }
+
                 object[] parameters = { parentGameObject };
                 EventDispatcher.Raise(new EventData(EventCategoryType.GameObject,
                     EventActionType.OnRemoveObject, parameters));
 
+                /*
                 object[] parameters1 = { "health", 1 };
                 EventDispatcher.Raise(new EventData(EventCategoryType.UI,
                     EventActionType.OnHealthDelta, parameters1));
 
                 // EventDispatcher.Raise(new EventData(EventCategoryType.Inventory,
                 //  EventActionType.OnAddInventory, parameters1));
+                */
             }
 
             base.HandleResponse(parentGameObject);

@@ -28,9 +28,20 @@ namespace GDApp
             EventDispatcher.Subscribe(EventCategoryType.Inventory,
                 HandleInventory);
 
+            EventDispatcher.Subscribe(EventCategoryType.GameObject, HandleGameObjects);
+
             //dont forget to call base otherwise no play/pause support
             base.SubscribeToEvents();
         }
+
+        private void HandleGameObjects(EventData eventData)
+        {
+            if (eventData.EventActionType == EventActionType.OnEnemyHit)
+            {
+
+            }
+        }
+
 
         private void HandleInventory(EventData eventData)
         {
@@ -50,6 +61,7 @@ namespace GDApp
             if (eventData.EventActionType == EventActionType.OnPickup)
             {
                 var objectName = eventData.Parameters[0] as string;
+
             }
             //dont forget to call base otherwise no play/pause support
             base.HandleEvent(eventData);

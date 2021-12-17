@@ -39,6 +39,7 @@ namespace GDLibrary.Collections
         protected List<Material> materials;
         protected List<Camera> cameras;
         protected List<Collider> colliders;
+        private bool isAlphaChanged;
 
         #endregion Fields
 
@@ -80,6 +81,13 @@ namespace GDLibrary.Collections
             //TODO - replace hardcoded with some reasonable constants
             materials = new List<Material>(5);
             cameras = new List<Camera>(5);
+
+            Material.AlphaPropertyChanged += HandleAlphaPropertyChanged;
+        }
+
+        private void HandleAlphaPropertyChanged()
+        {
+            isAlphaChanged = true;
         }
 
         #endregion Constructors
@@ -88,6 +96,12 @@ namespace GDLibrary.Collections
 
         public virtual void Update()
         {
+            if (isAlphaChanged)
+            {
+                isAlphaChanged = false;
+                renderers.Sort((x, y) => y.Material.Alpha.CompareTo(x.Material.Alpha));
+            }
+
             for (int i = 0; i < presistentList.Count; i++)
             {
                 if (presistentList[i].IsEnabled)
@@ -275,7 +289,7 @@ namespace GDLibrary.Collections
                 return;
 
             renderers.Add(renderer);
-            renderers.Sort();
+            renderers.Sort((x, y) => y.Material.Alpha.CompareTo(x.Material.Alpha));
         }
 
         protected void RemoveRenderer(Renderer renderer)

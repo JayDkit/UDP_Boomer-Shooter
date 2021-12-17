@@ -1,7 +1,6 @@
 ﻿using GDApp;
 using GDLibrary.Managers;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -39,6 +38,11 @@ namespace GDLibrary
         public static SceneManager SceneManager { get; internal set; }
 
         /// <summary>
+        /// Gets or sets the UI scene manager
+        /// </summary>
+        public static UISceneManager UISceneManager { get; internal set; }
+
+        /// <summary>
         /// Gets or sets the state manager.
         /// </summary>
         public static MyStateManager StateManager { get; internal set; }
@@ -47,17 +51,6 @@ namespace GDLibrary
         /// Gets the physics manager.
         /// </summary>
         public static PhysicsManager PhysicsManager { get; internal set; }
-
-
-        /// <summary>
-        /// Gets the sound manager.
-        /// </summary>
-        public static SoundManager SoundManager { get; internal set; }
-
-        /// <summary>
-        /// Gets the player listener.
-        /// </summary>
-        public static AudioListener playerListener { get; internal set; }
 
         /// <summary>
         /// Called when we exit the application.

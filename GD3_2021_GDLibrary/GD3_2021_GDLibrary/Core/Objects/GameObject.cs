@@ -17,7 +17,9 @@ namespace GDLibrary
         Skybox,
         Editor,
         Prop,
-        Ground
+        Ground,
+        Bullet,
+        EnemyBullet
         //STU - add more for your game here...
     }
 

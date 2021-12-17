@@ -4,6 +4,12 @@ namespace GDLibrary.Graphics
 {
     public abstract class Material : IDisposable, ICloneable
     {
+        #region Events
+
+        public static event Action AlphaPropertyChanged = null;
+
+        #endregion Events
+
         #region Fields
 
         protected string name;
@@ -22,6 +28,7 @@ namespace GDLibrary.Graphics
             set
             {
                 alpha = value >= 0 && value <= 1 ? value : 1;
+                AlphaPropertyChanged?.Invoke();
             }
         }
 

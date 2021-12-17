@@ -129,7 +129,11 @@ namespace JigLibX.Geometry
         /// <param name="sideLengths"></param>
         public Box(Vector3 translation, Vector3 rotation, Vector3 sideLengths) : base((int)PrimitiveType.Box)
         {
-            this.transform = new Transform(translation, Matrix.CreateFromYawPitchRoll(rotation.Y, rotation.X, rotation.Z));
+            this.transform = new Transform(translation,
+                Matrix.Identity);
+            //this.transform = new Transform(translation,
+            //   Matrix.CreateFromYawPitchRoll(rotation.Y, rotation.X, rotation.Z));
+
             this.sideLengths = sideLengths;
         }
 
