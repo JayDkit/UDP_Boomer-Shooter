@@ -31,7 +31,6 @@ namespace GDApp.App.Scripts.Player
         private float rotationSpeed = 100.0f;
         MouseState prevMouseState;
         MouseState currentMouseState;
-        Vector3 mouseRotationBuffer;
         public FPSController(float moveSpeed, float strafeSpeed, float rotationSpeed, float jumpHeight)
         {
             this.moveSpeed = moveSpeed;
@@ -55,6 +54,7 @@ namespace GDApp.App.Scripts.Player
         public override void Start()
         {
             m_MouseLook.Init(Camera.Main.Transform);
+            currentMouseState = Mouse.GetState();
         }
         
         public override void Update()
@@ -131,8 +131,10 @@ namespace GDApp.App.Scripts.Player
 
         protected override void HandleMouseInput()
         {
+
             rotation = Vector3.Zero;
             var delta = Input.Mouse.Delta;
+
             rotation.Y -= delta.X * rotationSpeedV2.X * Time.Instance.DeltaTimeMs;
             rotation.X -= delta.Y * rotationSpeedV2.Y * Time.Instance.DeltaTimeMs;
             /*
@@ -147,6 +149,7 @@ namespace GDApp.App.Scripts.Player
             */
             if (delta.Length() != 0)
                 transform.SetRotation(ref rotation);  //converts value type to a reference
+            
         }
 
         #region Unused

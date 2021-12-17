@@ -23,7 +23,7 @@ namespace GDApp.App.Scripts
             {
                 i = 0;
             }
-            transform.SetRotation(0, i++, 0);
+            transform.SetRotation(0, i+=2, 0);
         }
 
     }

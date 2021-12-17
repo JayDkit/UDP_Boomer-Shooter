@@ -1,4 +1,5 @@
 ﻿using GDApp.App.Scripts.Items;
+using GDApp.App.Scripts.Player;
 using GDLibrary;
 using GDLibrary.Components;
 using GDLibrary.Core;
@@ -19,6 +20,12 @@ namespace GDApp
             if (parentGameObject.GameObjectType == GameObjectType.Consumable)
             {
                 System.Diagnostics.Debug.WriteLine(parentGameObject?.Name);
+
+                if (parentGameObject?.GetComponent<PickupItem>().Desc.ToString() == "Health")
+                {
+                    System.Diagnostics.Debug.WriteLine("HEALTH+++++++++++++++++++++");
+                    Camera.Main.GetComponent<Player>().addHealth();
+                }
 
                 object[] parameters = { parentGameObject };
                 EventDispatcher.Raise(new EventData(EventCategoryType.GameObject,

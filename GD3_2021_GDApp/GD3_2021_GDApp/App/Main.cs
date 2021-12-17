@@ -30,7 +30,7 @@ namespace GDApp
     public class Main : Game
     {
         #region Fields
-
+        public int time = 60;
         PlayerUI playerUI;
         private SpriteFont font;
         FramerateCounter fps = new FramerateCounter();
@@ -101,6 +101,7 @@ namespace GDApp
         public delegate void MyDelegate(string s, bool b);
 
         public List<MyDelegate> delList = new List<MyDelegate>();
+        private Player player;
 
         public void DoSomething(string msg, bool enableIt)
         {
@@ -299,9 +300,9 @@ namespace GDApp
                 (collidableObject) =>
                 {
                     if (collidableObject != null)
-                        return collidableObject.GameObjectType
-                        == GameObjectType.Interactable
-                        || collidableObject.GameObjectType == GameObjectType.Consumable;
+                        return collidableObject.GameObjectType == GameObjectType.Interactable
+                        || collidableObject.GameObjectType == GameObjectType.Consumable
+                        || collidableObject.GameObjectType == GameObjectType.Bullet;
 
                     return false;
                 };
@@ -386,7 +387,6 @@ namespace GDApp
             gun = new PlayerGun(level1);
             gun.InitializeModel(level1);
             level1.Add(gun);
-            Player player = new Player();
             playerUI = new PlayerUI(uiSceneManager);
             playerUI.InitializeUI(player);
             sceneManager.LoadScene(level1);
@@ -501,6 +501,10 @@ namespace GDApp
 
             //add controller to actually move the collidable camera
             camera.AddComponent(new FPSController(0.5f, 0.3f, 0.006f, 12));
+
+            player = new Player();
+            camera.AddComponent(player);
+
             level.Add(camera);
 
             #region Curve Camera
@@ -746,12 +750,33 @@ namespace GDApp
             }
         }
 
+        public void gameOver()
+        {
+            UIGameOver uIGameOver = new UIGameOver(uiMenuManager);
+            uIGameOver.InitializeUI();
+            //this.Exit();
+        }
 
 
         #region Update & Draw
-
+        float nextUpdate = 0.0f;
+        float period = 1f;
         protected override void Update(GameTime gameTime)
         {
+
+            if (Time.Instance.TotalGameTimeMs / 1000 > nextUpdate)
+            {
+                nextUpdate += period;
+                time--;
+                playerUI?.updateTime(time);
+                System.Diagnostics.Debug.WriteLine(time);
+            }
+            if (time <= 0)
+            {
+                gameOver();
+            }
+         
+
             if (Input.Keys.WasJustPressed(Microsoft.Xna.Framework.Input.Keys.Escape))
             {
                 EventDispatcher.Raise(new EventData(EventCategoryType.Menu, EventActionType.OnPause));

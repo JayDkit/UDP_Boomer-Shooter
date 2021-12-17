@@ -139,6 +139,7 @@
         OnMouseClick,
 
         //add more here...
+        OnEnemyHit,
     }
 
     /// <summary>

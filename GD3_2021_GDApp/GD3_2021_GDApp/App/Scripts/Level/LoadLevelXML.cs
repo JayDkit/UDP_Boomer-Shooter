@@ -1,5 +1,6 @@
 ﻿using GDApp.App.Scripts;
 using GDApp.App.Scripts.Items;
+using GDApp.App.Scripts.Turrets;
 using GDLibrary;
 using GDLibrary.Components;
 using GDLibrary.Graphics;
@@ -186,6 +187,8 @@ namespace GDApp.Content.Scripts.Level
                         );
                     collider.Enable(true, 1);
 
+                    cloneTurret.AddComponent(new EnemyTurret());
+
                     level.Add(cloneTurret);
                     break;
                 case "Floor":
@@ -224,7 +227,7 @@ namespace GDApp.Content.Scripts.Level
                         );
                     collider.Enable(true, 1);
                     cloneHealth.AddComponent(new PickupSpin());
-                    cloneHealth.AddComponent(new PickupItem("health", 1));
+                    cloneHealth.AddComponent(new PickupItem("Health", 1));
 
                     level.Add(cloneHealth);
                     break;

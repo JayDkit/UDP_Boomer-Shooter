@@ -1,4 +1,5 @@
 ﻿using GDLibrary;
+using GDLibrary.Components;
 using GDLibrary.Components.UI;
 using GDLibrary.Core;
 using GDLibrary.Managers;
@@ -8,36 +9,51 @@ using System;
 
 namespace GDApp.App.Scripts.Player
 {
-    public class PlayerUI 
+    public class PlayerUI
     {
         private UISceneManager uiSceneManager;
         private int score = 0;
-        private sbyte health = 0;
+        private byte health = 0;
         private float time = 0;
-
+        UIScene mainGameUIScene = new UIScene("Player UI");
+        SpriteFont font = Application.Main.Content.Load<SpriteFont>("Assets/Fonts/ui");
+        SpriteFont playerFont = Application.Main.Content.Load<SpriteFont>("Assets/Fonts/PlayerUIFont");
         public PlayerUI(UISceneManager manager)
         {
             uiSceneManager = manager;
+
         }
 
         public void updateScore(int newScore) { score = newScore; }
-        public void updateHealth(sbyte newHealth) { health = newHealth; }
-        public void updateTime(float newTime) { time = newTime; }
+        public void updateHealth(byte newHealth) { health = newHealth; }
+        UITextObject previous = null;
+        public void updateTime(float newTime) 
+        {
+            
+            time = newTime;
+            Vector2 tiDimensions = playerFont.MeasureString(time.ToString());
+            Vector2 timeOrigin = new Vector2(tiDimensions.X / 2, tiDimensions.Y / 2);
+            var timeextObject = new UITextObject("Time", UIObjectType.Text,
+                new Transform2D(new Vector2(450, Application.Main.GraphicsDevice.Viewport.Height - 100), Vector2.One, 0),
+                0,
+                Color.White,
+                SpriteEffects.None,
+                timeOrigin,
+                playerFont,
+                time.ToString()
+                );
+            mainGameUIScene.Remove(previous);
+            mainGameUIScene.Add(timeextObject);
+            previous = timeextObject;
+
+        }
 
         public void InitializeUI(Player player)
         {
             updateScore(player.Score);
             updateHealth(player.Health);
             //updateTime();
-
-            //create the scene
-            var mainGameUIScene = new UIScene("Player UI");
-
-
-            var font = Application.Main.Content.Load<SpriteFont>("Assets/Fonts/ui");
-            var playerFont = Application.Main.Content.Load<SpriteFont>("Assets/Fonts/PlayerUIFont");
-
-
+           
             //Texture : reticle
             var reticle = Application.Main.Content.Load<Texture2D>("Assets/Textures/UI/reticle");
             Vector2 reticleOrigin = new Vector2(reticle.Width / 2, reticle.Height / 2);
@@ -107,7 +123,7 @@ namespace GDApp.App.Scripts.Player
             var strTimer = "Timer";
             Vector2 tDimensions = playerFont.MeasureString(strTimer);
             Vector2 timerOrigin = new Vector2(tDimensions.X / 2, tDimensions.Y / 2);
-            var timerextObject = new UITextObject("Ammo", UIObjectType.Text,
+            var timerextObject = new UITextObject("Timer", UIObjectType.Text,
                 new Transform2D(new Vector2(450, Application.Main.GraphicsDevice.Viewport.Height - 150), Vector2.One, 0),
                 0,
                 Color.White,
@@ -117,6 +133,7 @@ namespace GDApp.App.Scripts.Player
                 strTimer
                 );
 
+
             //add the ui element to the scene
             mainGameUIScene.Add(backgroundTexture); //First add background texture. ALWAYS!
             mainGameUIScene.Add(reticleTexture);
@@ -125,6 +142,7 @@ namespace GDApp.App.Scripts.Player
             mainGameUIScene.Add(healthTextObj);
             mainGameUIScene.Add(ammoTextObject);
             mainGameUIScene.Add(timerextObject);
+            
             
 
             #region Add Scene To Manager & Set Active Scene
@@ -137,5 +155,6 @@ namespace GDApp.App.Scripts.Player
 
             #endregion Add Scene To Manager & Set Active Scene
         }
+
     }
 }

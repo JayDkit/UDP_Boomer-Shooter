@@ -1,5 +1,6 @@
 ﻿using GDLibrary;
 using GDLibrary.Components;
+using GDLibrary.Core;
 using GDLibrary.Graphics;
 using JigLibX.Collision;
 using JigLibX.Geometry;
@@ -17,8 +18,8 @@ namespace GDApp.App.Scripts.Player
         Collider collider;
 
         public float speed = 0.1f;
-
-        public int lifeTime = 1;
+        public int damage = 1;
+        public int lifeTime = 6 * 16;
 
         Vector3 forwardCamera;
         public Bullet(Vector3 position, Vector3 forward) : base("Bullet", GameObjectType.Bullet, true)
@@ -27,7 +28,7 @@ namespace GDApp.App.Scripts.Player
             this.AddComponent(new ModelRenderer(bulletMesh, new BasicMaterial("turret_material", shader, texture)));
             this.Transform.SetTranslation(position);
             this.Transform.SetScale(0.1f, 0.1f, 0.1f);
-            /*
+            
             collider = new Collider();
             this.AddComponent(collider);
             collider.AddPrimitive(new Sphere(
@@ -36,7 +37,7 @@ namespace GDApp.App.Scripts.Player
                 new MaterialProperties(0, 0, 0)
                 );
             collider.Enable(false, 1);
-            */
+            
         }
 
         public override void Update()
@@ -49,7 +50,8 @@ namespace GDApp.App.Scripts.Player
                 lifeTime--;
                 if (lifeTime <= 0)
                 {
-                this.Dispose();
+                object[] parameters = { this };
+                EventDispatcher.Raise(new EventData(EventCategoryType.GameObject, EventActionType.OnRemoveObject, parameters));
                 }
         }
     }
