@@ -1,12 +1,16 @@
 ﻿using GDApp.App.Scripts;
 using GDApp.App.Scripts.Items;
 using GDApp.App.Scripts.Turrets;
+using GDApp.Content.Scripts.Turrets;
+using GDApp.Content.Scripts.Turrets.Bullets;
 using GDLibrary;
 using GDLibrary.Components;
+using GDLibrary.Core;
 using GDLibrary.Graphics;
 using JigLibX.Collision;
 using JigLibX.Geometry;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
@@ -137,8 +141,28 @@ namespace GDApp.Content.Scripts.Level
             archetypalWall = new GameObject("wall", GameObjectType.Environment, true);
             archetypalWall.AddComponent(new MeshRenderer(cubeMesh, new BasicMaterial("wall_material", shader, textureDictionary["brick"])));
             //Turret
+
+
             archetypalTurret = new GameObject("turret", GameObjectType.NPC, true);
             archetypalTurret.AddComponent(new ModelRenderer(turretMesh, new BasicMaterial("turret_material", shader, textureDictionary["turret"]))); //Placeholder texture - not the final one!
+            GameObject bulletPrefab = new GameObject("BulletPrefab", GameObjectType.NPC);
+            StandardBullet bulletPrefabScript = new StandardBullet(2f);
+            bulletPrefab.AddComponent(bulletPrefabScript);
+            bulletPrefabScript.InitializeModel();
+            Model bulletMesh = Application.Main.Content.Load<Model>("Assets/Models/sphere");
+            Texture2D texture = Application.Main.Content.Load<Texture2D>("Assets/Demo/Textures/red");
+            bulletPrefab.AddComponent(new ModelRenderer(bulletMesh, new BasicMaterial("turret_material", shader, texture)));
+            bulletPrefab.Transform.SetScale(0.1f, 0.1f, 0.1f);
+
+            StandardTurret turretScript = new StandardTurret();
+            archetypalTurret.AddComponent(turretScript);
+            turretScript.bulletPrefab = bulletPrefab;
+            turretScript.player = Camera.Main.Transform;
+            turretScript.shotSound = new GDLibrary.Managers.Cue("ShotSound", Application.Main.Content.Load<SoundEffect>("Assets/Sounds/Turret_Shooting_Short")
+                                                                         , SoundCategoryType.SoundByte, new Vector3(1f, 1f, 1f), false);
+            Application.SoundManager.Add(turretScript.shotSound);
+
+
             //Pickups - HEALTH
             archetypalHealthPickup = new GameObject("health_pickup", GameObjectType.Consumable, true);
             archetypalHealthPickup.AddComponent(new ModelRenderer(healthMesh, new BasicMaterial("health_material", shader, textureDictionary["health_pickup"])));
