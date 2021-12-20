@@ -150,6 +150,7 @@
         WinLose,
         Explosion,
         BackgroundMusic,
-        Alarm
+        Alarm,
+        SoundByte
     }
 }

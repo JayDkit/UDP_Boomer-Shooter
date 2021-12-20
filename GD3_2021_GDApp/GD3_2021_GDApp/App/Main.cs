@@ -24,6 +24,7 @@ using GDLibrary.Collections;
 using GDApp.App.Scripts.UI;
 using GDApp.App.Scripts.Player;
 using System;
+using GDApp.Content.Scripts.Player;
 
 namespace GDApp
 {
@@ -58,11 +59,15 @@ namespace GDApp
         private MyMenuManager uiMenuManager;
 
         private SoundManager soundManager;
+        private AudioListener playerHeadphone;
+
         private EventDispatcher eventDispatcher;
         /// <summary>
         /// Renders all ui objects
         /// </summary>
         private PhysicsManager physicsManager;
+
+        
 
         /// <summary>
         /// Quick lookup for all textures used within the game
@@ -80,9 +85,9 @@ namespace GDApp
         //temp
         private Scene level1;
         private GameObject camera;
-        private PlayerGun gun;
-        private StandardTurret turret;
-        private StandardBullet bullet;
+        private GameObject gun;
+        private GameObject turret;
+        private GameObject bullet;
 
         private GameObject archetypalCube;
         private UITextObject nameTextObj;
@@ -302,7 +307,7 @@ namespace GDApp
                     if (collidableObject != null)
                         return collidableObject.GameObjectType == GameObjectType.Interactable
                         || collidableObject.GameObjectType == GameObjectType.Consumable
-                        || collidableObject.GameObjectType == GameObjectType.Bullet;
+                        || collidableObject.GameObjectType == GameObjectType.PlayerBullet;
 
                     return false;
                 };
@@ -314,7 +319,11 @@ namespace GDApp
             Application.GraphicsDeviceManager = _graphics;
             Application.PhysicsManager = physicsManager;
             Application.SceneManager = sceneManager;
-			//Application.PhysicsManager = physicsManager;
+            Application.SoundManager = soundManager;
+            //Application.PhysicsManager = physicsManager;
+
+            playerHeadphone = new AudioListener();
+            Application.playerListener = playerHeadphone;
 
             //instanciate render manager to render all drawn game objects using preferred renderer (e.g. forward, backward)
             renderManager = new RenderManager(this, new ForwardRenderer(), false);
@@ -372,7 +381,38 @@ namespace GDApp
             loadLevel1.setGroundFloor();
             loadLevel1.LoadLevelFromXML();
             InitializeProps(level1);
-            //StandardBullet bulletPrefab = new StandardBullet();
+
+            /*
+            GameObject bulletPrefab = new GameObject("BulletPrefab", GameObjectType.NPC);
+            StandardBullet bulletPrefabScript = new StandardBullet();
+            bulletPrefab.AddComponent(bulletPrefabScript);
+            bulletPrefabScript.InitializeModel();
+            Model bulletMesh = Application.Main.Content.Load<Model>("Assets/Models/sphere");
+            BasicShader shader = new BasicShader(Application.Content, false, true);
+            Texture2D texture = Application.Main.Content.Load<Texture2D>("Assets/Demo/Textures/grey");
+            bulletPrefab.AddComponent(new ModelRenderer(bulletMesh, new BasicMaterial("turret_material", shader, texture)));
+
+
+            bulletPrefab.Transform.SetTranslation(-20f, 10f, -20f);
+            bulletPrefab.Transform.SetScale(0.1f, 0.1f, 0.1f);
+
+            Collider colliderToAdd = new Collider(false, true);
+            bulletPrefab.AddComponent(colliderToAdd);
+            colliderToAdd.AddPrimitive(new Sphere(
+                bulletPrefab.Transform.LocalTranslation,
+                bulletPrefab.Transform.LocalScale.X),
+                new MaterialProperties(0, 0, 0)
+                );
+            colliderToAdd.Enable(false, 1);
+
+            //bulletPrefab.Transform.SetTranslation(-100f,10f,-100f); 
+
+            bulletPrefabScript.collider = colliderToAdd;
+
+            level1.Add(bulletPrefab);
+            */
+
+
             //bulletPrefab.InitializeModel(activeScene);
             //activeScene.Add(bulletPrefab);
             //turret = new StandardTurret();
@@ -383,12 +423,26 @@ namespace GDApp
             //tempbullet.InitializeModel(activeScene);
             //activeScene.Add(tempbullet);
 
+
+
             //add menu and ui
-            gun = new PlayerGun(level1);
-            gun.InitializeModel(level1);
+            gun = new GameObject("PlayerGun", GameObjectType.PlayerGun);
+            PlayerGun gunScript = new PlayerGun();
+            gun.AddComponent(gunScript);
+            gunScript.InitializeModel();
             level1.Add(gun);
             playerUI = new PlayerUI(uiSceneManager);
             playerUI.InitializeUI(player);
+
+            GDLibrary.Managers.Cue backgroundMusic = new GDLibrary.Managers.Cue("BackgroundMusic"
+                                                                                , Application.Main.Content.Load<SoundEffect>("Assets/Sounds/Backing_Track")
+                                                                                , SoundCategoryType.BackgroundMusic, new Vector3(0.2f, 1f, 1f), true);
+            AudioEmitter emitter = new AudioEmitter();
+
+
+            soundManager.Add(backgroundMusic);
+            soundManager.Play3D("BackgroundMusic", playerHeadphone, emitter);
+
             sceneManager.LoadScene(level1);
         }
 
@@ -504,6 +558,8 @@ namespace GDApp
 
             player = new Player();
             camera.AddComponent(player);
+
+            camera.AddComponent(new PlayerListener());
 
             level.Add(camera);
 

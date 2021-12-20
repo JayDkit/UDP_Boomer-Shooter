@@ -40,6 +40,12 @@ namespace GDApp
             {
 
             }
+            if(eventData.EventActionType == EventActionType.OnRemoveObject)
+            {
+                GameObject obj = eventData.Parameters[0] as GameObject;
+
+                obj.Dispose();
+            }
         }
 
 

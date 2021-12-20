@@ -18,8 +18,10 @@ namespace GDLibrary
         Editor,
         Prop,
         Ground,
-        Bullet,
-        EnemyBullet
+        PlayerBullet,
+        EnemyBullet,
+        PlayerGun,
+        Bullet
         //STU - add more for your game here...
     }
 
