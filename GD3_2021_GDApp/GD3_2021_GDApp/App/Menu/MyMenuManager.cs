@@ -8,9 +8,11 @@ namespace GDApp
 {
     public class MyMenuManager : UIMenuManager
     {
+        Main main;
         public MyMenuManager(Game game, SpriteBatch spriteBatch, Main main)
             : base(game, spriteBatch)
         {
+            this.main = main;
         }
 
         protected override void HandleMouseClicked(UIButtonObject btnObject)
@@ -19,6 +21,7 @@ namespace GDApp
             {
                 case AppData.MENU_PLAY_BTN_NAME:
                     EventDispatcher.Raise(new EventData(EventCategoryType.Menu, EventActionType.OnPlay));
+                    main.gameStarted = true;
                     break;
 
                 case AppData.MENU_CONTROLS_BTN_NAME:

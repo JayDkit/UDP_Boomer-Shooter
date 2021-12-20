@@ -32,7 +32,9 @@ namespace GDApp
     {
         #region Fields
         public int time = 60;
+        public bool gameStarted = false;
         PlayerUI playerUI;
+        UIControls uiControls;
         private SpriteFont font;
         FramerateCounter fps = new FramerateCounter();
         private GraphicsDeviceManager _graphics;
@@ -142,7 +144,8 @@ namespace GDApp
             EventDispatcher.Raise(new EventData(EventCategoryType.Menu, EventActionType.OnPause));
             //level with scenes and game objects
             InitializeLevel();
-
+            uiControls = new UIControls(uiMenuManager);
+            uiControls.InitializeUI(textureDictionary, fontDictionary);
             sceneManager.LoadScene(level1);
 
             //TODO - remove hardcoded mouse values - update Screen class to centre the mouse with hardcoded value - remove later
@@ -373,7 +376,21 @@ namespace GDApp
         /// </summary>
         public void InitializeLevel()
         {
+            //add menu and ui
+            playerUI = new PlayerUI(uiSceneManager);
+            player = new Player(playerUI);
+            playerUI.InitializeUI(player);
+            player.addHealth();
+            player.addScore(0);
+
             InitializeCameras(level1);
+
+            gun = new GameObject("PlayerGun", GameObjectType.PlayerGun);
+            PlayerGun gunScript = new PlayerGun();
+            gun.AddComponent(gunScript);
+            gunScript.InitializeModel();
+            level1.Add(gun);
+
             InitializeSkybox(level1, 1000);
 
             //Test load data from Level1.xml
@@ -424,16 +441,7 @@ namespace GDApp
             //activeScene.Add(tempbullet);
 
 
-
-            //add menu and ui
-            gun = new GameObject("PlayerGun", GameObjectType.PlayerGun);
-            PlayerGun gunScript = new PlayerGun();
-            gun.AddComponent(gunScript);
-            gunScript.InitializeModel();
-            level1.Add(gun);
-            playerUI = new PlayerUI(uiSceneManager);
-            playerUI.InitializeUI(player);
-
+            
             GDLibrary.Managers.Cue backgroundMusic = new GDLibrary.Managers.Cue("BackgroundMusic"
                                                                                 , Application.Main.Content.Load<SoundEffect>("Assets/Sounds/Backing_Track")
                                                                                 , SoundCategoryType.BackgroundMusic, new Vector3(0.2f, 1f, 1f), true);
@@ -556,7 +564,7 @@ namespace GDApp
             //add controller to actually move the collidable camera
             camera.AddComponent(new FPSController(0.5f, 0.3f, 0.006f, 12));
 
-            player = new Player();
+            
             camera.AddComponent(player);
 
             camera.AddComponent(new PlayerListener());
@@ -819,18 +827,26 @@ namespace GDApp
         float period = 1f;
         protected override void Update(GameTime gameTime)
         {
+            if (gameStarted)
+            {
+                if (Time.Instance.TotalGameTimeMs / 1000 > nextUpdate)
+                {
+                    nextUpdate += period;
+                    time--;
+                    playerUI?.updateTime(time);
+                    //System.Diagnostics.Debug.WriteLine(time);
+                }
+                if (time <= 0)
+                {
+                    gameOver();
+                }
+            }
+            else
+            {
+                time = 60;
+                //playerUI?.updateTime(time);
+            }
 
-            if (Time.Instance.TotalGameTimeMs / 1000 > nextUpdate)
-            {
-                nextUpdate += period;
-                time--;
-                playerUI?.updateTime(time);
-                System.Diagnostics.Debug.WriteLine(time);
-            }
-            if (time <= 0)
-            {
-                gameOver();
-            }
          
 
             if (Input.Keys.WasJustPressed(Microsoft.Xna.Framework.Input.Keys.Escape))

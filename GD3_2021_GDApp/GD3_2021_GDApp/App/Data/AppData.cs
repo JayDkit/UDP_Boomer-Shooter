@@ -42,10 +42,10 @@ namespace GDApp
             = new Vector2(GAME_RESOLUTION_WIDTH / 2, GAME_RESOLUTION_HEIGHT / 2.0f);
 
         public static readonly Vector2 MENU_CONTROLS_BTN_POSITION
-            = new Vector2(GAME_RESOLUTION_WIDTH / 2, GAME_RESOLUTION_HEIGHT / 2.0f + 40);
+            = new Vector2(GAME_RESOLUTION_WIDTH / 2, GAME_RESOLUTION_HEIGHT / 2.0f + 80);
 
         public static readonly Vector2 MENU_EXIT_BTN_POSITION
-            = new Vector2(GAME_RESOLUTION_WIDTH / 2, GAME_RESOLUTION_HEIGHT / 2.0f + 80);
+            = new Vector2(GAME_RESOLUTION_WIDTH / 2, GAME_RESOLUTION_HEIGHT / 2.0f + 160);
 
         #endregion UI & Menu Constants
 

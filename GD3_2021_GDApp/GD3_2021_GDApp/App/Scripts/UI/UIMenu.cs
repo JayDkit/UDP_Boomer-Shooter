@@ -12,7 +12,7 @@ namespace GDApp.App.Scripts.UI
 {
     public class UIMenu
     {
-
+        private Vector2 buttonSize = new Vector2(1, 1);
         public void InitializeGameMenu(MyMenuManager uiMenuManager, GraphicsDeviceManager _graphics, Dictionary<string, Texture2D> textureDictionary, ContentDictionary<SpriteFont> fontDictionary)
         {
             //a re-usable variable for each ui object
@@ -66,8 +66,7 @@ namespace GDApp.App.Scripts.UI
             var origin = new Vector2(btnTexture.Width / 2.0f, btnTexture.Height / 2.0f);
 
             var playBtn = new UIButtonObject(AppData.MENU_PLAY_BTN_NAME, UIObjectType.Button,
-                new Transform2D(AppData.MENU_PLAY_BTN_POSITION,
-                0.5f * Vector2.One, 0),
+                new Transform2D(AppData.MENU_PLAY_BTN_POSITION, buttonSize, 0),
                 0.1f,
                 Color.White,
                 SpriteEffects.None,
@@ -90,7 +89,7 @@ namespace GDApp.App.Scripts.UI
             //same button texture so we can re-use texture, sourceRectangle and origin
 
             var controlsBtn = new UIButtonObject(AppData.MENU_CONTROLS_BTN_NAME, UIObjectType.Button,
-                new Transform2D(AppData.MENU_CONTROLS_BTN_POSITION, 0.5f * Vector2.One, 0),
+                new Transform2D(AppData.MENU_CONTROLS_BTN_POSITION, buttonSize, 0),
                 0.1f,
                 Color.White,
                 origin,
@@ -110,7 +109,7 @@ namespace GDApp.App.Scripts.UI
 
             //use a simple/smaller version of the UIButtonObject constructor
             var exitBtn = new UIButtonObject(AppData.MENU_EXIT_BTN_NAME, UIObjectType.Button,
-                new Transform2D(AppData.MENU_EXIT_BTN_POSITION, 0.5f * Vector2.One, 0),
+                new Transform2D(AppData.MENU_EXIT_BTN_POSITION, buttonSize, 0),
                 0.1f,
                 Color.Orange,
                 origin,

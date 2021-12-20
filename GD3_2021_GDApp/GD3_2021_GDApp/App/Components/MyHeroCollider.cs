@@ -23,13 +23,14 @@ namespace GDApp
 
                 if (parentGameObject?.GetComponent<PickupItem>().Desc.ToString() == "Health")
                 {
-                    System.Diagnostics.Debug.WriteLine("HEALTH+++++++++++++++++++++");
-                    Camera.Main.GetComponent<Player>().addHealth();
+                    if (Camera.Main.GetComponent<Player>().addHealth())
+                    {
+                        object[] parameters = { parentGameObject };
+                        EventDispatcher.Raise(new EventData(EventCategoryType.GameObject,
+                            EventActionType.OnRemoveObject, parameters));
+                    }
+                    
                 }
-
-                object[] parameters = { parentGameObject };
-                EventDispatcher.Raise(new EventData(EventCategoryType.GameObject,
-                    EventActionType.OnRemoveObject, parameters));
 
                 /*
                 object[] parameters1 = { "health", 1 };

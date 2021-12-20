@@ -18,18 +18,58 @@ namespace GDApp.App.Scripts.Player
         UIScene mainGameUIScene = new UIScene("Player UI");
         SpriteFont font = Application.Main.Content.Load<SpriteFont>("Assets/Fonts/ui");
         SpriteFont playerFont = Application.Main.Content.Load<SpriteFont>("Assets/Fonts/PlayerUIFont");
+        UITextObject previousTime = null;
+        UITextObject previousHealth = null;
+        UITextObject previousScore = null;
+
         public PlayerUI(UISceneManager manager)
         {
             uiSceneManager = manager;
 
         }
 
-        public void updateScore(int newScore) { score = newScore; }
-        public void updateHealth(byte newHealth) { health = newHealth; }
-        UITextObject previous = null;
+        public void updateScore(int newScore) 
+        {
+            score = newScore;
+            //Text : score
+            Vector2 dimensions = playerFont.MeasureString(score.ToString("D6"));
+            Vector2 scoreOrigin = new Vector2(dimensions.X / 2, dimensions.Y / 2);
+            var scoreTextObj = new UITextObject("Score", UIObjectType.Text,
+                new Transform2D(new Vector2(Application.Main.GraphicsDevice.Viewport.Width / 2, Application.Main.GraphicsDevice.Viewport.Height - 180), Vector2.One, 0),
+                0,
+                Color.White,
+                SpriteEffects.None,
+                scoreOrigin,
+                playerFont,
+                score.ToString("D6")
+                );
+            mainGameUIScene.Remove(previousScore);
+            mainGameUIScene.Add(scoreTextObj);
+            previousHealth = scoreTextObj;
+        }
+        
+        public void updateHealth(byte newHealth) 
+        {
+            health = newHealth;
+            //Text: health
+            Vector2 hDimensions = playerFont.MeasureString(health.ToString());
+            Vector2 healthOrigin = new Vector2(hDimensions.X / 2, hDimensions.Y / 2);
+            var healthTextObj = new UITextObject("Health", UIObjectType.Text,
+                new Transform2D(new Vector2(Application.Main.GraphicsDevice.Viewport.Width / 2, Application.Main.GraphicsDevice.Viewport.Height - 100), Vector2.One, 0),
+                0,
+                Color.Red,
+                SpriteEffects.None,
+                healthOrigin,
+                playerFont,
+                health.ToString()
+                );
+            mainGameUIScene.Remove(previousHealth);
+            mainGameUIScene.Add(healthTextObj);
+            previousHealth = healthTextObj;
+        }
+        
         public void updateTime(float newTime) 
         {
-            
             time = newTime;
             Vector2 tiDimensions = playerFont.MeasureString(time.ToString());
             Vector2 timeOrigin = new Vector2(tiDimensions.X / 2, tiDimensions.Y / 2);
@@ -42,9 +82,9 @@ namespace GDApp.App.Scripts.Player
                 playerFont,
                 time.ToString()
                 );
-            mainGameUIScene.Remove(previous);
+            mainGameUIScene.Remove(previousTime);
             mainGameUIScene.Add(timeextObject);
-            previous = timeextObject;
+            previousTime = timeextObject;
 
         }
 
@@ -80,31 +120,7 @@ namespace GDApp.App.Scripts.Player
                 blackTexture
                 );
 
-            //Text : score
-            Vector2 dimensions = playerFont.MeasureString(score.ToString("D6"));
-            Vector2 scoreOrigin = new Vector2(dimensions.X / 2, dimensions.Y / 2);
-            var scoreTextObj = new UITextObject("Score", UIObjectType.Text,
-                new Transform2D(new Vector2(Application.Main.GraphicsDevice.Viewport.Width / 2, Application.Main.GraphicsDevice.Viewport.Height - 180), Vector2.One, 0),
-                0, 
-                Color.White,
-                SpriteEffects.None,
-                scoreOrigin,
-                playerFont,
-                score.ToString("D6")
-                );
 
-            //Text: health
-            Vector2 hDimensions = playerFont.MeasureString(health.ToString());
-            Vector2 healthOrigin = new Vector2(hDimensions.X / 2, hDimensions.Y / 2);
-            var healthTextObj = new UITextObject("Score", UIObjectType.Text,
-                new Transform2D(new Vector2(Application.Main.GraphicsDevice.Viewport.Width / 2, Application.Main.GraphicsDevice.Viewport.Height - 100), Vector2.One, 0),
-                0,
-                Color.Red,
-                SpriteEffects.None,
-                healthOrigin,
-                playerFont,
-                health.ToString()
-                ); ;
 
             //Text : ammo
             var strAmmo = "Ammo";
@@ -138,8 +154,8 @@ namespace GDApp.App.Scripts.Player
             mainGameUIScene.Add(backgroundTexture); //First add background texture. ALWAYS!
             mainGameUIScene.Add(reticleTexture);
 
-            mainGameUIScene.Add(scoreTextObj);
-            mainGameUIScene.Add(healthTextObj);
+            //mainGameUIScene.Add(scoreTextObj);
+            //mainGameUIScene.Add(healthTextObj);
             mainGameUIScene.Add(ammoTextObject);
             mainGameUIScene.Add(timerextObject);
             

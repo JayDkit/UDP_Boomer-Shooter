@@ -54,7 +54,6 @@ namespace GDApp.App.Scripts.Player
         public override void Start()
         {
             m_MouseLook.Init(Camera.Main.Transform);
-            currentMouseState = Mouse.GetState();
         }
         
         public override void Update()
@@ -81,6 +80,7 @@ namespace GDApp.App.Scripts.Player
             HandleMove();
             HandleStrafe();
             HandleJump();
+            HandleRotate();
         }
 
         private void HandleMove()
@@ -123,6 +123,32 @@ namespace GDApp.App.Scripts.Player
             }
         }
 
+        private void HandleRotate()
+        {
+            if (Input.Keys.IsPressed(Keys.Left) || Input.Keys.IsPressed(Keys.Right) || Input.Keys.IsPressed(Keys.Up) || Input.Keys.IsPressed(Keys.Down))
+            {
+                Mouse.SetPosition(AppData.GAME_RESOLUTION_WIDTH/2, AppData.GAME_RESOLUTION_HEIGHT/2);
+            }
+
+            if (Input.Keys.IsPressed(Keys.Left))
+            {
+                transform.SetRotation(transform.LocalRotation.X, transform.LocalRotation.Y + 1, transform.LocalRotation.Z);
+            }
+            else if (Input.Keys.IsPressed(Keys.Right))
+            {
+                transform.SetRotation(transform.LocalRotation.X, transform.LocalRotation.Y - 1, transform.LocalRotation.Z);
+            }
+
+            if (Input.Keys.IsPressed(Keys.Up))
+            {
+                transform.SetRotation(transform.LocalRotation.X + 1, transform.LocalRotation.Y, transform.LocalRotation.Z);
+            }
+            else if (Input.Keys.IsPressed(Keys.Down))
+            {
+                transform.SetRotation(transform.LocalRotation.X - 1, transform.LocalRotation.Y, transform.LocalRotation.Z);
+            }
+        }
+
         private void HandleJump()
         {
             if (Input.Keys.IsPressed(Keys.Space))
@@ -131,7 +157,7 @@ namespace GDApp.App.Scripts.Player
 
         protected override void HandleMouseInput()
         {
-
+            //Input.Mouse.SetMouseVisible(true);
             rotation = Vector3.Zero;
             var delta = Input.Mouse.Delta;
 
@@ -149,7 +175,7 @@ namespace GDApp.App.Scripts.Player
             */
             if (delta.Length() != 0)
                 transform.SetRotation(ref rotation);  //converts value type to a reference
-            
+
         }
 
         #region Unused
